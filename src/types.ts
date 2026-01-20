@@ -22,22 +22,33 @@ export interface Material {
   min_stock: number;
 }
 
-export interface ProductMaterial {
-  id: string;
-  product_id: string;
-  material_id: string; // ID of the Material
-  quantity: number; // Qty used
-  material?: Material; // Joined data
+// Product Composition Types
+export interface ProcessoEtapa {
+  id?: string;
+  name: string;
+  setupMinutes: number;
+  unitMinutes: number;
+}
+
+export interface BOMItem {
+  id?: string;
+  insumoId: string;
+  qtyPerUnit: number;
+  appliesTo: 'PRODUCT' | 'PACKAGING';
+  insumo?: Material;
+  notes?: string;
 }
 
 export interface Product {
   id: string;
   name: string;
+  category: string;
+  unit: string;
   description?: string;
-  selling_price: number;
-  profit_margin: number;
-  labor_time: number; // in minutes
-  materials?: ProductMaterial[];
+  bomItems?: BOMItem[];
+  steps?: ProcessoEtapa[];
+  selling_price?: number; // Optional until calculation logic is implemented
+  profit_margin?: number;
 }
 
 export type ContactType = 'Cliente' | 'Fornecedor';

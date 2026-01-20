@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { api, Produto, Insumo, BOMItem } from '../api/client';
+import { useStoreData } from '../hooks/useStoreData';
+import { Produto } from '../api/client'; // Keeping type for now to avoid breaking handleEdit
 import {
     Package,
     Plus,
@@ -30,25 +31,28 @@ const schema = z.object({
         name: z.string().min(1, 'Nome da etapa obrigatório'),
         setupMinutes: z.number().min(0),
         unitMinutes: z.number().min(0)
-    }))
+    })),
+    profitMargin: z.number().min(0).max(100),
+    sellingPrice: z.number().optional()
 });
 
 type FormData = z.infer<typeof schema>;
 
 const Products: React.FC = () => {
-    const [products, setProducts] = useState<Produto[]>([]);
-    const [insumos, setInsumos] = useState<Insumo[]>([]);
+    const { products, materials: insumos, addProduct, updateProduct, deleteProduct } = useStoreData();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
     const [search, setSearch] = useState('');
-    const [activeTab, setActiveTab] = useState<'info' | 'bom' | 'steps'>('info');
+    const [activeTab, setActiveTab] = useState<'info' | 'bom' | 'steps' | 'pricing'>('info');
 
     const { register, control, handleSubmit, reset, setValue, watch, formState: { errors, isSubmitting } } = useForm<FormData>({
         resolver: zodResolver(schema),
         defaultValues: {
             unit: 'UN',
             bomItems: [],
-            steps: []
+            steps: [],
+            profitMargin: 50, // Default margin
+            sellingPrice: 0
         }
     });
 
@@ -62,46 +66,65 @@ const Products: React.FC = () => {
         name: 'steps'
     });
 
-    useEffect(() => {
-        fetchProducts();
-        fetchInsumos();
-    }, []);
+    // --- PRICING CALCULATION LOGIC ---
+    const watchedBom = watch('bomItems');
+    const watchedSteps = watch('steps');
+    const watchedMargin = watch('profitMargin');
+    const { storeConfig } = useStoreData();
 
-    const fetchProducts = async () => {
-        try {
-            const data = await api.get<Produto[]>('/produtos');
-            setProducts(data);
-        } catch (error) { console.error(error); }
+    const calculateTotals = () => {
+        // 1. Material Cost
+        const matCost = (watchedBom || []).reduce((acc, item) => {
+            const mat = insumos.find(i => i.id === item.insumoId);
+            return acc + (item.qtyPerUnit * (mat?.price || 0));
+        }, 0);
+
+        // 2. Labor Cost
+        // Hourly Rate = Pro Labore / (Days * Hours)
+        const totalHoursMonth = (storeConfig.work_days_per_month * storeConfig.work_hours_per_day) || 160;
+        const hourlyRate = (storeConfig.pro_labore / totalHoursMonth) || 0;
+
+        const laborMinutes = (watchedSteps || []).reduce((acc, step) => acc + (step.setupMinutes || 0) + (step.unitMinutes || 0), 0);
+        const laborCost = (laborMinutes / 60) * hourlyRate;
+
+        const totalCost = matCost + laborCost;
+
+        // 3. Selling Price based on Margin
+        // Margin = (Price - Cost) / Price  =>  Price * Margin = Price - Cost  =>  Price * (1 - Margin) = Cost  => Price = Cost / (1 - Margin)
+        // WAIT: User usually thinks in Markup? No, Profit Margin is usually (Price - Cost) / Price.
+        // Let's use Margin % input.
+        const marginDecimal = (watchedMargin || 0) / 100;
+        const suggestedPrice = marginDecimal >= 1 ? 0 : totalCost / (1 - marginDecimal);
+
+        return { matCost, laborCost, totalCost, suggestedPrice, hourlyRate };
     };
 
-    const fetchInsumos = async () => {
-        try {
-            const data = await api.get<Insumo[]>('/insumos');
-            setInsumos(data);
-        } catch (error) { console.error(error); }
-    };
+    const { matCost, laborCost, totalCost, suggestedPrice, hourlyRate } = calculateTotals();
 
     const onSubmit = async (data: FormData) => {
         try {
+            // Save calculated price even if user didn't touch it? 
+            // Better to respect the input if we add a manual override, but for now let's just save.
+            const payload = {
+                ...data,
+                sellingPrice: suggestedPrice, // Auto-calculate for now (simplification)
+                profitMargin: data.profitMargin
+            };
+
             if (editingId) {
-                await api.put(`/produtos/${editingId}`, data);
+                await updateProduct({ id: editingId, ...payload } as any);
             } else {
-                await api.post('/produtos', data);
+                await addProduct({ id: '', ...payload } as any);
             }
-            await fetchProducts();
             handleCloseModal();
         } catch (error) {
             console.error(error);
-            alert('Erro ao salvar produto');
         }
     };
 
     const handleDelete = async (id: string) => {
         if (!confirm('Tem certeza?')) return;
-        try {
-            await api.delete(`/produtos/${id}`);
-            await fetchProducts();
-        } catch (error) { console.error(error); }
+        await deleteProduct(id);
     };
 
     const handleEdit = (item: Produto) => {
@@ -110,6 +133,7 @@ const Products: React.FC = () => {
         setValue('category', item.category);
         setValue('unit', item.unit);
         setValue('description', item.description || '');
+        setValue('profitMargin', item.profit_margin || 50);
         // Map BOM and Steps
         setValue('bomItems', (item.bomItems || []).map(b => ({
             insumoId: b.insumoId,
@@ -130,7 +154,7 @@ const Products: React.FC = () => {
     const handleCloseModal = () => {
         setIsModalOpen(false);
         setEditingId(null);
-        reset({ unit: 'UN', bomItems: [], steps: [] });
+        reset({ unit: 'UN', bomItems: [], steps: [], profitMargin: 50 });
     };
 
     const filtered = products.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
@@ -176,8 +200,11 @@ const Products: React.FC = () => {
                             </div>
                         </div>
                         <h3 className="text-xl font-bold text-gray-900 mb-2">{item.name}</h3>
-                        <p className="text-sm text-gray-500">{item.category}</p>
-                        <div className="mt-4 flex gap-4 text-xs font-bold uppercase tracking-wider text-gray-400">
+                        <p className="text-sm text-gray-500 mb-4">{item.category}</p>
+                        <div className="flex items-center gap-2 text-indigo-600 font-bold bg-indigo-50 w-max px-3 py-1 rounded-lg text-sm mb-4">
+                            <span>R$ {item.selling_price?.toFixed(2) || '0.00'}</span>
+                        </div>
+                        <div className="flex gap-4 text-xs font-bold uppercase tracking-wider text-gray-400">
                             <span className="flex items-center gap-1"><Layers className="w-3 h-3" /> {(item.bomItems || []).length} Insumos</span>
                             <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {(item.steps || []).length} Etapas</span>
                         </div>
@@ -193,10 +220,11 @@ const Products: React.FC = () => {
                             <button onClick={handleCloseModal}><X className="w-6 h-6 text-gray-400" /></button>
                         </div>
 
-                        <div className="flex border-b px-10">
+                        <div className="flex border-b px-10 overflow-x-auto">
                             <button onClick={() => setActiveTab('info')} className={`py-4 px-6 font-bold text-sm uppercase tracking-wider border-b-2 transition-colors ${activeTab === 'info' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-400 hover:text-gray-600'}`}>Informações</button>
-                            <button onClick={() => setActiveTab('bom')} className={`py-4 px-6 font-bold text-sm uppercase tracking-wider border-b-2 transition-colors ${activeTab === 'bom' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-400 hover:text-gray-600'}`}>Receita (Materiais)</button>
-                            <button onClick={() => setActiveTab('steps')} className={`py-4 px-6 font-bold text-sm uppercase tracking-wider border-b-2 transition-colors ${activeTab === 'steps' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-400 hover:text-gray-600'}`}>Processo (Tempo)</button>
+                            <button onClick={() => setActiveTab('bom')} className={`py-4 px-6 font-bold text-sm uppercase tracking-wider border-b-2 transition-colors ${activeTab === 'bom' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-400 hover:text-gray-600'}`}>Receita</button>
+                            <button onClick={() => setActiveTab('steps')} className={`py-4 px-6 font-bold text-sm uppercase tracking-wider border-b-2 transition-colors ${activeTab === 'steps' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-400 hover:text-gray-600'}`}>Processo</button>
+                            <button onClick={() => setActiveTab('pricing')} className={`py-4 px-6 font-bold text-sm uppercase tracking-wider border-b-2 transition-colors ${activeTab === 'pricing' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-400 hover:text-gray-600'}`}>Precificação</button>
                         </div>
 
                         <form onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-y-auto p-10 custom-scrollbar">
@@ -279,6 +307,40 @@ const Products: React.FC = () => {
                                             <button type="button" onClick={() => removeStep(index)} className="mt-6 text-rose-500 hover:bg-rose-50 p-2 rounded-lg"><Trash2 className="w-4 h-4" /></button>
                                         </div>
                                     ))}
+                                </div>
+                            )}
+
+                            {activeTab === 'pricing' && (
+                                <div className="space-y-6">
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                                            <p className="text-[10px] uppercase font-bold text-gray-400 mb-1">Custo Materiais</p>
+                                            <p className="text-xl font-bold text-gray-800">R$ {matCost.toFixed(2)}</p>
+                                        </div>
+                                        <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                                            <p className="text-[10px] uppercase font-bold text-gray-400 mb-1">Custo Mão de Obra</p>
+                                            <p className="text-xl font-bold text-gray-800">R$ {laborCost.toFixed(2)}</p>
+                                            <p className="text-[10px] text-gray-400">Minuto: R$ {(hourlyRate / 60).toFixed(2)}</p>
+                                        </div>
+                                    </div>
+                                    <div className="p-6 bg-indigo-50 rounded-2xl border border-indigo-100 flex justify-between items-center">
+                                        <div>
+                                            <p className="text-xs uppercase font-bold text-indigo-400 mb-1">Custo Total</p>
+                                            <p className="text-3xl font-bold text-indigo-900">R$ {totalCost.toFixed(2)}</p>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="text-xs font-bold text-indigo-400">Margem Alvo (%)</p>
+                                            <input
+                                                type="number"
+                                                className="text-right text-2xl font-bold text-indigo-900 bg-transparent border-b-2 border-indigo-200 w-24 focus:outline-none focus:border-indigo-500"
+                                                {...register('profitMargin', { valueAsNumber: true })}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="p-6 bg-gray-900 rounded-2xl shadow-xl text-center">
+                                        <p className="text-sm uppercase tracking-widest text-gray-400 mb-2">Preço de Venda Sugerido</p>
+                                        <p className="text-5xl font-bold text-white tracking-tight">R$ {suggestedPrice.toFixed(2)}</p>
+                                    </div>
                                 </div>
                             )}
 

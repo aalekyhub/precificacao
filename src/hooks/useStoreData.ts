@@ -85,18 +85,90 @@ export const useStoreData = () => {
 
     // --- PRODUCTS STATE ---
     const [products, setProducts] = useState<Product[]>([]);
-    // TODO: persist products to supabase
 
-    const addProduct = (p: Product) => setProducts([...products, p]);
-    const deleteProduct = (id: string) => setProducts(products.filter(p => p.id !== id));
+    const reloadProducts = async () => {
+        try {
+            const data = await api.get<Product[]>('/products');
+            setProducts(data);
+        } catch (error) {
+            console.error('Failed to load products', error);
+        }
+    };
+
+    const addProduct = async (p: Product) => {
+        try {
+            const { id, ...rest } = p;
+            await api.post('/products', rest);
+            reloadProducts();
+        } catch (e) {
+            console.error(e);
+            alert('Erro ao salvar produto');
+        }
+    };
+
+    const updateProduct = async (updatedP: Product) => {
+        try {
+            await api.put(`/products/${updatedP.id}`, updatedP);
+            reloadProducts();
+        } catch (e) {
+            console.error(e);
+            alert('Erro ao atualizar produto');
+        }
+    };
+
+    const deleteProduct = async (id: string) => {
+        try {
+            await api.delete(`/products/${id}`);
+            reloadProducts();
+        } catch (e) {
+            console.error(e);
+            alert('Erro ao excluir produto');
+        }
+    };
 
     // --- FIXED COSTS STATE ---
+    // --- FIXED COSTS STATE ---
     const [fixedCosts, setFixedCosts] = useState<FixedCost[]>([]);
-    // TODO: persist fixed costs to supabase
 
-    const addFixedCost = (fc: FixedCost) => setFixedCosts([...fixedCosts, fc]);
-    const updateFixedCost = (updatedFc: FixedCost) => setFixedCosts(fixedCosts.map(fc => fc.id === updatedFc.id ? updatedFc : fc));
-    const deleteFixedCost = (id: string) => setFixedCosts(fixedCosts.filter(fc => fc.id !== id));
+    const reloadFixedCosts = async () => {
+        try {
+            const data = await api.get<FixedCost[]>('/fixed-costs');
+            setFixedCosts(data);
+        } catch (error) {
+            console.error('Failed to load fixed costs', error);
+        }
+    };
+
+    const addFixedCost = async (fc: FixedCost) => {
+        try {
+            const { id, ...rest } = fc;
+            await api.post('/fixed-costs', rest);
+            reloadFixedCosts();
+        } catch (e) {
+            console.error(e);
+            alert('Erro ao salvar custo fixo');
+        }
+    };
+
+    const updateFixedCost = async (updatedFc: FixedCost) => {
+        try {
+            await api.put(`/fixed-costs/${updatedFc.id}`, updatedFc);
+            reloadFixedCosts();
+        } catch (e) {
+            console.error(e);
+            alert('Erro ao atualizar custo fixo');
+        }
+    };
+
+    const deleteFixedCost = async (id: string) => {
+        try {
+            await api.delete(`/fixed-costs/${id}`);
+            reloadFixedCosts();
+        } catch (e) {
+            console.error(e);
+            alert('Erro ao excluir custo fixo');
+        }
+    };
 
     // --- CONTACTS STATE ---
     const [contacts, setContacts] = useState<Contact[]>([]);
@@ -144,9 +216,50 @@ export const useStoreData = () => {
 
     // --- QUOTES STATE ---
     const [quotes, setQuotes] = useState<Quote[]>([]);
-    const addQuote = (q: Quote) => setQuotes([...quotes, q]);
-    const updateQuote = (updatedQ: Quote) => setQuotes(quotes.map(q => q.id === updatedQ.id ? updatedQ : q));
-    const deleteQuote = (id: string) => setQuotes(quotes.filter(q => q.id !== id));
+
+    const reloadQuotes = async () => {
+        try {
+            const data = await api.get<Quote[]>('/quotes');
+            setQuotes(data);
+        } catch (error) {
+            console.error('Failed to load quotes', error);
+        }
+    };
+
+    const addQuote = async (q: Quote) => {
+        try {
+            const { id, ...rest } = q;
+            // Allow frontend to generate weird IDs or let backend do it? 
+            // If ID is random string from frontend, we pass it. 
+            // But usually we prefer backend UUIDs. 
+            // Let's rely on api client logic: if ID is present, use it.
+            await api.post('/quotes', q);
+            reloadQuotes();
+        } catch (e) {
+            console.error(e);
+            alert('Erro ao salvar orçamento');
+        }
+    };
+
+    const updateQuote = async (updatedQ: Quote) => {
+        try {
+            await api.put(`/quotes/${updatedQ.id}`, updatedQ);
+            reloadQuotes();
+        } catch (e) {
+            console.error(e);
+            alert('Erro ao atualizar orçamento');
+        }
+    };
+
+    const deleteQuote = async (id: string) => {
+        try {
+            await api.delete(`/quotes/${id}`);
+            reloadQuotes();
+        } catch (e) {
+            console.error(e);
+            alert('Erro ao excluir orçamento');
+        }
+    };
 
     // --- INITIAL LOAD ---
     useEffect(() => {
@@ -154,6 +267,8 @@ export const useStoreData = () => {
         reloadContacts();
         reloadMaterials();
         reloadFixedCosts();
+        reloadProducts();
+        reloadQuotes();
     }, []);
 
     return {
@@ -163,7 +278,7 @@ export const useStoreData = () => {
         contacts, setContacts,
         quotes, setQuotes,
         storeConfig, setStoreConfig: updateStoreConfig,
-        addProduct, deleteProduct,
+        addProduct, updateProduct, deleteProduct,
         addMaterial, updateMaterial, deleteMaterial,
         addFixedCost, updateFixedCost, deleteFixedCost,
         addContact, updateContact, deleteContact,

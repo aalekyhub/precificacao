@@ -11,6 +11,8 @@ const getTable = (path: string) => {
     if (path.includes('fixed-costs')) return 'FixedCost';
     if (path.includes('contacts')) return 'Contact';
     if (path.includes('settings')) return 'Settings';
+    if (path.includes('orders')) return 'Order';
+    if (path.includes('quotes')) return 'Order';
     return '';
 };
 
@@ -30,7 +32,7 @@ export const api = {
         let query = supabase.from(table).select('*');
 
         // Specific includes for Products
-        if (table === 'Produto') {
+        if (table === 'Product') {
             query = supabase.from(table).select('*, bomItems:BOMItem(*, insumo:Insumo(*)), steps:ProcessoEtapa(*)');
         }
 
@@ -57,7 +59,7 @@ export const api = {
         const bodyWithId = { ...body, id };
 
         // Handle deep writes for Product manually since Supabase doesn't do deep inserts like Prisma
-        if (table === 'Produto') {
+        if (table === 'Product') {
             const { bomItems, steps, ...productData } = bodyWithId;
 
             // 1. Create Product
@@ -87,7 +89,7 @@ export const api = {
         const table = getTable(path);
         const id = path.split('/').pop();
 
-        if (table === 'Produto') {
+        if (table === 'Product') {
             const { bomItems, steps, ...productData } = body;
 
             // 1. Update Product
@@ -125,40 +127,11 @@ export const api = {
     }
 };
 
-export interface Insumo {
-    id: string;
-    name: string;
-    unit: string;
-    unitCost: number;
-    lossPct: number;
-    yieldNotes?: string;
-    supplier?: string;
-}
+import { Product, Material, BOMItem, ProcessoEtapa, FixedCost, Contact, Settings } from '../types';
 
-export interface Produto {
-    id: string;
-    name: string;
-    category: string;
-    unit: string;
-    description?: string;
-    bomItems?: BOMItem[];
-    steps?: ProcessoEtapa[];
-}
-
-export interface BOMItem {
-    id?: string;
-    insumoId: string;
-    qtyPerUnit: number;
-    appliesTo: 'PRODUCT' | 'PACKAGING';
-    insumo?: Insumo;
-}
-
-export interface ProcessoEtapa {
-    id?: string;
-    name: string;
-    setupMinutes: number;
-    unitMinutes: number;
-}
+export type Insumo = Material;
+export type Produto = Product;
+export type { BOMItem, ProcessoEtapa, FixedCost, Contact, Settings };
 
 export interface Canal {
     id: string;
