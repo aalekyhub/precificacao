@@ -20,6 +20,14 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const checkHealth = async () => {
+      // Debug Config
+      const url = import.meta.env.VITE_SUPABASE_URL;
+      const key = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      console.log("Supabase Config Check:", {
+        url,
+        keyPrefix: key ? key.substring(0, 5) : 'undefined'
+      });
+
       const { error, count } = await supabase.from('Insumo').select('*', { count: 'exact', head: true });
       if (error) {
         console.error("Supabase Connection Error:", error.message, error.details, error.hint);
