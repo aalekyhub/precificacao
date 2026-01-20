@@ -233,78 +233,75 @@ const Products: React.FC = () => {
                         </div>
 
                         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col flex-1 overflow-hidden">
-                            <div className="flex-1 overflow-y-auto p-8 custom-scrollbar space-y-6">
+                            <div className="flex-1 overflow-y-auto p-5 custom-scrollbar space-y-4">
 
                                 {/* SECTION: PRODUTO (INFO) */}
-                                <section className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm relative overflow-hidden group hover:border-indigo-100 transition-colors">
-                                    <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-bl-full -mr-16 -mt-16 opacity-50 pointer-events-none"></div>
-                                    <div className="flex items-center gap-4 mb-6 relative">
-                                        <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-lg shadow-lg shadow-indigo-200">1</div>
+                                <section className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm relative overflow-hidden">
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="w-6 h-6 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-md">1</div>
                                         <div>
-                                            <h4 className="text-lg font-bold text-gray-900">Informações Básicas</h4>
-                                            <p className="text-xs text-gray-500 font-medium">Identificação e categorização do produto.</p>
+                                            <h4 className="text-sm font-bold text-gray-900">Informações Básicas</h4>
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
                                         <div className="md:col-span-8">
-                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1.5">Nome do Produto</label>
-                                            <input {...register('name')} className="w-full px-3 h-10 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-medium text-gray-900 text-sm" placeholder="Ex: Caderno Personalizado A5" />
-                                            {errors.name && <p className="text-rose-500 text-xs mt-1 ml-1 font-bold">{errors.name.message}</p>}
+                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Nome do Produto</label>
+                                            <input {...register('name')} className="w-full px-3 h-8 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 transition-all font-medium text-gray-900 text-xs" placeholder="Ex: Caderno Personalizado A5" />
+                                            {errors.name && <p className="text-rose-500 text-[10px] mt-0.5 ml-1 font-bold">{errors.name.message}</p>}
                                         </div>
                                         <div className="md:col-span-4">
-                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1.5">Categoria</label>
-                                            <input {...register('category')} className="w-full px-3 h-10 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-medium text-gray-900 text-sm" placeholder="Ex: Papelaria" />
-                                            {errors.category && <p className="text-rose-500 text-xs mt-1 ml-1 font-bold">{errors.category.message}</p>}
+                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Categoria</label>
+                                            <input {...register('category')} className="w-full px-3 h-8 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 transition-all font-medium text-gray-900 text-xs" placeholder="Ex: Papelaria" />
+                                            {errors.category && <p className="text-rose-500 text-[10px] mt-0.5 ml-1 font-bold">{errors.category.message}</p>}
                                         </div>
-                                        <div className="md:col-span-4">
-                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1.5">Unidade</label>
-                                            <input {...register('unit')} className="w-full px-3 h-10 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-medium text-gray-900 text-sm" placeholder="UN" />
+                                        <div className="md:col-span-2">
+                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Unidade</label>
+                                            <input {...register('unit')} className="w-full px-3 h-8 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 transition-all font-medium text-gray-900 text-xs text-center" placeholder="UN" />
                                         </div>
-                                        <div className="md:col-span-8">
-                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1.5">Descrição</label>
-                                            <input {...register('description')} className="w-full px-3 h-10 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-medium text-gray-900 text-sm" placeholder="Breve descrição do produto..." />
+                                        <div className="md:col-span-10">
+                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Descrição</label>
+                                            <input {...register('description')} className="w-full px-3 h-8 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 transition-all font-medium text-gray-900 text-xs" placeholder="Breve descrição do produto..." />
                                         </div>
                                     </div>
                                 </section>
 
                                 {/* SECTION: MATERIAIS (RECEITA) */}
-                                <section className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm relative overflow-hidden group hover:border-indigo-100 transition-colors">
-                                    <div className="flex items-center justify-between mb-8">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-lg shadow-lg shadow-indigo-200">2</div>
+                                <section className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm relative overflow-hidden">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-6 h-6 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-md">2</div>
                                             <div>
-                                                <h4 className="text-lg font-bold text-gray-900">Materiais (Receita)</h4>
-                                                <p className="text-xs text-gray-500 font-medium">O que você gasta para produzir uma unidade.</p>
+                                                <h4 className="text-sm font-bold text-gray-900">Materiais (Receita)</h4>
                                             </div>
                                         </div>
-                                        <button type="button" onClick={() => appendBom({ insumoId: '', qtyPerUnit: 1, appliesTo: 'PRODUCT' })} className="text-xs font-bold text-white bg-indigo-600 px-4 py-2.5 rounded-xl hover:bg-indigo-700 transition-all shadow-md shadow-indigo-200 flex items-center gap-2 active:scale-95">
-                                            <Plus className="w-4 h-4" /> Adicionar Material
+                                        <button type="button" onClick={() => appendBom({ insumoId: '', qtyPerUnit: 1, appliesTo: 'PRODUCT' })} className="text-[10px] font-bold text-white bg-indigo-600 px-3 py-1.5 rounded-lg hover:bg-indigo-700 transition-all shadow-sm flex items-center gap-1.5 active:scale-95">
+                                            <Plus className="w-3 h-3" /> Adicionar
                                         </button>
                                     </div>
 
                                     <div className="space-y-3">
                                         {bomFields.map((field, index) => (
-                                            <div key={field.id} className="flex gap-3 items-start p-3 bg-gray-50 rounded-xl border border-gray-100 hover:border-indigo-200 hover:bg-white hover:shadow-md transition-all group/item">
+                                            <div key={field.id} className="flex gap-2 items-start p-2 bg-gray-50 rounded-lg border border-gray-100 hover:border-indigo-200 hover:bg-white hover:shadow-sm transition-all group/item">
                                                 <div className="flex-1">
-                                                    <label className="text-[10px] uppercase font-bold text-gray-400 mb-1 block">Material</label>
-                                                    <select {...register(`bomItems.${index}.insumoId`)} className="w-full bg-white h-9 px-3 rounded-lg border border-gray-200 outline-none focus:border-indigo-500 font-medium text-xs">
-                                                        <option value="">Selecione um material...</option>
-                                                        {insumos.map(i => <option key={i.id} value={i.id}>{i.name} ({i.unit}) - R$ {Number(i.price).toFixed(2)}</option>)}
+                                                    <label className="text-[9px] uppercase font-bold text-gray-400 mb-0.5 block">Material</label>
+                                                    <select {...register(`bomItems.${index}.insumoId`)} className="w-full bg-white h-7 px-2 rounded border border-gray-200 outline-none focus:border-indigo-500 font-medium text-xs">
+                                                        <option value="">Selecione...</option>
+                                                        {insumos.map(i => <option key={i.id} value={i.id}>{i.name}</option>)}
                                                     </select>
                                                 </div>
-                                                <div className="w-24">
-                                                    <label className="text-[10px] uppercase font-bold text-gray-400 mb-1 block">Qtd</label>
-                                                    <input type="number" step="0.001" {...register(`bomItems.${index}.qtyPerUnit`, { valueAsNumber: true })} className="w-full bg-white h-9 px-2 rounded-lg border border-gray-200 outline-none focus:border-indigo-500 text-center font-bold text-sm" />
+                                                <div className="w-20">
+                                                    <label className="text-[9px] uppercase font-bold text-gray-400 mb-0.5 block">Qtd</label>
+                                                    <input type="number" step="0.001" {...register(`bomItems.${index}.qtyPerUnit`, { valueAsNumber: true })} className="w-full bg-white h-7 px-1 rounded border border-gray-200 outline-none focus:border-indigo-500 text-center font-bold text-xs" />
                                                 </div>
-                                                <div className="w-36">
-                                                    <label className="text-[10px] uppercase font-bold text-gray-400 mb-1 block">Aplicar em</label>
-                                                    <select {...register(`bomItems.${index}.appliesTo`)} className="w-full bg-white h-9 px-2 rounded-lg border border-gray-200 outline-none focus:border-indigo-500 font-medium text-xs">
+                                                <div className="w-28">
+                                                    <label className="text-[9px] uppercase font-bold text-gray-400 mb-0.5 block">Aplicar</label>
+                                                    <select {...register(`bomItems.${index}.appliesTo`)} className="w-full bg-white h-7 px-1 rounded border border-gray-200 outline-none focus:border-indigo-500 font-medium text-[10px]">
                                                         <option value="PRODUCT">Produto</option>
                                                         <option value="PACKAGING">Embalagem</option>
                                                     </select>
                                                 </div>
-                                                <button type="button" onClick={() => removeBom(index)} className="mt-6 text-gray-300 hover:text-rose-500 p-1.5 rounded-lg transition-colors"><Trash2 className="w-4 h-4" /></button>
+                                                <button type="button" onClick={() => removeBom(index)} className="mt-4 text-gray-300 hover:text-rose-500 p-1 rounded hover:bg-rose-50 transition-colors"><Trash2 className="w-4 h-4" /></button>
                                             </div>
                                         ))}
                                         {bomFields.length === 0 && (
@@ -318,36 +315,35 @@ const Products: React.FC = () => {
                                 </section>
 
                                 {/* SECTION: PROCESSO */}
-                                <section className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm relative overflow-hidden group hover:border-indigo-100 transition-colors">
-                                    <div className="flex items-center justify-between mb-8">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-lg shadow-lg shadow-indigo-200">3</div>
+                                <section className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm relative overflow-hidden">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-6 h-6 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-md">3</div>
                                             <div>
-                                                <h4 className="text-lg font-bold text-gray-900">Processo de Produção</h4>
-                                                <p className="text-xs text-gray-500 font-medium">Quanto tempo leva cada etapa de produção.</p>
+                                                <h4 className="text-sm font-bold text-gray-900">Processo de Produção</h4>
                                             </div>
                                         </div>
-                                        <button type="button" onClick={() => appendStep({ name: '', setupMinutes: 0, unitMinutes: 0 })} className="text-xs font-bold text-white bg-indigo-600 px-4 py-2.5 rounded-xl hover:bg-indigo-700 transition-all shadow-md shadow-indigo-200 flex items-center gap-2 active:scale-95">
-                                            <Plus className="w-4 h-4" /> Adicionar Etapa
+                                        <button type="button" onClick={() => appendStep({ name: '', setupMinutes: 0, unitMinutes: 0 })} className="text-[10px] font-bold text-white bg-indigo-600 px-3 py-1.5 rounded-lg hover:bg-indigo-700 transition-all shadow-sm flex items-center gap-1.5 active:scale-95">
+                                            <Plus className="w-3 h-3" /> Adicionar
                                         </button>
                                     </div>
 
                                     <div className="space-y-3">
                                         {stepFields.map((field, index) => (
-                                            <div key={field.id} className="flex gap-3 items-start p-3 bg-gray-50 rounded-xl border border-gray-100 hover:border-indigo-200 hover:bg-white hover:shadow-md transition-all group/item">
+                                            <div key={field.id} className="flex gap-2 items-start p-2 bg-gray-50 rounded-lg border border-gray-100 hover:border-indigo-200 hover:bg-white hover:shadow-sm transition-all group/item">
                                                 <div className="flex-1">
-                                                    <label className="text-[10px] uppercase font-bold text-gray-400 mb-1 block">Nome da Etapa</label>
-                                                    <input {...register(`steps.${index}.name`)} className="w-full bg-white h-9 px-3 rounded-lg border border-gray-200 outline-none focus:border-indigo-500 font-medium text-sm" placeholder="Ex: Impressão, Corte..." />
+                                                    <label className="text-[9px] uppercase font-bold text-gray-400 mb-0.5 block">Nome da Etapa</label>
+                                                    <input {...register(`steps.${index}.name`)} className="w-full bg-white h-7 px-2 rounded border border-gray-200 outline-none focus:border-indigo-500 font-medium text-xs" placeholder="Ex: Impressão" />
                                                 </div>
-                                                <div className="w-24">
-                                                    <label className="text-[10px] uppercase font-bold text-gray-400 mb-1 block">Setup (min)</label>
-                                                    <input type="number" {...register(`steps.${index}.setupMinutes`, { valueAsNumber: true })} className="w-full bg-white h-9 px-2 rounded-lg border border-gray-200 outline-none focus:border-indigo-500 text-center font-bold text-sm" />
+                                                <div className="w-20">
+                                                    <label className="text-[9px] uppercase font-bold text-gray-400 mb-0.5 block">Setup</label>
+                                                    <input type="number" {...register(`steps.${index}.setupMinutes`, { valueAsNumber: true })} className="w-full bg-white h-7 px-1 rounded border border-gray-200 outline-none focus:border-indigo-500 text-center font-bold text-xs" />
                                                 </div>
-                                                <div className="w-24">
-                                                    <label className="text-[10px] uppercase font-bold text-gray-400 mb-1 block">Unitário (min)</label>
-                                                    <input type="number" {...register(`steps.${index}.unitMinutes`, { valueAsNumber: true })} className="w-full bg-white h-9 px-2 rounded-lg border border-gray-200 outline-none focus:border-indigo-500 text-center font-bold text-sm" />
+                                                <div className="w-20">
+                                                    <label className="text-[9px] uppercase font-bold text-gray-400 mb-0.5 block">Unit</label>
+                                                    <input type="number" {...register(`steps.${index}.unitMinutes`, { valueAsNumber: true })} className="w-full bg-white h-7 px-1 rounded border border-gray-200 outline-none focus:border-indigo-500 text-center font-bold text-xs" />
                                                 </div>
-                                                <button type="button" onClick={() => removeStep(index)} className="mt-6 text-gray-300 hover:text-rose-500 p-1.5 rounded-lg transition-colors"><Trash2 className="w-4 h-4" /></button>
+                                                <button type="button" onClick={() => removeStep(index)} className="mt-4 text-gray-300 hover:text-rose-500 p-1 rounded hover:bg-rose-50 transition-colors"><Trash2 className="w-4 h-4" /></button>
                                             </div>
                                         ))}
                                         {stepFields.length === 0 && (
@@ -361,53 +357,50 @@ const Products: React.FC = () => {
                                 </section>
 
                                 {/* SECTION: PRECIFICAÇÃO */}
-                                <section className=" rounded-3xl overflow-hidden shadow-xl border border-gray-100 bg-white">
-                                    <div className="p-6 bg-gradient-to-r from-gray-900 to-gray-800 text-white flex items-center justify-between">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-xl bg-indigo-500 text-white flex items-center justify-center font-bold text-lg shadow-lg shadow-indigo-500/50">4</div>
+                                <section className=" rounded-2xl overflow-hidden shadow-lg border border-gray-100 bg-white">
+                                    <div className="p-4 bg-gradient-to-r from-gray-900 to-gray-800 text-white flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-6 h-6 rounded-lg bg-indigo-500 text-white flex items-center justify-center font-bold text-xs shadow-md">4</div>
                                             <div>
-                                                <h4 className="text-lg font-bold">Precificação Final</h4>
-                                                <p className="text-xs text-gray-400 font-medium opacity-80">Custos calculados automaticamente.</p>
+                                                <h4 className="text-sm font-bold">Precificação Final</h4>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div className="p-8">
-                                        <div className="grid grid-cols-2 gap-8 mb-8">
-                                            <div className="p-5 bg-indigo-50/50 rounded-2xl border border-indigo-50">
-                                                <p className="text-[10px] uppercase font-bold text-indigo-400 mb-2 tracking-wider">Custo de Materiais</p>
-                                                <p className="text-3xl font-bold text-gray-900">R$ {matCost.toFixed(2)}</p>
-                                                <p className="text-xs text-gray-400 mt-1">Soma de todos os insumos</p>
+                                    <div className="p-4">
+                                        <div className="grid grid-cols-2 gap-4 mb-4">
+                                            <div className="p-3 bg-indigo-50/50 rounded-xl border border-indigo-50">
+                                                <p className="text-[9px] uppercase font-bold text-indigo-400 mb-1 tracking-wider">Materiais</p>
+                                                <p className="text-lg font-bold text-gray-900">R$ {matCost.toFixed(2)}</p>
                                             </div>
-                                            <div className="p-5 bg-indigo-50/50 rounded-2xl border border-indigo-50">
-                                                <p className="text-[10px] uppercase font-bold text-indigo-400 mb-2 tracking-wider">Custo de Mão de Obra</p>
-                                                <p className="text-3xl font-bold text-gray-900">R$ {laborCost.toFixed(2)}</p>
-                                                <p className="text-xs text-gray-400 mt-1">Baseado no seu custo/hora</p>
+                                            <div className="p-3 bg-indigo-50/50 rounded-xl border border-indigo-50">
+                                                <p className="text-[9px] uppercase font-bold text-indigo-400 mb-1 tracking-wider">Mão de Obra</p>
+                                                <p className="text-lg font-bold text-gray-900">R$ {laborCost.toFixed(2)}</p>
                                             </div>
                                         </div>
 
-                                        <div className="flex items-center gap-8 pt-8 border-t border-gray-100">
+                                        <div className="flex items-center gap-6 pt-4 border-t border-gray-100">
                                             <div>
-                                                <p className="text-xs uppercase font-bold text-gray-400 mb-1">Custo Total de Produção</p>
-                                                <p className="text-2xl font-bold text-gray-600">R$ {totalCost.toFixed(2)}</p>
+                                                <p className="text-[10px] uppercase font-bold text-gray-400 mb-0.5">Total</p>
+                                                <p className="text-xl font-bold text-gray-600">R$ {totalCost.toFixed(2)}</p>
                                             </div>
-                                            <div className="flex-1 bg-gray-50 rounded-2xl p-4 flex items-center justify-between border border-gray-100">
-                                                <span className="text-sm font-bold text-gray-500 uppercase tracking-wider">Margem de Lucro (%)</span>
-                                                <div className="flex items-center gap-2">
+                                            <div className="flex-1 bg-gray-50 rounded-xl p-3 flex items-center justify-between border border-gray-100">
+                                                <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Margem (%)</span>
+                                                <div className="flex items-center gap-1">
                                                     <input
                                                         type="number"
-                                                        className="text-right text-2xl font-black text-indigo-600 bg-transparent border-b-2 border-indigo-200 w-24 focus:outline-none focus:border-indigo-500 transition-colors"
+                                                        className="text-right text-lg font-black text-indigo-600 bg-transparent border-b-2 border-indigo-200 w-16 focus:outline-none focus:border-indigo-500 transition-colors"
                                                         {...register('profitMargin', { valueAsNumber: true })}
                                                     />
-                                                    <span className="text-indigo-400 font-bold">%</span>
+                                                    <span className="text-indigo-400 font-bold text-sm">%</span>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div className="mt-8 bg-indigo-600 p-8 rounded-3xl shadow-xl shadow-indigo-200 text-center relative overflow-hidden flex flex-col items-center justify-center group cursor-default">
+                                        <div className="mt-4 bg-indigo-600 p-4 rounded-2xl shadow-lg shadow-indigo-200 text-center relative overflow-hidden flex flex-col items-center justify-center group cursor-default">
                                             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
-                                            <p className="text-sm uppercase tracking-[0.2em] text-indigo-100 mb-2 font-bold relative z-10">Preço Sugerido de Venda</p>
-                                            <p className="text-6xl font-black text-white tracking-tight relative z-10 group-hover:scale-105 transition-transform duration-300">
+                                            <p className="text-[10px] uppercase tracking-[0.2em] text-indigo-100 mb-1 font-bold relative z-10">Preço Sugerido</p>
+                                            <p className="text-3xl font-black text-white tracking-tight relative z-10 group-hover:scale-105 transition-transform duration-300">
                                                 R$ {suggestedPrice.toFixed(2)}
                                             </p>
                                         </div>
