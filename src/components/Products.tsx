@@ -35,6 +35,7 @@ const schema = z.object({
     profitMargin: z.number().min(0).max(100),
     taxRate: z.number().min(0).max(100).default(0),
     commissionRate: z.number().min(0).max(100).default(0),
+    marketplaceRate: z.number().min(0).max(100).default(0),
     sellingPrice: z.number().optional()
 });
 
@@ -55,6 +56,7 @@ const Products: React.FC = () => {
             profitMargin: 50, // Default margin (Net Target)
             taxRate: 4, // Default Simple Nacional approx
             commissionRate: 0,
+            marketplaceRate: 0,
             sellingPrice: 0
         }
     });
@@ -104,9 +106,10 @@ const Products: React.FC = () => {
         // Formula: Price = Cost / (1 - (Tax% + Fee% + NetProfit%))
         const taxDecimal = (watch('taxRate') || 0) / 100;
         const commDecimal = (watch('commissionRate') || 0) / 100;
+        const marketDecimal = (watch('marketplaceRate') || 0) / 100;
         const profitDecimal = (watchedMargin || 0) / 100;
 
-        const variableCostsRate = taxDecimal + commDecimal + profitDecimal;
+        const variableCostsRate = taxDecimal + commDecimal + marketDecimal + profitDecimal;
 
         // Prevent division by zero or negative divisor if overheads > 100%
         const divisor = 1 - variableCostsRate;
@@ -114,12 +117,13 @@ const Products: React.FC = () => {
 
         const taxValue = suggestedPrice * taxDecimal;
         const commValue = suggestedPrice * commDecimal;
+        const marketValue = suggestedPrice * marketDecimal;
         const netProfitValue = suggestedPrice * profitDecimal;
 
-        return { matCost, laborCost, totalCost, suggestedPrice, hourlyRate: hourlyLaborRate, taxValue, commValue, netProfitValue };
+        return { matCost, laborCost, totalCost, suggestedPrice, hourlyRate: hourlyLaborRate, taxValue, commValue, marketValue, netProfitValue };
     };
 
-    const { matCost, laborCost, totalCost, suggestedPrice, hourlyRate, taxValue, commValue, netProfitValue } = calculateTotals();
+    const { matCost, laborCost, totalCost, suggestedPrice, hourlyRate, taxValue, commValue, marketValue, netProfitValue } = calculateTotals();
 
     const onSubmit = async (data: FormData) => {
         try {
@@ -132,6 +136,7 @@ const Products: React.FC = () => {
                 profit_margin: data.profitMargin,
                 tax_rate: data.taxRate,
                 commission_rate: data.commissionRate,
+                marketplace_rate: data.marketplaceRate,
                 bomItems: data.bomItems,
                 steps: data.steps
             };
@@ -161,6 +166,7 @@ const Products: React.FC = () => {
         setValue('profitMargin', item.profit_margin || 50);
         setValue('taxRate', item.tax_rate || 0);
         setValue('commissionRate', item.commission_rate || 0);
+        setValue('marketplaceRate', item.marketplace_rate || 0);
 
         setValue('bomItems', (item.bomItems || []).map(b => ({
             insumoId: b.insumoId,
@@ -400,7 +406,7 @@ const Products: React.FC = () => {
                                             </div>
                                             <div className="py-1 px-1 bg-rose-50 rounded border border-rose-100">
                                                 <p className="text-[7px] uppercase font-bold text-rose-400 mb-0 tracking-wider truncate">Taxas/Imp</p>
-                                                <p className="text-xs font-bold text-rose-600">R$ {(taxValue + commValue).toFixed(2)}</p>
+                                                <p className="text-xs font-bold text-rose-600">R$ {(taxValue + commValue + marketValue).toFixed(2)}</p>
                                             </div>
                                             <div className="py-1 px-1 bg-emerald-50 rounded border border-emerald-100">
                                                 <p className="text-[7px] uppercase font-bold text-emerald-500 mb-0 tracking-wider truncate">Lucro Real</p>
@@ -408,7 +414,7 @@ const Products: React.FC = () => {
                                             </div>
                                         </div>
 
-                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2">
+                                        <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-2">
                                             <div className="border border-gray-100 rounded p-1 bg-gray-50">
                                                 <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider block mb-0.5">Margem Líquida</span>
                                                 <div className="flex items-center gap-1">
@@ -438,6 +444,17 @@ const Products: React.FC = () => {
                                                         type="number"
                                                         className="flex-1 min-w-0 bg-transparent text-sm font-black text-gray-600 outline-none border-none p-0"
                                                         {...register('commissionRate', { valueAsNumber: true })}
+                                                    />
+                                                    <span className="text-gray-400 font-bold text-[10px]">%</span>
+                                                </div>
+                                            </div>
+                                            <div className="border border-gray-100 rounded p-1 bg-gray-50">
+                                                <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider block mb-0.5">Marketplace</span>
+                                                <div className="flex items-center gap-1">
+                                                    <input
+                                                        type="number"
+                                                        className="flex-1 min-w-0 bg-transparent text-sm font-black text-gray-600 outline-none border-none p-0"
+                                                        {...register('marketplaceRate', { valueAsNumber: true })}
                                                     />
                                                     <span className="text-gray-400 font-bold text-[10px]">%</span>
                                                 </div>

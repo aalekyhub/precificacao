@@ -54,6 +54,7 @@ export interface Product {
   profit_margin?: number;
   tax_rate?: number;
   commission_rate?: number;
+  marketplace_rate?: number;
 }
 
 export type ContactType = 'Cliente' | 'Fornecedor';
