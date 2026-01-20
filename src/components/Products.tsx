@@ -273,7 +273,7 @@ const Products: React.FC = () => {
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
-                                        <div className="md:col-span-8">
+                                        <div className="md:col-span-6">
                                             <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Nome do Produto</label>
                                             <input {...register('name')} className="w-full px-3 h-8 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 transition-all font-medium text-gray-900 text-xs" placeholder="Ex: Caderno Personalizado A5" />
                                             {errors.name && <p className="text-rose-500 text-[10px] mt-0.5 ml-1 font-bold">{errors.name.message}</p>}
@@ -287,7 +287,7 @@ const Products: React.FC = () => {
                                             <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Unidade</label>
                                             <input {...register('unit')} className="w-full px-3 h-8 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 transition-all font-medium text-gray-900 text-xs text-center" placeholder="UN" />
                                         </div>
-                                        <div className="md:col-span-10">
+                                        <div className="md:col-span-12">
                                             <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Descrição</label>
                                             <input {...register('description')} className="w-full px-3 h-8 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 transition-all font-medium text-gray-900 text-xs" placeholder="Breve descrição do produto..." />
                                         </div>
@@ -408,35 +408,35 @@ const Products: React.FC = () => {
                                             </div>
                                         </div>
 
-                                        <div className="space-y-1 mb-2">
-                                            <div className="flex bg-gray-50 rounded p-1 items-center justify-between border border-gray-100 h-7">
-                                                <span className="text-[9px] font-bold text-gray-500 uppercase tracking-wider pl-1">Margem Líquida</span>
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2">
+                                            <div className="border border-gray-100 rounded p-1 bg-gray-50">
+                                                <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider block mb-0.5">Margem Líquida</span>
                                                 <div className="flex items-center gap-1">
                                                     <input
                                                         type="number"
-                                                        className="text-right text-xs font-black text-indigo-600 bg-transparent border-b border-indigo-200 w-10 focus:outline-none focus:border-indigo-500"
+                                                        className="flex-1 min-w-0 bg-transparent text-sm font-black text-indigo-600 outline-none border-none p-0"
                                                         {...register('profitMargin', { valueAsNumber: true })}
                                                     />
                                                     <span className="text-indigo-400 font-bold text-[10px]">%</span>
                                                 </div>
                                             </div>
-                                            <div className="flex bg-gray-50 rounded p-1 items-center justify-between border border-gray-100 h-7">
-                                                <span className="text-[9px] font-bold text-gray-500 uppercase tracking-wider pl-1">Impostos (NF)</span>
+                                            <div className="border border-gray-100 rounded p-1 bg-gray-50">
+                                                <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider block mb-0.5">Impostos (NF)</span>
                                                 <div className="flex items-center gap-1">
                                                     <input
                                                         type="number"
-                                                        className="text-right text-xs font-black text-gray-600 bg-transparent border-b border-gray-200 w-10 focus:outline-none focus:border-indigo-500"
+                                                        className="flex-1 min-w-0 bg-transparent text-sm font-black text-gray-600 outline-none border-none p-0"
                                                         {...register('taxRate', { valueAsNumber: true })}
                                                     />
                                                     <span className="text-gray-400 font-bold text-[10px]">%</span>
                                                 </div>
                                             </div>
-                                            <div className="flex bg-gray-50 rounded p-1 items-center justify-between border border-gray-100 h-7">
-                                                <span className="text-[9px] font-bold text-gray-500 uppercase tracking-wider pl-1">Taxas (MktPlace/Cartão)</span>
+                                            <div className="border border-gray-100 rounded p-1 bg-gray-50">
+                                                <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider block mb-0.5">Taxas (Cartão)</span>
                                                 <div className="flex items-center gap-1">
                                                     <input
                                                         type="number"
-                                                        className="text-right text-xs font-black text-gray-600 bg-transparent border-b border-gray-200 w-10 focus:outline-none focus:border-indigo-500"
+                                                        className="flex-1 min-w-0 bg-transparent text-sm font-black text-gray-600 outline-none border-none p-0"
                                                         {...register('commissionRate', { valueAsNumber: true })}
                                                     />
                                                     <span className="text-gray-400 font-bold text-[10px]">%</span>
