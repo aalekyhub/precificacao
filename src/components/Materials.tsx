@@ -56,6 +56,7 @@ const Materials: React.FC = () => {
     }, [purchasePrice, packQuantity, setValue]);
 
     const onSubmit = async (data: FormData) => {
+        console.log('Submitting Material Data:', data);
         try {
             if (editingId) {
                 await updateMaterial({ id: editingId, ...data } as Material);
@@ -75,6 +76,7 @@ const Materials: React.FC = () => {
     };
 
     const handleEdit = (item: Material) => {
+        console.log('Editing Material Item:', item);
         setEditingId(item.id);
         setValue('name', item.name);
         setValue('unit', item.unit);
