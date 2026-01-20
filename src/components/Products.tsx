@@ -272,7 +272,7 @@ const Products: React.FC = () => {
                                         <div className="flex items-center gap-3">
                                             <div className="w-6 h-6 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-md">2</div>
                                             <div>
-                                                <h4 className="text-sm font-bold text-gray-900">Materiais (Receita)</h4>
+                                                <h4 className="text-sm font-bold text-gray-900">Material de Produção</h4>
                                             </div>
                                         </div>
                                         <button type="button" onClick={() => appendBom({ insumoId: '', qtyPerUnit: 1, appliesTo: 'PRODUCT' })} className="text-[10px] font-bold text-white bg-indigo-600 px-3 py-1.5 rounded-lg hover:bg-indigo-700 transition-all shadow-sm flex items-center gap-1.5 active:scale-95">
