@@ -20,6 +20,9 @@ export interface Material {
   price: number;
   stock: number;
   min_stock: number;
+  purchase_price?: number;
+  pack_quantity?: number;
+  observations?: string;
 }
 
 // Product Composition Types

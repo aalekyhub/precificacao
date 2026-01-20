@@ -20,6 +20,9 @@ const schema = z.object({
     price: z.number().min(0, 'Preço deve ser maior ou igual a zero'),
     stock: z.number().min(0, 'Estoque deve ser maior ou igual a zero'),
     min_stock: z.number().min(0, 'Estoque mínimo deve ser maior ou igual a zero'),
+    purchase_price: z.number().optional(),
+    pack_quantity: z.number().optional(),
+    observations: z.string().optional(),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -30,22 +33,35 @@ const Materials: React.FC = () => {
     const [editingId, setEditingId] = useState<string | null>(null);
     const [search, setSearch] = useState('');
 
-    const { register, handleSubmit, reset, setValue, formState: { errors, isSubmitting } } = useForm<FormData>({
+    const { register, handleSubmit, reset, setValue, watch, formState: { errors, isSubmitting } } = useForm<FormData>({
         resolver: zodResolver(schema),
         defaultValues: {
             stock: 0,
             min_stock: 0,
-            unit: 'UN'
+            unit: 'UN',
+            purchase_price: 0,
+            pack_quantity: 1,
+            price: 0
         }
     });
+
+    const purchasePrice = watch('purchase_price');
+    const packQuantity = watch('pack_quantity');
+
+    useEffect(() => {
+        if (purchasePrice && packQuantity && packQuantity > 0) {
+            const calculated = purchasePrice / packQuantity;
+            setValue('price', parseFloat(calculated.toFixed(4)));
+        }
+    }, [purchasePrice, packQuantity, setValue]);
 
     const onSubmit = async (data: FormData) => {
         try {
             if (editingId) {
-                await updateMaterial({ id: editingId, ...data });
+                await updateMaterial({ id: editingId, ...data } as Material);
             } else {
                 // Pass empty ID for new creation, it will be stripped/ignored or handled
-                await addMaterial({ id: '', ...data });
+                await addMaterial({ id: '', ...data } as Material);
             }
             handleCloseModal();
         } catch (error) {
@@ -65,6 +81,9 @@ const Materials: React.FC = () => {
         setValue('price', Number(item.price));
         setValue('stock', Number(item.stock));
         setValue('min_stock', Number(item.min_stock));
+        setValue('purchase_price', Number(item.purchase_price || 0));
+        setValue('pack_quantity', Number(item.pack_quantity || 1));
+        setValue('observations', item.observations || '');
         setIsModalOpen(true);
     };
 
@@ -174,48 +193,89 @@ const Materials: React.FC = () => {
                                     {errors.name && <p className="text-rose-500 text-sm mt-1">{errors.name.message}</p>}
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block mb-2">Unidade</label>
-                                        <input
-                                            {...register('unit')}
-                                            className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm"
-                                            placeholder="UN, KG, MT"
-                                        />
-                                        {errors.unit && <p className="text-rose-500 text-sm mt-1">{errors.unit.message}</p>}
-                                    </div>
-                                    <div>
-                                        <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block mb-2">Custo Unitário (R$)</label>
-                                        <input
-                                            type="number" step="0.01"
-                                            {...register('price', { valueAsNumber: true })}
-                                            className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm"
-                                        />
-                                        {errors.price && <p className="text-rose-500 text-sm mt-1">{errors.price.message}</p>}
-                                    </div>
+                                <div>
+                                    <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block mb-2">Unidade de Compra</label>
+                                    <input
+                                        {...register('unit')}
+                                        className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm"
+                                        placeholder="Selecione uma unidade"
+                                        list="units"
+                                    />
+                                    <datalist id="units">
+                                        <option value="UN">Unidade</option>
+                                        <option value="KG">Quilograma</option>
+                                        <option value="MT">Metro</option>
+                                        <option value="CX">Caixa</option>
+                                        <option value="L">Litro</option>
+                                    </datalist>
+                                    {errors.unit && <p className="text-rose-500 text-sm mt-1">{errors.unit.message}</p>}
+                                </div>
+
+                                <div>
+                                    <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block mb-2">Preço Total de Compra</label>
+                                    <input
+                                        type="number" step="0.01"
+                                        {...register('purchase_price', { valueAsNumber: true })}
+                                        className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm"
+                                        placeholder="R$ 0,00"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block mb-2">Quantidade por Embalagem</label>
+                                    <input
+                                        type="number" step="0.01"
+                                        {...register('pack_quantity', { valueAsNumber: true })}
+                                        className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm"
+                                        placeholder="Quantidade por embalagem"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block mb-2">Preço Unitário (Calculado)</label>
+                                    <input
+                                        type="number" step="0.01"
+                                        {...register('price', { valueAsNumber: true })}
+                                        className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-gray-100 border border-gray-200 rounded-xl outline-none cursor-not-allowed"
+                                        readOnly
+                                        placeholder="Preço por unidade"
+                                    />
+                                    {errors.price && <p className="text-rose-500 text-sm mt-1">{errors.price.message}</p>}
+                                </div>
+
+                                <div>
+                                    <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block mb-2">Observações</label>
+                                    <textarea
+                                        {...register('observations')}
+                                        className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm resize-none h-24"
+                                        placeholder="Notas adicionais sobre o material"
+                                    />
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block mb-2">Estoque Atual</label>
+                                        <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block mb-2">Estoque</label>
                                         <input
                                             type="number" step="0.01"
                                             {...register('stock', { valueAsNumber: true })}
                                             className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm"
+                                            placeholder="0"
                                         />
                                         {errors.stock && <p className="text-rose-500 text-sm mt-1">{errors.stock.message}</p>}
                                     </div>
                                     <div>
-                                        <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block mb-2">Estoque Mínimo (Alerta)</label>
+                                        <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block mb-2">Estoque Mínimo</label>
                                         <input
                                             type="number" step="0.01"
                                             {...register('min_stock', { valueAsNumber: true })}
                                             className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-white border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 transition-all shadow-sm"
+                                            placeholder="0"
                                         />
                                     </div>
                                 </div>
-
                             </div>
+
+
 
                             <div className="pt-6 border-t flex justify-end gap-4">
                                 <button type="button" onClick={handleCloseModal} className="px-8 py-4 bg-white border-2 rounded-2xl font-bold text-gray-500 hover:bg-gray-50 transition-colors">Cancelar</button>
@@ -230,9 +290,9 @@ const Materials: React.FC = () => {
                             </div>
                         </form>
                     </div>
-                </div>
+                </div >
             )}
-        </div>
+        </div >
     );
 };
 
