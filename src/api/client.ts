@@ -6,6 +6,7 @@ const getTable = (path: string) => {
     if (path.includes('produtos')) return 'Produto';
     if (path.includes('canais')) return 'Canal';
     if (path.includes('fixos')) return 'FixosMensais';
+    if (path.includes('contacts')) return 'Contact';
     return '';
 };
 
