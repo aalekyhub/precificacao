@@ -96,15 +96,13 @@ export const useStoreData = () => {
 
     const addContact = async (c: Contact) => {
         try {
-            // Remove ID if it's a temp ID or let backend handle it? 
-            // The Client.ts generates UUID if missing. The UI generates a temp ID `Math.random...`.
-            // We should probably strip the ID if it looks temp, or just let Supabase/Client handle it.
-            // Client.ts: const id = body.id || uuidv4();
-            // If we send the temp ID, it will try to insert it. UUID validation might fail if it's not a UUID.
-            // Math.random().toString(36) is NOT a UUID.
-            // So we should sanitize the ID.
-            const { id, ...rest } = c;
-            await api.post('/contacts', rest);
+            // Generate a 4-digit ID (1000 to 9999)
+            const customId = Math.floor(1000 + Math.random() * 9000).toString();
+
+            // Overwrite the temporary ID from the UI with our custom ID
+            const contactWithId = { ...c, id: customId };
+
+            await api.post('/contacts', contactWithId);
             reloadContacts();
         } catch (e) {
             console.error(e);
