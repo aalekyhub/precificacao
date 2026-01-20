@@ -2,15 +2,15 @@
 import React, { useState, useEffect } from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import { Menu, Cloud, CloudOff } from 'lucide-react';
-import Dashboard from './components/Dashboard';
-import Products from './components/Products';
-import Materials from './components/Materials';
-import FixedCosts from './components/FixedCosts';
-import StoreSettings from './components/StoreSettings';
-import Contacts from './components/Contacts';
-import Quotes from './components/Quotes';
-import Sidebar from './components/Sidebar';
-import { useStoreData } from './hooks/useStoreData';
+import Dashboard from './src/components/Dashboard';
+import Products from './src/components/Products';
+import Materials from './src/components/Materials';
+import FixedCosts from './src/components/FixedCosts';
+import StoreSettings from './src/components/StoreSettings';
+import Contacts from './src/components/Contacts';
+import Quotes from './src/components/Quotes';
+import Sidebar from './src/components/Sidebar';
+import { useStoreData } from './src/hooks/useStoreData';
 import { supabase } from './src/lib/supabase';
 
 const App: React.FC = () => {
@@ -20,20 +20,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const checkHealth = async () => {
-      // Debug Config
-      const url = import.meta.env.VITE_SUPABASE_URL;
-      const key = import.meta.env.VITE_SUPABASE_ANON_KEY;
-      console.log("Supabase Config Check:", {
-        url,
-        keyPrefix: key ? key.substring(0, 5) : 'undefined'
-      });
-
-      const { error, count } = await supabase.from('Insumo').select('*', { count: 'exact', head: true });
-      if (error) {
-        console.error("Supabase Connection Error:", error.message, error.details, error.hint);
-      } else {
-        console.log("Supabase Connected. Insumo count:", count);
-      }
+      const { error } = await supabase.from('Insumo').select('count', { count: 'exact', head: true });
       setIsConnected(!error);
     };
 

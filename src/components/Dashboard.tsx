@@ -21,7 +21,7 @@ import {
   Receipt
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { api, Produto, Insumo, FixosMensais } from '../src/api/client';
+import { api, Produto, Insumo, FixosMensais } from '../api/client';
 
 
 
