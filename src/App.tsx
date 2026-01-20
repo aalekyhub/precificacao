@@ -8,7 +8,8 @@ import {
     Calculator,
     Menu,
     X,
-    FileText
+    FileText,
+    Settings as SettingsIcon
 } from 'lucide-react';
 import Materials from './components/Materials';
 import Products from './components/Products';
@@ -16,6 +17,7 @@ import Channels from './components/Channels';
 import FixedCosts from './components/FixedCosts';
 import PricingCalculator from './components/PricingCalculator';
 import Quotes from './components/Quotes';
+import Settings from './components/Settings';
 
 // Simple Dashboard Component
 const Dashboard = ({ onNavigate }: { onNavigate: (page: string) => void }) => (
@@ -71,6 +73,14 @@ const Dashboard = ({ onNavigate }: { onNavigate: (page: string) => void }) => (
                 <h3 className="text-xl font-bold text-gray-900">Custos Fixos</h3>
                 <p className="text-gray-400 text-sm mt-1">Despesas e horas produtivas</p>
             </button>
+
+            <button onClick={() => onNavigate('settings')} className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm text-left hover:shadow-xl transition-all group">
+                <div className="w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center text-gray-600 mb-4 group-hover:scale-110 transition-transform">
+                    <SettingsIcon className="w-6 h-6" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900">Configurações</h3>
+                <p className="text-gray-400 text-sm mt-1">Manual e Global</p>
+            </button>
         </div>
     </div>
 );
@@ -110,6 +120,7 @@ function App() {
                     <NavItem page="materials" icon={Package} label="Materiais" />
                     <NavItem page="channels" icon={ShoppingBag} label="Canais de Venda" />
                     <NavItem page="fixed-costs" icon={Building2} label="Custos Fixos" />
+                    <NavItem page="settings" icon={SettingsIcon} label="Configurações" />
                     <div className="pt-8 pb-4 px-6 text-xs font-bold text-gray-400 uppercase tracking-widest">Estratégia</div>
                     <NavItem page="calculator" icon={Calculator} label="Calculadora" />
                 </nav>
@@ -132,6 +143,7 @@ function App() {
                     <NavItem page="materials" icon={Package} label="Materiais" />
                     <NavItem page="channels" icon={ShoppingBag} label="Canais de Venda" />
                     <NavItem page="fixed-costs" icon={Building2} label="Custos Fixos" />
+                    <NavItem page="settings" icon={SettingsIcon} label="Configurações" />
                     <NavItem page="calculator" icon={Calculator} label="Calculadora" />
                 </div>
             )}
@@ -145,6 +157,7 @@ function App() {
                     {currentPage === 'products' && <Products />}
                     {currentPage === 'channels' && <Channels />}
                     {currentPage === 'fixed-costs' && <FixedCosts />}
+                    {currentPage === 'settings' && <Settings />}
                     {currentPage === 'calculator' && <PricingCalculator />}
                 </div>
             </main>
