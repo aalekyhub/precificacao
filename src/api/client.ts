@@ -43,8 +43,12 @@ export const api = {
         const table = getTable(path);
 
         // Ensure ID is present
-        const id = body.id || uuidv4();
-        const bodyWithId = { ...body, id };
+        // For Contacts, we expect the ID to be passed from the frontend (4 digits).
+        // For others, we generate a UUID if missing.
+        let id = body.id;
+        if (!id && table !== 'Contact') {
+            id = uuidv4();
+        }
 
         // Handle deep writes for Product manually since Supabase doesn't do deep inserts like Prisma
         if (table === 'Produto') {
