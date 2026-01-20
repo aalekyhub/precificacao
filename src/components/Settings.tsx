@@ -15,22 +15,19 @@ const Settings: React.FC = () => {
     const { storeConfig, setStoreConfig } = useStoreData();
     const [isSaving, setIsSaving] = useState(false);
 
-    // Local state for form to avoid debouncing issues on global state if we wanted, 
-    // but storeConfig updates are usually fast enough relative to blur.
-    // For simplicity, we'll control inputs directly with storeConfig values for now,
-    // or better, use local state and save on button click to be safe.
+    // Use strings for form data to allow empty states and decimals while typing
     const [formData, setFormData] = useState({
-        pro_labore: storeConfig.pro_labore,
-        work_days_per_month: storeConfig.work_days_per_month,
-        work_hours_per_day: storeConfig.work_hours_per_day
+        pro_labore: String(storeConfig.pro_labore || ''),
+        work_days_per_month: String(storeConfig.work_days_per_month || ''),
+        work_hours_per_day: String(storeConfig.work_hours_per_day || '')
     });
 
     // Sync when storeConfig loads initial data
     React.useEffect(() => {
         setFormData({
-            pro_labore: storeConfig.pro_labore,
-            work_days_per_month: storeConfig.work_days_per_month,
-            work_hours_per_day: storeConfig.work_hours_per_day
+            pro_labore: String(storeConfig.pro_labore || ''),
+            work_days_per_month: String(storeConfig.work_days_per_month || ''),
+            work_hours_per_day: String(storeConfig.work_hours_per_day || '')
         });
     }, [storeConfig]);
 
@@ -39,7 +36,9 @@ const Settings: React.FC = () => {
         try {
             await setStoreConfig({
                 id: storeConfig.id,
-                ...formData
+                pro_labore: parseFloat(formData.pro_labore) || 0,
+                work_days_per_month: parseFloat(formData.work_days_per_month) || 0,
+                work_hours_per_day: parseFloat(formData.work_hours_per_day) || 0
             });
             alert('Configurações salvas com sucesso!');
         } catch (error) {
@@ -49,6 +48,13 @@ const Settings: React.FC = () => {
             setIsSaving(false);
         }
     };
+
+    // Derived values for display
+    const proLaboreNum = parseFloat(formData.pro_labore) || 0;
+    const daysNum = parseFloat(formData.work_days_per_month) || 0;
+    const hoursNum = parseFloat(formData.work_hours_per_day) || 0;
+    const totalHours = daysNum * hoursNum;
+    const hourlyRate = totalHours > 0 ? proLaboreNum / totalHours : 0;
 
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -76,7 +82,7 @@ const Settings: React.FC = () => {
                                     type="number"
                                     className="w-full pl-12 pr-4 py-3 bg-white border border-indigo-100 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-gray-900 text-lg"
                                     value={formData.pro_labore}
-                                    onChange={e => setFormData({ ...formData, pro_labore: Number(e.target.value) })}
+                                    onChange={e => setFormData({ ...formData, pro_labore: e.target.value })}
                                 />
                             </div>
                             <p className="text-xs text-indigo-400 mt-2 font-medium">Define o valor base da sua hora de trabalho.</p>
@@ -91,7 +97,7 @@ const Settings: React.FC = () => {
                                         type="number"
                                         className="w-full pl-9 pr-3 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-indigo-500 font-bold text-gray-900"
                                         value={formData.work_days_per_month}
-                                        onChange={e => setFormData({ ...formData, work_days_per_month: Number(e.target.value) })}
+                                        onChange={e => setFormData({ ...formData, work_days_per_month: e.target.value })}
                                     />
                                 </div>
                             </div>
@@ -103,7 +109,7 @@ const Settings: React.FC = () => {
                                         type="number"
                                         className="w-full pl-9 pr-3 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-indigo-500 font-bold text-gray-900"
                                         value={formData.work_hours_per_day}
-                                        onChange={e => setFormData({ ...formData, work_hours_per_day: Number(e.target.value) })}
+                                        onChange={e => setFormData({ ...formData, work_hours_per_day: e.target.value })}
                                     />
                                 </div>
                             </div>
@@ -144,12 +150,12 @@ const Settings: React.FC = () => {
                         <div className="space-y-4">
                             <div className="flex justify-between items-center py-2 border-b border-gray-50">
                                 <span className="text-sm text-gray-500">Horas Mensais</span>
-                                <span className="font-bold text-gray-900">{formData.work_days_per_month * formData.work_hours_per_day}h</span>
+                                <span className="font-bold text-gray-900">{totalHours}h</span>
                             </div>
                             <div className="flex justify-between items-center py-2 border-b border-gray-50">
                                 <span className="text-sm text-gray-500">Valor Hora (Mão de Obra)</span>
                                 <span className="font-bold text-green-600 bg-green-50 px-2 py-1 rounded">
-                                    R$ {((formData.pro_labore / (formData.work_days_per_month * formData.work_hours_per_day)) || 0).toFixed(2)}
+                                    R$ {hourlyRate.toFixed(2)}
                                 </span>
                             </div>
                         </div>
