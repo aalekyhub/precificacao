@@ -106,9 +106,14 @@ const Products: React.FC = () => {
             // Save calculated price even if user didn't touch it? 
             // Better to respect the input if we add a manual override, but for now let's just save.
             const payload = {
-                ...data,
-                sellingPrice: suggestedPrice, // Auto-calculate for now (simplification)
-                profitMargin: data.profitMargin
+                name: data.name,
+                category: data.category,
+                unit: data.unit,
+                description: data.description,
+                selling_price: suggestedPrice,
+                profit_margin: data.profitMargin,
+                bomItems: data.bomItems,
+                steps: data.steps
             };
 
             if (editingId) {

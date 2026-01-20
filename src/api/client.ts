@@ -4,8 +4,8 @@ import { supabase } from '../lib/supabase';
 const getTable = (path: string) => {
     if (path.includes('insumos')) return 'Material'; // Legacy support
     if (path.includes('materials')) return 'Material';
-    if (path.includes('produtos')) return 'Product'; // Legacy
-    if (path.includes('products')) return 'Product';
+    if (path.includes('produtos')) return 'Produto'; // Legacy
+    if (path.includes('products')) return 'Produto';
     if (path.includes('canais')) return 'Canal';
     if (path.includes('fixos')) return 'FixedCost';
     if (path.includes('fixed-costs')) return 'FixedCost';
@@ -32,7 +32,8 @@ export const api = {
         let query = supabase.from(table).select('*');
 
         // Specific includes for Products
-        if (table === 'Product') {
+        // Specific includes for Products
+        if (table === 'Produto') {
             query = supabase.from(table).select('*, bomItems:BOMItem(*, insumo:Insumo(*)), steps:ProcessoEtapa(*)');
         }
 
@@ -59,7 +60,8 @@ export const api = {
         const bodyWithId = { ...body, id };
 
         // Handle deep writes for Product manually since Supabase doesn't do deep inserts like Prisma
-        if (table === 'Product') {
+        // Handle deep writes for Product manually since Supabase doesn't do deep inserts like Prisma
+        if (table === 'Produto') {
             const { bomItems, steps, ...productData } = bodyWithId;
 
             // 1. Create Product
@@ -89,7 +91,7 @@ export const api = {
         const table = getTable(path);
         const id = path.split('/').pop();
 
-        if (table === 'Product') {
+        if (table === 'Produto') {
             const { bomItems, steps, ...productData } = body;
 
             // 1. Update Product
