@@ -1,16 +1,16 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { 
-  Layers, 
-  Plus, 
-  Search, 
-  Trash2, 
-  Filter, 
-  X, 
-  ArrowRight, 
-  Edit3, 
-  Tag, 
-  Save, 
+import {
+  Layers,
+  Plus,
+  Search,
+  Trash2,
+  Filter,
+  X,
+  ArrowRight,
+  Edit3,
+  Tag,
+  Save,
   Info,
   Package,
   AlertTriangle,
@@ -71,11 +71,11 @@ const Materials: React.FC<MaterialsProps> = ({ materials, onAdd, onUpdate, onDel
       setFormState(material);
     } else {
       setEditingMaterial(null);
-      setFormState({ 
-        name: '', 
-        category: 'Outros', 
-        cost: 0, 
-        quantity: 1, 
+      setFormState({
+        name: '',
+        category: 'Outros',
+        cost: 0,
+        quantity: 1,
         unit: Unit.UN,
         observations: '',
         stock: 0,
@@ -87,7 +87,7 @@ const Materials: React.FC<MaterialsProps> = ({ materials, onAdd, onUpdate, onDel
 
   const handleSave = () => {
     if (!formState.name) return;
-    
+
     const materialData = {
       ...formState,
       id: editingMaterial ? editingMaterial.id : Math.random().toString(36).substr(2, 9),
@@ -124,7 +124,7 @@ const Materials: React.FC<MaterialsProps> = ({ materials, onAdd, onUpdate, onDel
           <h2 className="text-4xl font-bold text-gray-900 font-serif tracking-tight">Insumos e Materiais</h2>
           <p className="text-gray-500 mt-2 font-medium">Gerencie sua matéria-prima e controle de estoque com precisão.</p>
         </div>
-        <button 
+        <button
           onClick={() => openModal()}
           className="bg-gray-900 text-white px-8 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-gray-800 transition-all shadow-xl shadow-gray-200 hover:-translate-y-0.5 active:scale-95"
         >
@@ -144,9 +144,9 @@ const Materials: React.FC<MaterialsProps> = ({ materials, onAdd, onUpdate, onDel
                 <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">Pesquisar</label>
                 <div className="relative">
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                  <input 
-                    type="text" 
-                    placeholder="Nome do insumo..." 
+                  <input
+                    type="text"
+                    placeholder="Nome do insumo..."
                     className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border-transparent border-2 rounded-2xl text-sm focus:bg-white focus:border-rose-500 outline-none transition-all font-medium"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
@@ -155,7 +155,7 @@ const Materials: React.FC<MaterialsProps> = ({ materials, onAdd, onUpdate, onDel
               </div>
               <div>
                 <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">Categoria</label>
-                <select 
+                <select
                   className="w-full px-4 py-3.5 bg-gray-50 border-transparent border-2 rounded-2xl text-sm outline-none font-medium text-gray-600 cursor-pointer focus:bg-white focus:border-rose-500"
                   value={categoryFilter}
                   onChange={(e) => setCategoryFilter(e.target.value)}
@@ -170,14 +170,14 @@ const Materials: React.FC<MaterialsProps> = ({ materials, onAdd, onUpdate, onDel
           </div>
 
           <div className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm relative overflow-hidden group">
-             <div className="relative z-10">
-               <div className="bg-rose-500 w-12 h-12 rounded-2xl flex items-center justify-center mb-4 shadow-lg shadow-rose-200">
-                 <Package className="w-6 h-6 text-white" />
-               </div>
-               <h4 className="font-bold text-gray-400 text-xs uppercase tracking-widest">Valor em Estoque</h4>
-               <p className="text-3xl font-bold mt-1 text-gray-900">R$ {totalInvested.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
-             </div>
-             <div className="absolute -right-4 -bottom-4 w-32 h-32 bg-gray-50 rounded-full scale-150 blur-3xl opacity-50 group-hover:bg-rose-50 transition-colors duration-500"></div>
+            <div className="relative z-10">
+              <div className="bg-rose-500 w-12 h-12 rounded-2xl flex items-center justify-center mb-4 shadow-lg shadow-rose-200">
+                <Package className="w-6 h-6 text-white" />
+              </div>
+              <h4 className="font-bold text-gray-400 text-xs uppercase tracking-widest">Valor em Estoque</h4>
+              <p className="text-3xl font-bold mt-1 text-gray-900">R$ {totalInvested.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+            </div>
+            <div className="absolute -right-4 -bottom-4 w-32 h-32 bg-gray-50 rounded-full scale-150 blur-3xl opacity-50 group-hover:bg-rose-50 transition-colors duration-500"></div>
           </div>
         </div>
 
@@ -226,15 +226,15 @@ const Materials: React.FC<MaterialsProps> = ({ materials, onAdd, onUpdate, onDel
                           </span>
                         </td>
                         <td className="px-8 py-6">
-                           <div className="flex flex-col">
-                             <div className="flex items-center gap-2">
-                               <span className={`font-black text-base ${m.stock <= m.minStock ? 'text-rose-500' : 'text-gray-700'}`}>
-                                 {m.stock} {m.unit}
-                               </span>
-                               {m.stock <= m.minStock && <AlertTriangle className="w-4 h-4 text-rose-500" />}
-                             </div>
-                             {m.stock <= m.minStock && <span className="text-[9px] font-black text-rose-400 uppercase tracking-widest">Reposição Necessária</span>}
-                           </div>
+                          <div className="flex flex-col">
+                            <div className="flex items-center gap-2">
+                              <span className={`font-black text-base ${m.stock <= m.minStock ? 'text-rose-500' : 'text-gray-700'}`}>
+                                {m.stock} {m.unit}
+                              </span>
+                              {m.stock <= m.minStock && <AlertTriangle className="w-4 h-4 text-rose-500" />}
+                            </div>
+                            {m.stock <= m.minStock && <span className="text-[9px] font-black text-rose-400 uppercase tracking-widest">Reposição Necessária</span>}
+                          </div>
                         </td>
                         <td className="px-8 py-6">
                           <div className="flex flex-col">
@@ -291,21 +291,21 @@ const Materials: React.FC<MaterialsProps> = ({ materials, onAdd, onUpdate, onDel
               {/* Basic Info Group */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Nome do Material</label>
-                  <input 
-                    type="text" 
-                    className="w-full bg-gray-50 border-2 border-transparent rounded-2xl px-6 py-4 outline-none focus:bg-white focus:border-blue-500 transition-all font-medium text-gray-700"
+                  <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block">Nome do Material</label>
+                  <input
+                    type="text"
+                    className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm"
                     placeholder="Ex: Tecido Algodão Premium"
                     value={formState.name}
-                    onChange={(e) => setFormState({...formState, name: e.target.value})}
+                    onChange={(e) => setFormState({ ...formState, name: e.target.value })}
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Categoria</label>
-                  <select 
-                    className="w-full bg-gray-50 border-2 border-transparent rounded-2xl px-6 py-4 outline-none focus:bg-white focus:border-blue-500 transition-all font-medium text-gray-700 appearance-none"
+                  <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block">Categoria</label>
+                  <select
+                    className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm appearance-none"
                     value={formState.category}
-                    onChange={(e) => setFormState({...formState, category: e.target.value as MaterialCategory})}
+                    onChange={(e) => setFormState({ ...formState, category: e.target.value as MaterialCategory })}
                   >
                     {CATEGORIES.map(cat => (
                       <option key={cat} value={cat}>{cat}</option>
@@ -316,20 +316,20 @@ const Materials: React.FC<MaterialsProps> = ({ materials, onAdd, onUpdate, onDel
 
               {/* Unit Selection */}
               <div className="space-y-2">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Unidade de Compra</label>
+                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block">Unidade de Compra</label>
                 <div className="relative">
-                  <select 
-                    className="w-full bg-gray-50 border-2 border-transparent rounded-2xl px-6 py-4 outline-none focus:bg-white focus:border-blue-500 transition-all font-medium text-gray-700 appearance-none"
+                  <select
+                    className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm appearance-none"
                     value={formState.unit}
-                    onChange={(e) => setFormState({...formState, unit: e.target.value as Unit})}
+                    onChange={(e) => setFormState({ ...formState, unit: e.target.value as Unit })}
                   >
                     <option value="" disabled>Selecione uma unidade</option>
                     {Object.entries(UNIT_LABELS).map(([unit, label]) => (
                       <option key={unit} value={unit}>{label}</option>
                     ))}
                   </select>
-                  <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                    <Tag className="w-5 h-5" />
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                    <Tag className="w-4 h-4" />
                   </div>
                 </div>
               </div>
@@ -337,29 +337,29 @@ const Materials: React.FC<MaterialsProps> = ({ materials, onAdd, onUpdate, onDel
               {/* Price and Quantity Group */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
                 <div className="space-y-6">
-                   <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Preço Total Pago</label>
+                  <div className="space-y-2">
+                    <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block">Preço Total Pago</label>
                     <div className="relative">
-                      <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 font-bold">R$</div>
-                      <input 
-                        type="number" 
+                      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium text-sm">R$</div>
+                      <input
+                        type="number"
                         step="0.01"
-                        className="w-full bg-gray-50 border-2 border-transparent rounded-2xl pl-14 pr-6 py-4 outline-none focus:bg-white focus:border-blue-500 transition-all font-bold text-gray-800 text-lg"
+                        className="w-full text-sm font-medium text-gray-700 pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm"
                         placeholder="0,00"
                         value={formState.cost}
-                        onChange={(e) => setFormState({...formState, cost: parseFloat(e.target.value) || 0})}
+                        onChange={(e) => setFormState({ ...formState, cost: parseFloat(e.target.value) || 0 })}
                       />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Quantidade por Embalagem</label>
-                    <input 
-                      type="number" 
-                      className="w-full bg-gray-50 border-2 border-transparent rounded-2xl px-6 py-4 outline-none focus:bg-white focus:border-blue-500 transition-all font-bold text-gray-800"
+                    <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block">Quantidade por Embalagem</label>
+                    <input
+                      type="number"
+                      className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm"
                       value={formState.quantity}
-                      onChange={(e) => setFormState({...formState, quantity: parseFloat(e.target.value) || 1})}
+                      onChange={(e) => setFormState({ ...formState, quantity: parseFloat(e.target.value) || 1 })}
                     />
-                    <p className="text-[9px] text-gray-400 font-black uppercase tracking-wider ml-1 italic">
+                    <p className="text-[9px] text-gray-400 font-bold uppercase tracking-wider ml-1 italic">
                       Conversão: Qtd de {formState.unit} por embalagem
                     </p>
                   </div>
@@ -383,33 +383,33 @@ const Materials: React.FC<MaterialsProps> = ({ materials, onAdd, onUpdate, onDel
               {/* Observations */}
               <div className="space-y-2">
                 <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Observações do Insumo</label>
-                <textarea 
+                <textarea
                   rows={3}
                   className="w-full bg-gray-50 border-2 border-transparent rounded-[1.5rem] px-6 py-4 outline-none focus:bg-white focus:border-blue-500 transition-all font-medium text-gray-700 resize-none"
                   placeholder="Notas sobre qualidade, fornecedor ou armazenamento..."
                   value={formState.observations}
-                  onChange={(e) => setFormState({...formState, observations: e.target.value})}
+                  onChange={(e) => setFormState({ ...formState, observations: e.target.value })}
                 />
               </div>
 
               {/* Stock Group */}
               <div className="grid grid-cols-2 gap-6 pt-4">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Estoque Atual</label>
-                  <input 
-                    type="number" 
-                    className="w-full bg-gray-50 border-2 border-transparent rounded-2xl px-6 py-4 outline-none focus:bg-white focus:border-blue-500 transition-all font-bold text-gray-700"
+                  <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block">Estoque Atual</label>
+                  <input
+                    type="number"
+                    className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm"
                     value={formState.stock}
-                    onChange={(e) => setFormState({...formState, stock: parseFloat(e.target.value) || 0})}
+                    onChange={(e) => setFormState({ ...formState, stock: parseFloat(e.target.value) || 0 })}
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 text-rose-500">Aviso de Estoque Mínimo</label>
-                  <input 
-                    type="number" 
-                    className="w-full bg-rose-50/30 border-2 border-transparent rounded-2xl px-6 py-4 outline-none focus:bg-white focus:border-rose-500 transition-all font-bold text-rose-500"
+                  <label className="text-[11px] font-semibold text-rose-500 uppercase tracking-wider ml-1 block">Aviso de Estoque Mínimo</label>
+                  <input
+                    type="number"
+                    className="w-full text-sm font-medium text-rose-600 px-4 py-2.5 bg-rose-50 border border-rose-200 rounded-xl outline-none focus:bg-white focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 transition-all shadow-sm"
                     value={formState.minStock}
-                    onChange={(e) => setFormState({...formState, minStock: parseFloat(e.target.value) || 0})}
+                    onChange={(e) => setFormState({ ...formState, minStock: parseFloat(e.target.value) || 0 })}
                   />
                 </div>
               </div>
@@ -422,13 +422,13 @@ const Materials: React.FC<MaterialsProps> = ({ materials, onAdd, onUpdate, onDel
                 <span className="text-[10px] font-bold uppercase tracking-wider">Custo calculado em tempo real</span>
               </div>
               <div className="flex gap-4 w-full sm:w-auto">
-                <button 
+                <button
                   onClick={() => setIsModalOpen(false)}
                   className="flex-1 sm:flex-none px-8 py-4 bg-white border-2 border-gray-200 rounded-2xl text-sm font-bold text-gray-500 hover:bg-gray-100 transition-all active:scale-95"
                 >
                   Cancelar
                 </button>
-                <button 
+                <button
                   onClick={handleSave}
                   disabled={!formState.name}
                   className="flex-1 sm:flex-none px-10 py-4 bg-blue-600 text-white rounded-2xl text-sm font-bold flex items-center justify-center gap-2 hover:bg-blue-700 shadow-xl shadow-blue-100 transition-all disabled:opacity-50 active:scale-95"

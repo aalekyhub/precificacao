@@ -185,25 +185,25 @@ const Products: React.FC<ProductsProps> = ({ products, materials, fixedCosts, st
 
               <div className="space-y-12">
                 <section className="space-y-6">
-                  <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">INFORMAÇÕES BÁSICAS</h4>
+                  <h4 className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-3">INFORMAÇÕES BÁSICAS</h4>
                   <input
                     type="text"
-                    placeholder="NOME DO PRODUTO"
-                    className="w-full bg-gray-50/50 border-2 border-gray-100 rounded-2xl px-8 py-5 outline-none focus:bg-white focus:border-rose-500 transition-all font-bold text-gray-800 text-lg shadow-inner"
+                    placeholder="Nome do Produto"
+                    className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 transition-all shadow-sm"
                     value={newProduct.name}
                     onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
                   />
                 </section>
 
                 <section className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">MATERIAIS</h4>
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">MATERIAIS</h4>
                     <select
-                      className="text-[10px] font-black uppercase tracking-widest bg-gray-50 border-2 border-gray-100 rounded-xl px-4 py-2"
+                      className="text-[10px] font-bold uppercase tracking-wider bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 text-gray-600 outline-none focus:border-rose-500 cursor-pointer"
                       onChange={(e) => addMaterialToProduct(e.target.value)}
                       value=""
                     >
-                      <option value="" disabled>+ Adicionar Material</option>
+                      <option value="" disabled>+ Adicionar</option>
                       {materials.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
                     </select>
                   </div>
@@ -214,8 +214,7 @@ const Products: React.FC<ProductsProps> = ({ products, materials, fixedCosts, st
                         <div key={pm.materialId} className="flex items-center gap-4 bg-gray-50/30 p-4 rounded-2xl border border-gray-100">
                           <span className="flex-1 font-bold text-gray-700">{m?.name}</span>
                           <input
-                            type="number"
-                            className="w-20 bg-white border border-gray-200 rounded-lg px-2 py-1 text-center font-bold"
+                            className="w-20 bg-white border border-gray-200 rounded-lg px-2 py-1 text-center text-sm font-medium"
                             value={pm.quantityUsed}
                             onChange={(e) => {
                               const updated = [...(newProduct.materials || [])];
@@ -232,23 +231,23 @@ const Products: React.FC<ProductsProps> = ({ products, materials, fixedCosts, st
 
                 <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                    <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 flex items-center gap-2">
                       <Clock className="w-3 h-3" /> TEMPO DE PRODUÇÃO (HRS)
                     </label>
                     <input
                       type="number" step="0.1"
-                      className="w-full bg-gray-50/50 border-2 border-gray-100 rounded-2xl px-6 py-4 outline-none focus:border-rose-500 font-bold"
+                      className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 transition-all shadow-sm"
                       value={newProduct.laborHours}
                       onChange={(e) => setNewProduct({ ...newProduct, laborHours: parseFloat(e.target.value) || 0 })}
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                    <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 flex items-center gap-2">
                       <Printer className="w-3 h-3" /> PÁGINAS IMPRESSAS
                     </label>
                     <input
                       type="number"
-                      className="w-full bg-gray-50/50 border-2 border-gray-100 rounded-2xl px-6 py-4 outline-none focus:border-rose-500 font-bold"
+                      className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 transition-all shadow-sm"
                       value={newProduct.printedPages}
                       onChange={(e) => setNewProduct({ ...newProduct, printedPages: parseInt(e.target.value) || 0 })}
                     />
@@ -256,10 +255,10 @@ const Products: React.FC<ProductsProps> = ({ products, materials, fixedCosts, st
                 </section>
 
                 <section className="space-y-2">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">MARGEM DE LUCRO (%)</label>
+                  <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">MARGEM DE LUCRO (%)</label>
                   <input
                     type="number"
-                    className="w-full bg-gray-50/50 border-2 border-gray-100 rounded-2xl px-6 py-4 outline-none focus:border-rose-500 font-bold"
+                    className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 transition-all shadow-sm"
                     value={newProduct.markup}
                     onChange={(e) => setNewProduct({ ...newProduct, markup: parseFloat(e.target.value) || 0 })}
                   />

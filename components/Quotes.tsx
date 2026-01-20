@@ -1,14 +1,14 @@
 
 import React, { useState, useMemo } from 'react';
-import { 
-  FileText, 
-  Plus, 
-  Trash2, 
-  X, 
-  Save, 
-  User, 
-  Package, 
-  DollarSign, 
+import {
+  FileText,
+  Plus,
+  Trash2,
+  X,
+  Save,
+  User,
+  Package,
+  DollarSign,
   Calendar,
   CheckCircle2,
   Clock,
@@ -109,7 +109,7 @@ const Quotes: React.FC<QuotesProps> = ({ quotes, products, contacts, materials, 
           <h2 className="text-4xl font-bold text-gray-900 font-serif tracking-tight">Orçamentos</h2>
           <p className="text-gray-500 mt-2 font-medium">Transforme cotações em vendas de sucesso.</p>
         </div>
-        <button 
+        <button
           onClick={() => setIsModalOpen(true)}
           className="bg-rose-500 text-white px-8 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-rose-600 transition-all shadow-xl shadow-rose-100 active:scale-95"
         >
@@ -206,12 +206,12 @@ const Quotes: React.FC<QuotesProps> = ({ quotes, products, contacts, materials, 
 
               <div className="space-y-10">
                 {/* Seleção de Cliente */}
-                <div className="space-y-4">
-                  <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest flex items-center gap-2"><User className="w-3 h-3" /> Selecionar Cliente</label>
-                  <select 
-                    className="w-full bg-gray-50 border-2 border-transparent rounded-2xl px-6 py-4 font-bold text-gray-700 outline-none focus:bg-white focus:border-rose-500"
+                <div className="space-y-2">
+                  <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider flex items-center gap-2"><User className="w-3 h-3" /> Selecionar Cliente</label>
+                  <select
+                    className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 transition-all shadow-sm"
                     value={newQuote.clientId}
-                    onChange={(e) => setNewQuote({...newQuote, clientId: e.target.value})}
+                    onChange={(e) => setNewQuote({ ...newQuote, clientId: e.target.value })}
                   >
                     <option value="">Escolha um cliente da agenda...</option>
                     {contacts.filter(c => c.type === 'Cliente').map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -221,13 +221,13 @@ const Quotes: React.FC<QuotesProps> = ({ quotes, products, contacts, materials, 
                 {/* Adição de Itens */}
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest flex items-center gap-2"><Package className="w-3 h-3" /> Adicionar Produtos</label>
-                    <select 
-                      className="text-[10px] font-black uppercase text-indigo-600 bg-indigo-50 px-4 py-2 rounded-xl outline-none"
+                    <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider flex items-center gap-2"><Package className="w-3 h-3" /> Adicionar Produtos</label>
+                    <select
+                      className="text-[11px] font-bold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg outline-none uppercase tracking-wide cursor-pointer hover:bg-indigo-100 transition-colors"
                       onChange={(e) => handleAddItem(e.target.value)}
                       value=""
                     >
-                      <option value="">+ Selecionar Produto</option>
+                      <option value="">+ Selecionar</option>
                       {products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                     </select>
                   </div>
@@ -238,22 +238,22 @@ const Quotes: React.FC<QuotesProps> = ({ quotes, products, contacts, materials, 
                         <div key={idx} className="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl border border-gray-100">
                           <span className="flex-1 font-bold text-gray-700">{prod?.name}</span>
                           <div className="flex items-center gap-2">
-                             <input 
-                                type="number" 
-                                className="w-20 bg-white border rounded-lg px-2 py-1 text-center font-bold"
-                                value={item.quantity}
-                                onChange={(e) => {
-                                  const updated = [...(newQuote.items || [])];
-                                  updated[idx].quantity = parseInt(e.target.value) || 1;
-                                  setNewQuote({...newQuote, items: updated});
-                                }}
-                             />
-                             <span className="text-[10px] font-bold text-gray-400">UN</span>
+                            <input
+                              type="number"
+                              className="w-16 bg-white border border-gray-200 rounded-lg px-2 py-1 text-center text-sm font-medium text-gray-700 outline-none focus:border-rose-500 transition-all"
+                              value={item.quantity}
+                              onChange={(e) => {
+                                const updated = [...(newQuote.items || [])];
+                                updated[idx].quantity = parseInt(e.target.value) || 1;
+                                setNewQuote({ ...newQuote, items: updated });
+                              }}
+                            />
+                            <span className="text-[10px] font-bold text-gray-400">UN</span>
                           </div>
                           <span className="font-black text-rose-600 min-w-[80px] text-right">R$ {(item.unitPrice * item.quantity).toFixed(2)}</span>
                           <button onClick={() => {
                             const updated = [...(newQuote.items || [])].filter((_, i) => i !== idx);
-                            setNewQuote({...newQuote, items: updated});
+                            setNewQuote({ ...newQuote, items: updated });
                           }}><X className="w-4 h-4 text-gray-300" /></button>
                         </div>
                       )
@@ -262,23 +262,23 @@ const Quotes: React.FC<QuotesProps> = ({ quotes, products, contacts, materials, 
                 </div>
 
                 {/* Ajustes Financeiros */}
-                <div className="grid grid-cols-2 gap-6 p-8 bg-gray-50 rounded-[2rem]">
+                <div className="grid grid-cols-2 gap-6 p-6 bg-gray-50 rounded-[1.5rem] border border-gray-100">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest">Custos Extras (Frete, etc)</label>
-                    <input 
-                      type="number" 
-                      className="w-full bg-white border-2 border-transparent rounded-xl px-4 py-3 font-bold"
+                    <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider block">Custos Extras</label>
+                    <input
+                      type="number"
+                      className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-white border border-gray-200 rounded-xl outline-none focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 transition-all shadow-sm"
                       value={newQuote.extraCosts}
-                      onChange={(e) => setNewQuote({...newQuote, extraCosts: parseFloat(e.target.value) || 0})}
+                      onChange={(e) => setNewQuote({ ...newQuote, extraCosts: parseFloat(e.target.value) || 0 })}
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest">Desconto Especial</label>
-                    <input 
-                      type="number" 
-                      className="w-full bg-white border-2 border-transparent rounded-xl px-4 py-3 font-bold text-green-600"
+                    <label className="text-[11px] font-semibold text-green-600 uppercase tracking-wider block">Desconto</label>
+                    <input
+                      type="number"
+                      className="w-full text-sm font-medium text-green-700 px-4 py-2.5 bg-white border border-green-200 rounded-xl outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 transition-all shadow-sm"
                       value={newQuote.discount}
-                      onChange={(e) => setNewQuote({...newQuote, discount: parseFloat(e.target.value) || 0})}
+                      onChange={(e) => setNewQuote({ ...newQuote, discount: parseFloat(e.target.value) || 0 })}
                     />
                   </div>
                 </div>

@@ -1,17 +1,18 @@
 
 import React, { useState, useMemo } from 'react';
-import { 
-  Users, 
-  Plus, 
-  Search, 
-  Trash2, 
-  Edit3, 
-  X, 
-  Save, 
-  Phone, 
-  Mail, 
+import {
+  Users,
+  Plus,
+  Search,
+  Trash2,
+  Edit3,
+  X,
+  Save,
+  Phone,
+  Mail,
   MapPin,
-  ExternalLink
+  ExternalLink,
+  User
 } from 'lucide-react';
 import { Contact, ContactType } from '../types';
 
@@ -75,7 +76,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
           <h2 className="text-4xl font-bold text-gray-900 font-serif tracking-tight">Agenda de Contatos</h2>
           <p className="text-gray-500 mt-2 font-medium">Clientes e fornecedores em um só lugar.</p>
         </div>
-        <button 
+        <button
           onClick={() => openModal()}
           className="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100 active:scale-95"
         >
@@ -87,8 +88,8 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
       <div className="bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col md:flex-row gap-4 items-center">
         <div className="relative flex-1 w-full">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-          <input 
-            type="text" 
+          <input
+            type="text"
             placeholder="Buscar por nome ou e-mail..."
             className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-transparent rounded-2xl outline-none focus:bg-white focus:border-indigo-500 transition-all font-medium"
             value={search}
@@ -119,9 +120,9 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
                 {contact.type}
               </span>
             </div>
-            
+
             <h3 className="text-xl font-bold text-gray-900 mb-4">{contact.name}</h3>
-            
+
             <div className="space-y-3 mb-8">
               <div className="flex items-center gap-3 text-sm text-gray-500">
                 <Phone className="w-4 h-4" />
@@ -143,9 +144,9 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
                 </button>
               </div>
               {contact.phone && (
-                <a 
-                  href={`https://wa.me/${contact.phone.replace(/\D/g,'')}`} 
-                  target="_blank" 
+                <a
+                  href={`https://wa.me/${contact.phone.replace(/\D/g, '')}`}
+                  target="_blank"
                   className="flex items-center gap-2 text-green-600 font-bold text-xs bg-green-50 px-4 py-2 rounded-xl"
                 >
                   WhatsApp <ExternalLink className="w-3.5 h-3.5" />
@@ -165,56 +166,76 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
             </div>
             <div className="p-10 space-y-6 max-h-[70vh] overflow-y-auto">
               <div className="grid grid-cols-2 gap-4">
-                <button 
-                  onClick={() => setFormState({...formState, type: 'Cliente'})}
+                <button
+                  onClick={() => setFormState({ ...formState, type: 'Cliente' })}
                   className={`py-4 rounded-2xl font-bold border-2 transition-all ${formState.type === 'Cliente' ? 'border-rose-500 bg-rose-50 text-rose-600' : 'border-gray-100 text-gray-400'}`}
                 >
                   Cliente
                 </button>
-                <button 
-                  onClick={() => setFormState({...formState, type: 'Fornecedor'})}
+                <button
+                  onClick={() => setFormState({ ...formState, type: 'Fornecedor' })}
                   className={`py-4 rounded-2xl font-bold border-2 transition-all ${formState.type === 'Fornecedor' ? 'border-blue-500 bg-blue-50 text-blue-600' : 'border-gray-100 text-gray-400'}`}
                 >
                   Fornecedor
                 </button>
               </div>
-              <div>
-                <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest block mb-2">Nome Completo</label>
-                <input 
-                  type="text" 
-                  className="w-full bg-gray-50 border-2 border-transparent rounded-2xl px-6 py-4 outline-none focus:bg-white focus:border-indigo-500 transition-all font-medium"
-                  value={formState.name}
-                  onChange={(e) => setFormState({...formState, name: e.target.value})}
-                />
+              <div className="space-y-2">
+                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block">Nome Completo</label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    className="w-full text-sm font-medium text-gray-700 pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-sm"
+                    value={formState.name}
+                    onChange={(e) => setFormState({ ...formState, name: e.target.value })}
+                  />
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                    <User className="w-4 h-4" />
+                  </div>
+                </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest block mb-2">Telefone / WhatsApp</label>
-                  <input 
-                    type="text" 
-                    className="w-full bg-gray-50 border-2 border-transparent rounded-2xl px-6 py-4 outline-none focus:bg-white focus:border-indigo-500 transition-all font-medium"
-                    value={formState.phone}
-                    onChange={(e) => setFormState({...formState, phone: e.target.value})}
-                  />
+                <div className="space-y-2">
+                  <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block">Telefone / WhatsApp</label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      className="w-full text-sm font-medium text-gray-700 pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-sm"
+                      value={formState.phone}
+                      onChange={(e) => setFormState({ ...formState, phone: e.target.value })}
+                    />
+                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                      <Phone className="w-4 h-4" />
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest block mb-2">E-mail</label>
-                  <input 
-                    type="email" 
-                    className="w-full bg-gray-50 border-2 border-transparent rounded-2xl px-6 py-4 outline-none focus:bg-white focus:border-indigo-500 transition-all font-medium"
-                    value={formState.email}
-                    onChange={(e) => setFormState({...formState, email: e.target.value})}
-                  />
+                <div className="space-y-2">
+                  <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block">E-mail</label>
+                  <div className="relative">
+                    <input
+                      type="email"
+                      className="w-full text-sm font-medium text-gray-700 pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-sm"
+                      value={formState.email}
+                      onChange={(e) => setFormState({ ...formState, email: e.target.value })}
+                    />
+                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                      <Mail className="w-4 h-4" />
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div>
-                <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest block mb-2">Endereço (Opcional)</label>
-                <input 
-                  type="text" 
-                  className="w-full bg-gray-50 border-2 border-transparent rounded-2xl px-6 py-4 outline-none focus:bg-white focus:border-indigo-500 transition-all font-medium"
-                  value={formState.address}
-                  onChange={(e) => setFormState({...formState, address: e.target.value})}
-                />
+              <div className="space-y-2">
+                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block">Endereço (Opcional)</label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    className="w-full text-sm font-medium text-gray-700 pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-sm"
+                    value={formState.address}
+                    onChange={(e) => setFormState({ ...formState, address: e.target.value })}
+                  />
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                    <MapPin className="w-4 h-4" />
+                  </div>
+                </div>
               </div>
             </div>
             <div className="p-10 bg-gray-50/50 border-t flex justify-end gap-4">
