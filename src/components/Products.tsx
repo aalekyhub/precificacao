@@ -335,7 +335,7 @@ const Products: React.FC = () => {
                                                     <input {...register(`steps.${index}.name`)} className="w-full bg-white h-7 px-2 rounded border border-gray-200 outline-none focus:border-indigo-500 font-medium text-xs" placeholder="Ex: Impressão" />
                                                 </div>
                                                 <div className="w-20">
-                                                    <label className="text-[9px] uppercase font-bold text-gray-400 mb-0.5 block">Setup</label>
+                                                    <label className="text-[9px] uppercase font-bold text-gray-400 mb-0.5 block">Minutos</label>
                                                     <input type="number" {...register(`steps.${index}.setupMinutes`, { valueAsNumber: true })} className="w-full bg-white h-7 px-1 rounded border border-gray-200 outline-none focus:border-indigo-500 text-center font-bold text-xs" />
                                                 </div>
                                                 <div className="w-20">

@@ -92,7 +92,7 @@ export const useStoreData = () => {
             setProducts(data);
         } catch (error: any) {
             console.error('Failed to load products', error);
-            alert('Debug: Falha ao carregar produtos: ' + (error.message || JSON.stringify(error)));
+            // alert('Debug: Falha ao carregar produtos: ' + (error.message || JSON.stringify(error)));
         }
     };
 
