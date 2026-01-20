@@ -223,172 +223,210 @@ const Products: React.FC = () => {
 
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
-                    <div className="bg-white w-full max-w-7xl rounded-[2rem] shadow-2xl overflow-hidden flex flex-col h-[90vh] animate-in zoom-in-95 duration-200">
-
-                        {/* Header */}
-                        <div className="px-8 py-5 bg-white border-b border-gray-100 flex justify-between items-center flex-shrink-0">
+                    <div className="bg-white w-full max-w-4xl rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200">
+                        <div className="px-10 py-6 bg-white border-b border-gray-100 flex justify-between items-center sticky top-0 z-10">
                             <div>
-                                <h3 className="text-xl font-bold font-serif text-gray-900">{editingId ? 'Editar Produto' : 'Novo Produto'}</h3>
+                                <h3 className="text-2xl font-bold font-serif text-gray-900">{editingId ? 'Editar Produto' : 'Novo Produto'}</h3>
+                                <p className="text-sm text-gray-500 mt-1">Configure todos os detalhes em um só lugar.</p>
                             </div>
-                            <div className="flex gap-3">
-                                <button type="button" onClick={handleCloseModal} className="px-4 py-2 text-sm font-bold text-gray-500 hover:bg-gray-50 rounded-lg transition-colors">Cancelar</button>
-                                <button form="product-form" type="submit" disabled={isSubmitting} className="px-6 py-2 bg-indigo-600 text-white text-sm rounded-lg font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all disabled:opacity-70 flex items-center gap-2">
-                                    <Save className="w-4 h-4" />
-                                    {isSubmitting ? 'Salvando...' : 'Salvar'}
-                                </button>
-                            </div>
+                            <button onClick={handleCloseModal} className="p-2 hover:bg-gray-100 rounded-full transition-colors"><X className="w-6 h-6 text-gray-400" /></button>
                         </div>
 
-                        <form id="product-form" onSubmit={handleSubmit(onSubmit)} className="flex flex-col lg:flex-row flex-1 overflow-hidden bg-gray-50/50">
+                        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col flex-1 overflow-hidden">
+                            <div className="flex-1 overflow-y-auto p-10 custom-scrollbar space-y-10">
 
-                            {/* Left Column: Inputs */}
-                            <div className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
-
-                                {/* Info Section */}
-                                <section className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
-                                    <div className="flex items-center gap-2 mb-4 text-gray-900">
-                                        <Box className="w-5 h-5 text-indigo-600" />
-                                        <h4 className="font-bold text-base">Informações Básicas</h4>
+                                {/* SECTION: PRODUTO (INFO) */}
+                                <section className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm relative overflow-hidden group hover:border-indigo-100 transition-colors">
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-bl-full -mr-16 -mt-16 opacity-50 pointer-events-none"></div>
+                                    <div className="flex items-center gap-4 mb-6 relative">
+                                        <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-lg shadow-lg shadow-indigo-200">1</div>
+                                        <div>
+                                            <h4 className="text-lg font-bold text-gray-900">Informações Básicas</h4>
+                                            <p className="text-xs text-gray-500 font-medium">Identificação e categorização do produto.</p>
+                                        </div>
                                     </div>
-                                    <div className="grid grid-cols-12 gap-4">
-                                        <div className="col-span-8">
-                                            <label className="text-[10px] uppercase font-bold text-gray-400 mb-1 block">Nome do Produto</label>
-                                            <input {...register('name')} className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:border-indigo-500 transition-all font-medium text-sm" placeholder="Nome do produto" />
-                                            {errors.name && <p className="text-rose-500 text-xs mt-1 font-bold">{errors.name.message}</p>}
+
+                                    <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+                                        <div className="md:col-span-8">
+                                            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block mb-2">Nome do Produto</label>
+                                            <input {...register('name')} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-medium text-gray-900" placeholder="Ex: Caderno Personalizado A5" />
+                                            {errors.name && <p className="text-rose-500 text-xs mt-1 ml-1 font-bold">{errors.name.message}</p>}
                                         </div>
-                                        <div className="col-span-4">
-                                            <label className="text-[10px] uppercase font-bold text-gray-400 mb-1 block">Categoria</label>
-                                            <input {...register('category')} className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:border-indigo-500 transition-all font-medium text-sm" placeholder="Categoria" />
+                                        <div className="md:col-span-4">
+                                            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block mb-2">Categoria</label>
+                                            <input {...register('category')} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-medium text-gray-900" placeholder="Ex: Papelaria" />
+                                            {errors.category && <p className="text-rose-500 text-xs mt-1 ml-1 font-bold">{errors.category.message}</p>}
                                         </div>
-                                        <div className="col-span-3">
-                                            <label className="text-[10px] uppercase font-bold text-gray-400 mb-1 block">Unidade</label>
-                                            <input {...register('unit')} className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:border-indigo-500 transition-all font-medium text-sm text-center" placeholder="UN" />
+                                        <div className="md:col-span-4">
+                                            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block mb-2">Unidade</label>
+                                            <input {...register('unit')} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-medium text-gray-900" placeholder="UN" />
                                         </div>
-                                        <div className="col-span-9">
-                                            <label className="text-[10px] uppercase font-bold text-gray-400 mb-1 block">Descrição</label>
-                                            <input {...register('description')} className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:border-indigo-500 transition-all font-medium text-sm" placeholder="Descrição opcional" />
+                                        <div className="md:col-span-8">
+                                            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block mb-2">Descrição</label>
+                                            <input {...register('description')} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-medium text-gray-900" placeholder="Breve descrição do produto..." />
                                         </div>
                                     </div>
                                 </section>
 
-                                {/* Grid for Materials and Process */}
-                                <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-
-                                    {/* Materials Section */}
-                                    <section className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col h-full">
-                                        <div className="flex items-center justify-between mb-4">
-                                            <div className="flex items-center gap-2 text-gray-900">
-                                                <Layers className="w-5 h-5 text-indigo-600" />
-                                                <h4 className="font-bold text-base">Materiais</h4>
+                                {/* SECTION: MATERIAIS (RECEITA) */}
+                                <section className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm relative overflow-hidden group hover:border-indigo-100 transition-colors">
+                                    <div className="flex items-center justify-between mb-8">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-lg shadow-lg shadow-indigo-200">2</div>
+                                            <div>
+                                                <h4 className="text-lg font-bold text-gray-900">Materiais (Receita)</h4>
+                                                <p className="text-xs text-gray-500 font-medium">O que você gasta para produzir uma unidade.</p>
                                             </div>
-                                            <button type="button" onClick={() => appendBom({ insumoId: '', qtyPerUnit: 1, appliesTo: 'PRODUCT' })} className="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg hover:bg-indigo-100 transition-colors flex items-center gap-1">
-                                                <Plus className="w-3 h-3" /> Add
-                                            </button>
                                         </div>
-                                        <div className="space-y-2 flex-1">
-                                            {bomFields.map((field, index) => (
-                                                <div key={field.id} className="flex gap-2 items-center p-2 bg-gray-50/50 rounded-xl border border-gray-100 hover:border-indigo-200 transition-colors">
-                                                    <div className="flex-1 min-w-0">
-                                                        <select {...register(`bomItems.${index}.insumoId`)} className="w-full bg-transparent p-1 outline-none text-xs font-medium text-gray-700 truncate cursor-pointer">
-                                                            <option value="">Selecione...</option>
-                                                            {insumos.map(i => <option key={i.id} value={i.id}>{i.name}</option>)}
-                                                        </select>
-                                                    </div>
-                                                    <div className="w-16">
-                                                        <input type="number" step="0.001" {...register(`bomItems.${index}.qtyPerUnit`, { valueAsNumber: true })} className="w-full bg-white px-2 py-1 rounded border border-gray-200 text-xs font-bold text-center outline-none focus:border-indigo-500" placeholder="Qtd" />
-                                                    </div>
-                                                    <button type="button" onClick={() => removeBom(index)} className="text-gray-300 hover:text-rose-500 p-1"><Trash2 className="w-4 h-4" /></button>
-                                                </div>
-                                            ))}
-                                            {bomFields.length === 0 && <p className="text-xs text-gray-400 text-center py-4 italic">Nenhum material adicionado.</p>}
-                                        </div>
-                                    </section>
+                                        <button type="button" onClick={() => appendBom({ insumoId: '', qtyPerUnit: 1, appliesTo: 'PRODUCT' })} className="text-xs font-bold text-white bg-indigo-600 px-4 py-2.5 rounded-xl hover:bg-indigo-700 transition-all shadow-md shadow-indigo-200 flex items-center gap-2 active:scale-95">
+                                            <Plus className="w-4 h-4" /> Adicionar Material
+                                        </button>
+                                    </div>
 
-                                    {/* Process Section */}
-                                    <section className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col h-full">
-                                        <div className="flex items-center justify-between mb-4">
-                                            <div className="flex items-center gap-2 text-gray-900">
-                                                <Clock className="w-5 h-5 text-indigo-600" />
-                                                <h4 className="font-bold text-base">Processo</h4>
-                                            </div>
-                                            <button type="button" onClick={() => appendStep({ name: '', setupMinutes: 0, unitMinutes: 0 })} className="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg hover:bg-indigo-100 transition-colors flex items-center gap-1">
-                                                <Plus className="w-3 h-3" /> Add
-                                            </button>
-                                        </div>
-                                        <div className="space-y-2 flex-1">
-                                            {stepFields.map((field, index) => (
-                                                <div key={field.id} className="flex gap-2 items-center p-2 bg-gray-50/50 rounded-xl border border-gray-100 hover:border-indigo-200 transition-colors">
-                                                    <div className="flex-1 min-w-0">
-                                                        <input {...register(`steps.${index}.name`)} className="w-full bg-transparent p-1 outline-none text-xs font-medium text-gray-700 placeholder-gray-400" placeholder="Nome da etapa" />
-                                                    </div>
-                                                    <div className="flex gap-1 items-center">
-                                                        <input type="number" {...register(`steps.${index}.setupMinutes`, { valueAsNumber: true })} className="w-12 bg-white px-1 py-1 rounded border border-gray-200 text-xs font-bold text-center outline-none focus:border-indigo-500" placeholder="Set" title="Setup (min)" />
-                                                        <span className="text-[10px] text-gray-400">+</span>
-                                                        <input type="number" {...register(`steps.${index}.unitMinutes`, { valueAsNumber: true })} className="w-12 bg-white px-1 py-1 rounded border border-gray-200 text-xs font-bold text-center outline-none focus:border-indigo-500" placeholder="Unit" title="Unitário (min)" />
-                                                    </div>
-                                                    <button type="button" onClick={() => removeStep(index)} className="text-gray-300 hover:text-rose-500 p-1"><Trash2 className="w-4 h-4" /></button>
+                                    <div className="space-y-3">
+                                        {bomFields.map((field, index) => (
+                                            <div key={field.id} className="flex gap-4 items-start p-4 bg-gray-50 rounded-2xl border border-gray-100 hover:border-indigo-200 hover:bg-white hover:shadow-md transition-all group/item">
+                                                <div className="flex-1">
+                                                    <label className="text-[10px] uppercase font-bold text-gray-400 mb-1 block">Material</label>
+                                                    <select {...register(`bomItems.${index}.insumoId`)} className="w-full bg-white p-3 rounded-xl border border-gray-200 outline-none focus:border-indigo-500 font-medium text-sm">
+                                                        <option value="">Selecione um material...</option>
+                                                        {insumos.map(i => <option key={i.id} value={i.id}>{i.name} ({i.unit}) - R$ {Number(i.price).toFixed(2)}</option>)}
+                                                    </select>
                                                 </div>
-                                            ))}
-                                            {stepFields.length === 0 && <p className="text-xs text-gray-400 text-center py-4 italic">Nenhuma etapa definida.</p>}
+                                                <div className="w-28">
+                                                    <label className="text-[10px] uppercase font-bold text-gray-400 mb-1 block">Qtd</label>
+                                                    <input type="number" step="0.001" {...register(`bomItems.${index}.qtyPerUnit`, { valueAsNumber: true })} className="w-full bg-white p-3 rounded-xl border border-gray-200 outline-none focus:border-indigo-500 text-center font-bold text-sm" />
+                                                </div>
+                                                <div className="w-40">
+                                                    <label className="text-[10px] uppercase font-bold text-gray-400 mb-1 block">Aplicar em</label>
+                                                    <select {...register(`bomItems.${index}.appliesTo`)} className="w-full bg-white p-3 rounded-xl border border-gray-200 outline-none focus:border-indigo-500 font-medium text-sm">
+                                                        <option value="PRODUCT">Produto</option>
+                                                        <option value="PACKAGING">Embalagem</option>
+                                                    </select>
+                                                </div>
+                                                <button type="button" onClick={() => removeBom(index)} className="mt-7 text-gray-300 hover:text-rose-500 p-2 rounded-lg transition-colors"><Trash2 className="w-5 h-5" /></button>
+                                            </div>
+                                        ))}
+                                        {bomFields.length === 0 && (
+                                            <div className="text-center py-10 border-2 border-dashed border-gray-200 rounded-3xl bg-gray-50/50">
+                                                <Layers className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                                                <p className="text-sm font-bold text-gray-400">Nenhum material adicionado</p>
+                                                <p className="text-xs text-gray-400 mt-1">Clique no botão acima para compor a receita.</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </section>
+
+                                {/* SECTION: PROCESSO */}
+                                <section className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm relative overflow-hidden group hover:border-indigo-100 transition-colors">
+                                    <div className="flex items-center justify-between mb-8">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-lg shadow-lg shadow-indigo-200">3</div>
+                                            <div>
+                                                <h4 className="text-lg font-bold text-gray-900">Processo de Produção</h4>
+                                                <p className="text-xs text-gray-500 font-medium">Quanto tempo leva cada etapa de produção.</p>
+                                            </div>
                                         </div>
-                                    </section>
-                                </div>
+                                        <button type="button" onClick={() => appendStep({ name: '', setupMinutes: 0, unitMinutes: 0 })} className="text-xs font-bold text-white bg-indigo-600 px-4 py-2.5 rounded-xl hover:bg-indigo-700 transition-all shadow-md shadow-indigo-200 flex items-center gap-2 active:scale-95">
+                                            <Plus className="w-4 h-4" /> Adicionar Etapa
+                                        </button>
+                                    </div>
+
+                                    <div className="space-y-3">
+                                        {stepFields.map((field, index) => (
+                                            <div key={field.id} className="flex gap-4 items-start p-4 bg-gray-50 rounded-2xl border border-gray-100 hover:border-indigo-200 hover:bg-white hover:shadow-md transition-all group/item">
+                                                <div className="flex-1">
+                                                    <label className="text-[10px] uppercase font-bold text-gray-400 mb-1 block">Nome da Etapa</label>
+                                                    <input {...register(`steps.${index}.name`)} className="w-full bg-white p-3 rounded-xl border border-gray-200 outline-none focus:border-indigo-500 font-medium text-sm" placeholder="Ex: Impressão, Corte..." />
+                                                </div>
+                                                <div className="w-32">
+                                                    <label className="text-[10px] uppercase font-bold text-gray-400 mb-1 block">Setup (min)</label>
+                                                    <input type="number" {...register(`steps.${index}.setupMinutes`, { valueAsNumber: true })} className="w-full bg-white p-3 rounded-xl border border-gray-200 outline-none focus:border-indigo-500 text-center font-bold text-sm" />
+                                                </div>
+                                                <div className="w-32">
+                                                    <label className="text-[10px] uppercase font-bold text-gray-400 mb-1 block">Unitário (min)</label>
+                                                    <input type="number" {...register(`steps.${index}.unitMinutes`, { valueAsNumber: true })} className="w-full bg-white p-3 rounded-xl border border-gray-200 outline-none focus:border-indigo-500 text-center font-bold text-sm" />
+                                                </div>
+                                                <button type="button" onClick={() => removeStep(index)} className="mt-7 text-gray-300 hover:text-rose-500 p-2 rounded-lg transition-colors"><Trash2 className="w-5 h-5" /></button>
+                                            </div>
+                                        ))}
+                                        {stepFields.length === 0 && (
+                                            <div className="text-center py-10 border-2 border-dashed border-gray-200 rounded-3xl bg-gray-50/50">
+                                                <Clock className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                                                <p className="text-sm font-bold text-gray-400">Nenhuma etapa definida</p>
+                                                <p className="text-xs text-gray-400 mt-1">Adicione o tempo de mão de obra aqui.</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </section>
+
+                                {/* SECTION: PRECIFICAÇÃO */}
+                                <section className=" rounded-3xl overflow-hidden shadow-xl border border-gray-100 bg-white">
+                                    <div className="p-6 bg-gradient-to-r from-gray-900 to-gray-800 text-white flex items-center justify-between">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-10 h-10 rounded-xl bg-indigo-500 text-white flex items-center justify-center font-bold text-lg shadow-lg shadow-indigo-500/50">4</div>
+                                            <div>
+                                                <h4 className="text-lg font-bold">Precificação Final</h4>
+                                                <p className="text-xs text-gray-400 font-medium opacity-80">Custos calculados automaticamente.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="p-8">
+                                        <div className="grid grid-cols-2 gap-8 mb-8">
+                                            <div className="p-5 bg-indigo-50/50 rounded-2xl border border-indigo-50">
+                                                <p className="text-[10px] uppercase font-bold text-indigo-400 mb-2 tracking-wider">Custo de Materiais</p>
+                                                <p className="text-3xl font-bold text-gray-900">R$ {matCost.toFixed(2)}</p>
+                                                <p className="text-xs text-gray-400 mt-1">Soma de todos os insumos</p>
+                                            </div>
+                                            <div className="p-5 bg-indigo-50/50 rounded-2xl border border-indigo-50">
+                                                <p className="text-[10px] uppercase font-bold text-indigo-400 mb-2 tracking-wider">Custo de Mão de Obra</p>
+                                                <p className="text-3xl font-bold text-gray-900">R$ {laborCost.toFixed(2)}</p>
+                                                <p className="text-xs text-gray-400 mt-1">Baseado no seu custo/hora</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center gap-8 pt-8 border-t border-gray-100">
+                                            <div>
+                                                <p className="text-xs uppercase font-bold text-gray-400 mb-1">Custo Total de Produção</p>
+                                                <p className="text-2xl font-bold text-gray-600">R$ {totalCost.toFixed(2)}</p>
+                                            </div>
+                                            <div className="flex-1 bg-gray-50 rounded-2xl p-4 flex items-center justify-between border border-gray-100">
+                                                <span className="text-sm font-bold text-gray-500 uppercase tracking-wider">Margem de Lucro (%)</span>
+                                                <div className="flex items-center gap-2">
+                                                    <input
+                                                        type="number"
+                                                        className="text-right text-2xl font-black text-indigo-600 bg-transparent border-b-2 border-indigo-200 w-24 focus:outline-none focus:border-indigo-500 transition-colors"
+                                                        {...register('profitMargin', { valueAsNumber: true })}
+                                                    />
+                                                    <span className="text-indigo-400 font-bold">%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="mt-8 bg-indigo-600 p-8 rounded-3xl shadow-xl shadow-indigo-200 text-center relative overflow-hidden flex flex-col items-center justify-center group cursor-default">
+                                            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
+                                            <p className="text-sm uppercase tracking-[0.2em] text-indigo-100 mb-2 font-bold relative z-10">Preço Sugerido de Venda</p>
+                                            <p className="text-6xl font-black text-white tracking-tight relative z-10 group-hover:scale-105 transition-transform duration-300">
+                                                R$ {suggestedPrice.toFixed(2)}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </section>
+
                             </div>
 
-                            {/* Right Column: Pricing Sidebar */}
-                            <div className="w-full lg:w-80 bg-white border-l border-gray-100 p-6 flex flex-col shadow-[-10px_0_30px_-15px_rgba(0,0,0,0.05)] z-10 overflow-hidden relative">
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-bl-full -mr-16 -mt-16 opacity-30 pointer-events-none"></div>
-
-                                <h4 className="text-lg font-bold text-gray-900 font-serif mb-6">Precificação</h4>
-
-                                <div className="space-y-6 flex-1">
-                                    <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
-                                        <div className="flex justify-between items-center mb-1">
-                                            <span className="text-xs font-bold text-gray-400 uppercase">Custos Variáveis</span>
-                                            <span className="text-sm font-bold text-gray-800">R$ {matCost.toFixed(2)}</span>
-                                        </div>
-                                        <div className="w-full bg-gray-200 rounded-full h-1 mt-2">
-                                            <div className="bg-indigo-400 h-1 rounded-full" style={{ width: `${Math.min((matCost / (totalCost || 1)) * 100, 100)}%` }}></div>
-                                        </div>
-                                    </div>
-
-                                    <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
-                                        <div className="flex justify-between items-center mb-1">
-                                            <div className="flex flex-col">
-                                                <span className="text-xs font-bold text-gray-400 uppercase">Mão de Obra</span>
-                                                <span className="text-[10px] text-gray-400">(Estimada)</span>
-                                            </div>
-                                            <span className="text-sm font-bold text-gray-800">R$ {laborCost.toFixed(2)}</span>
-                                        </div>
-                                        <div className="w-full bg-gray-200 rounded-full h-1 mt-2">
-                                            <div className="bg-orange-400 h-1 rounded-full" style={{ width: `${Math.min((laborCost / (totalCost || 1)) * 100, 100)}%` }}></div>
-                                        </div>
-                                    </div>
-
-                                    <div className="pt-6 border-t border-gray-100">
-                                        <div className="flex justify-between items-center mb-4">
-                                            <span className="text-xs font-bold text-gray-500 uppercase">Custo Total</span>
-                                            <span className="text-xl font-bold text-gray-700">R$ {totalCost.toFixed(2)}</span>
-                                        </div>
-
-                                        <div className="flex items-center justify-between bg-indigo-50 rounded-xl p-3 mb-6 border border-indigo-100">
-                                            <span className="text-xs font-bold text-indigo-800 uppercase">Margem (%)</span>
-                                            <div className="flex items-center gap-1">
-                                                <input
-                                                    type="number"
-                                                    {...register('profitMargin', { valueAsNumber: true })}
-                                                    className="w-12 bg-white text-right font-bold text-indigo-700 outline-none border-b border-indigo-300 focus:border-indigo-600 text-sm py-1"
-                                                />
-                                                <span className="text-indigo-600 font-bold">%</span>
-                                            </div>
-                                        </div>
-
-                                        <div className="bg-gray-900 rounded-2xl p-6 text-center shadow-xl shadow-gray-200">
-                                            <p className="text-[10px] uppercase font-bold text-gray-400 mb-1 tracking-widest">Preço Sugerido</p>
-                                            <p className="text-4xl font-black text-white">R$ {suggestedPrice.toFixed(2)}</p>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div className="px-10 py-6 bg-gray-50 border-t border-gray-100 flex justify-end gap-3 sticky bottom-0 z-10">
+                                {Object.keys(errors).length > 0 && (
+                                    <span className="text-sm font-bold text-rose-500 animate-pulse self-center mr-auto">
+                                        Corrija os erros no formulário antes de salvar!
+                                    </span>
+                                )}
+                                <button type="button" onClick={handleCloseModal} className="px-6 py-3 bg-white border border-gray-200 rounded-xl font-bold text-gray-500 hover:bg-gray-100 transition-all">Cancelar</button>
+                                <button type="submit" disabled={isSubmitting} className="px-8 py-3 bg-indigo-600 text-white rounded-xl font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all disabled:opacity-70 flex items-center gap-2">
+                                    <Save className="w-4 h-4" />
+                                    {isSubmitting ? 'Salvando...' : 'Salvar Produto'}
+                                </button>
                             </div>
                         </form>
                     </div>
