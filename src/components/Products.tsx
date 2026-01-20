@@ -233,7 +233,7 @@ const Products: React.FC = () => {
                         </div>
 
                         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col flex-1 overflow-hidden">
-                            <div className="flex-1 overflow-y-auto p-10 custom-scrollbar space-y-10">
+                            <div className="flex-1 overflow-y-auto p-8 custom-scrollbar space-y-6">
 
                                 {/* SECTION: PRODUTO (INFO) */}
                                 <section className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm relative overflow-hidden group hover:border-indigo-100 transition-colors">
@@ -246,24 +246,24 @@ const Products: React.FC = () => {
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                                         <div className="md:col-span-8">
-                                            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block mb-2">Nome do Produto</label>
-                                            <input {...register('name')} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-medium text-gray-900" placeholder="Ex: Caderno Personalizado A5" />
+                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1.5">Nome do Produto</label>
+                                            <input {...register('name')} className="w-full px-3 h-10 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-medium text-gray-900 text-sm" placeholder="Ex: Caderno Personalizado A5" />
                                             {errors.name && <p className="text-rose-500 text-xs mt-1 ml-1 font-bold">{errors.name.message}</p>}
                                         </div>
                                         <div className="md:col-span-4">
-                                            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block mb-2">Categoria</label>
-                                            <input {...register('category')} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-medium text-gray-900" placeholder="Ex: Papelaria" />
+                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1.5">Categoria</label>
+                                            <input {...register('category')} className="w-full px-3 h-10 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-medium text-gray-900 text-sm" placeholder="Ex: Papelaria" />
                                             {errors.category && <p className="text-rose-500 text-xs mt-1 ml-1 font-bold">{errors.category.message}</p>}
                                         </div>
                                         <div className="md:col-span-4">
-                                            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block mb-2">Unidade</label>
-                                            <input {...register('unit')} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-medium text-gray-900" placeholder="UN" />
+                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1.5">Unidade</label>
+                                            <input {...register('unit')} className="w-full px-3 h-10 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-medium text-gray-900 text-sm" placeholder="UN" />
                                         </div>
                                         <div className="md:col-span-8">
-                                            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block mb-2">Descrição</label>
-                                            <input {...register('description')} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-medium text-gray-900" placeholder="Breve descrição do produto..." />
+                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1.5">Descrição</label>
+                                            <input {...register('description')} className="w-full px-3 h-10 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-medium text-gray-900 text-sm" placeholder="Breve descrição do produto..." />
                                         </div>
                                     </div>
                                 </section>
@@ -285,26 +285,26 @@ const Products: React.FC = () => {
 
                                     <div className="space-y-3">
                                         {bomFields.map((field, index) => (
-                                            <div key={field.id} className="flex gap-4 items-start p-4 bg-gray-50 rounded-2xl border border-gray-100 hover:border-indigo-200 hover:bg-white hover:shadow-md transition-all group/item">
+                                            <div key={field.id} className="flex gap-3 items-start p-3 bg-gray-50 rounded-xl border border-gray-100 hover:border-indigo-200 hover:bg-white hover:shadow-md transition-all group/item">
                                                 <div className="flex-1">
                                                     <label className="text-[10px] uppercase font-bold text-gray-400 mb-1 block">Material</label>
-                                                    <select {...register(`bomItems.${index}.insumoId`)} className="w-full bg-white p-3 rounded-xl border border-gray-200 outline-none focus:border-indigo-500 font-medium text-sm">
+                                                    <select {...register(`bomItems.${index}.insumoId`)} className="w-full bg-white h-9 px-3 rounded-lg border border-gray-200 outline-none focus:border-indigo-500 font-medium text-xs">
                                                         <option value="">Selecione um material...</option>
                                                         {insumos.map(i => <option key={i.id} value={i.id}>{i.name} ({i.unit}) - R$ {Number(i.price).toFixed(2)}</option>)}
                                                     </select>
                                                 </div>
-                                                <div className="w-28">
+                                                <div className="w-24">
                                                     <label className="text-[10px] uppercase font-bold text-gray-400 mb-1 block">Qtd</label>
-                                                    <input type="number" step="0.001" {...register(`bomItems.${index}.qtyPerUnit`, { valueAsNumber: true })} className="w-full bg-white p-3 rounded-xl border border-gray-200 outline-none focus:border-indigo-500 text-center font-bold text-sm" />
+                                                    <input type="number" step="0.001" {...register(`bomItems.${index}.qtyPerUnit`, { valueAsNumber: true })} className="w-full bg-white h-9 px-2 rounded-lg border border-gray-200 outline-none focus:border-indigo-500 text-center font-bold text-sm" />
                                                 </div>
-                                                <div className="w-40">
+                                                <div className="w-36">
                                                     <label className="text-[10px] uppercase font-bold text-gray-400 mb-1 block">Aplicar em</label>
-                                                    <select {...register(`bomItems.${index}.appliesTo`)} className="w-full bg-white p-3 rounded-xl border border-gray-200 outline-none focus:border-indigo-500 font-medium text-sm">
+                                                    <select {...register(`bomItems.${index}.appliesTo`)} className="w-full bg-white h-9 px-2 rounded-lg border border-gray-200 outline-none focus:border-indigo-500 font-medium text-xs">
                                                         <option value="PRODUCT">Produto</option>
                                                         <option value="PACKAGING">Embalagem</option>
                                                     </select>
                                                 </div>
-                                                <button type="button" onClick={() => removeBom(index)} className="mt-7 text-gray-300 hover:text-rose-500 p-2 rounded-lg transition-colors"><Trash2 className="w-5 h-5" /></button>
+                                                <button type="button" onClick={() => removeBom(index)} className="mt-6 text-gray-300 hover:text-rose-500 p-1.5 rounded-lg transition-colors"><Trash2 className="w-4 h-4" /></button>
                                             </div>
                                         ))}
                                         {bomFields.length === 0 && (
@@ -334,20 +334,20 @@ const Products: React.FC = () => {
 
                                     <div className="space-y-3">
                                         {stepFields.map((field, index) => (
-                                            <div key={field.id} className="flex gap-4 items-start p-4 bg-gray-50 rounded-2xl border border-gray-100 hover:border-indigo-200 hover:bg-white hover:shadow-md transition-all group/item">
+                                            <div key={field.id} className="flex gap-3 items-start p-3 bg-gray-50 rounded-xl border border-gray-100 hover:border-indigo-200 hover:bg-white hover:shadow-md transition-all group/item">
                                                 <div className="flex-1">
                                                     <label className="text-[10px] uppercase font-bold text-gray-400 mb-1 block">Nome da Etapa</label>
-                                                    <input {...register(`steps.${index}.name`)} className="w-full bg-white p-3 rounded-xl border border-gray-200 outline-none focus:border-indigo-500 font-medium text-sm" placeholder="Ex: Impressão, Corte..." />
+                                                    <input {...register(`steps.${index}.name`)} className="w-full bg-white h-9 px-3 rounded-lg border border-gray-200 outline-none focus:border-indigo-500 font-medium text-sm" placeholder="Ex: Impressão, Corte..." />
                                                 </div>
-                                                <div className="w-32">
+                                                <div className="w-24">
                                                     <label className="text-[10px] uppercase font-bold text-gray-400 mb-1 block">Setup (min)</label>
-                                                    <input type="number" {...register(`steps.${index}.setupMinutes`, { valueAsNumber: true })} className="w-full bg-white p-3 rounded-xl border border-gray-200 outline-none focus:border-indigo-500 text-center font-bold text-sm" />
+                                                    <input type="number" {...register(`steps.${index}.setupMinutes`, { valueAsNumber: true })} className="w-full bg-white h-9 px-2 rounded-lg border border-gray-200 outline-none focus:border-indigo-500 text-center font-bold text-sm" />
                                                 </div>
-                                                <div className="w-32">
+                                                <div className="w-24">
                                                     <label className="text-[10px] uppercase font-bold text-gray-400 mb-1 block">Unitário (min)</label>
-                                                    <input type="number" {...register(`steps.${index}.unitMinutes`, { valueAsNumber: true })} className="w-full bg-white p-3 rounded-xl border border-gray-200 outline-none focus:border-indigo-500 text-center font-bold text-sm" />
+                                                    <input type="number" {...register(`steps.${index}.unitMinutes`, { valueAsNumber: true })} className="w-full bg-white h-9 px-2 rounded-lg border border-gray-200 outline-none focus:border-indigo-500 text-center font-bold text-sm" />
                                                 </div>
-                                                <button type="button" onClick={() => removeStep(index)} className="mt-7 text-gray-300 hover:text-rose-500 p-2 rounded-lg transition-colors"><Trash2 className="w-5 h-5" /></button>
+                                                <button type="button" onClick={() => removeStep(index)} className="mt-6 text-gray-300 hover:text-rose-500 p-1.5 rounded-lg transition-colors"><Trash2 className="w-4 h-4" /></button>
                                             </div>
                                         ))}
                                         {stepFields.length === 0 && (
