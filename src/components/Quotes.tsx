@@ -16,11 +16,11 @@ const Quotes: React.FC = () => {
   const { quotes, products, contacts, materials, fixedCosts, storeConfig, addQuote, updateQuote, deleteQuote } = useStoreData();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newQuote, setNewQuote] = useState<Partial<Quote>>({
-    clientId: '',
+    customer_id: '',
     items: [],
-    extraCosts: 0,
+    extra_costs: 0,
     discount: 0,
-    status: 'Pendente',
+    status: 'draft',
     notes: ''
   });
   const [printQuote, setPrintQuote] = useState<Quote | null>(null);
@@ -59,9 +59,9 @@ const Quotes: React.FC = () => {
   };
 
   const quoteTotal = useMemo(() => {
-    const subtotal = (newQuote.items || []).reduce((acc, item) => acc + (item.unitPrice * item.quantity), 0);
-    return subtotal + (Number(newQuote.extraCosts) || 0) - (Number(newQuote.discount) || 0);
-  }, [newQuote.items, newQuote.extraCosts, newQuote.discount]);
+    const subtotal = (newQuote.items || []).reduce((acc, item) => acc + (item.unit_price * item.quantity), 0);
+    return subtotal + (Number(newQuote.extra_costs) || 0) - (Number(newQuote.discount) || 0);
+  }, [newQuote.items, newQuote.extra_costs, newQuote.discount]);
 
   const handleAddItem = (productId: string) => {
     const product = products.find(p => p.id === productId);
@@ -69,26 +69,35 @@ const Quotes: React.FC = () => {
     const price = calculateEstimatedPrice(product);
     setNewQuote({
       ...newQuote,
-      items: [...(newQuote.items || []), { productId, quantity: 1, unitPrice: price }]
+      items: [...(newQuote.items || []), {
+        id: Math.random().toString(36).substr(2, 9),
+        name: product.name,
+        product_id: productId,
+        quantity: 1,
+        unit_price: price,
+        total_price: price
+      }]
     });
   };
 
   const handleSave = async () => {
-    if (!newQuote.clientId || (newQuote.items || []).length === 0) return;
+    if (!newQuote.customer_id || (newQuote.items || []).length === 0) return;
     const quote: Quote = {
-      id: '', // Let backend or hook handle ID
-      date: new Date().toISOString(), // Use full ISO string for compatibility
+      id: '',
+      created_at: new Date().toISOString(),
+      date: new Date().toISOString(),
       items: newQuote.items || [],
-      clientId: newQuote.clientId || '',
-      status: 'Pendente',
-      total: quoteTotal,
-      extraCosts: newQuote.extraCosts || 0,
+      customer_id: newQuote.customer_id || '',
+      clientId: newQuote.customer_id || '',
+      status: 'draft',
+      total_value: quoteTotal,
+      extra_costs: newQuote.extra_costs || 0,
       discount: newQuote.discount || 0,
       notes: newQuote.notes || ''
     };
     await addQuote(quote as Quote);
     setIsModalOpen(false);
-    setNewQuote({ clientId: '', items: [], extraCosts: 0, discount: 0, status: 'Pendente', notes: '' });
+    setNewQuote({ customer_id: '', items: [], extra_costs: 0, discount: 0, status: 'draft', notes: '' });
   };
 
   const handleDataUpdate = async () => {
@@ -107,12 +116,17 @@ const Quotes: React.FC = () => {
     }, 100);
   };
 
-  const getStatusColor = (status: QuoteStatus) => {
+  const getStatusLabel = (status: string) => {
+    const map: any = { 'draft': 'Pendente', 'approved': 'Aprovado', 'completed': 'Concluído', 'canceled': 'Cancelado' };
+    return map[status] || status;
+  }
+
+  const getStatusColor = (status: string) => {
     switch (status) {
-      case 'Aprovado': return 'bg-green-100 text-green-600';
-      case 'Pendente': return 'bg-orange-100 text-orange-600';
-      case 'Enviado': return 'bg-blue-100 text-blue-600';
-      case 'Cancelado': return 'bg-gray-100 text-gray-600';
+      case 'approved': return 'bg-green-100 text-green-600';
+      case 'draft': return 'bg-orange-100 text-orange-600';
+      case 'completed': return 'bg-blue-100 text-blue-600';
+      case 'canceled': return 'bg-gray-100 text-gray-600';
       default: return 'bg-gray-100 text-gray-600';
     }
   };
@@ -153,22 +167,22 @@ const Quotes: React.FC = () => {
                   </tr>
                 ) : (
                   quotes.map(quote => {
-                    const client = contacts.find(c => c.id === quote.clientId);
+                    const client = contacts.find(c => c.id === quote.customer_id || c.id === quote.clientId);
                     return (
                       <tr key={quote.id} className="hover:bg-gray-50/50 transition-all group">
                         <td className="px-8 py-6">
-                          <span className="font-bold text-gray-800 block">{new Date(quote.date).toLocaleDateString('pt-BR')}</span>
+                          <span className="font-bold text-gray-800 block">{new Date(quote.created_at || quote.date || '').toLocaleDateString('pt-BR')}</span>
                           <span className="text-[10px] text-gray-400 font-black uppercase tracking-tighter">ID: {(quote.id || '').split('-')[0].toUpperCase()}</span>
                         </td>
                         <td className="px-8 py-6">
                           <span className="font-bold text-gray-700">{client?.name || 'Cliente Removido'}</span>
                         </td>
                         <td className="px-8 py-6">
-                          <span className="text-rose-600 font-black text-lg">R$ {quote.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                          <span className="text-rose-600 font-black text-lg">R$ {(quote.total_value || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                         </td>
                         <td className="px-8 py-6 text-center">
                           <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${getStatusColor(quote.status)}`}>
-                            {quote.status}
+                            {getStatusLabel(quote.status)}
                           </span>
                         </td>
                         <td className="px-8 py-6 text-right">
@@ -226,8 +240,8 @@ const Quotes: React.FC = () => {
                     <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider flex items-center gap-2"><User className="w-3 h-3" /> Selecionar Cliente</label>
                     <select
                       className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 transition-all shadow-sm"
-                      value={newQuote.clientId}
-                      onChange={(e) => setNewQuote({ ...newQuote, clientId: e.target.value })}
+                      value={newQuote.customer_id}
+                      onChange={(e) => setNewQuote({ ...newQuote, customer_id: e.target.value })}
                     >
                       <option value="">Escolha um cliente da agenda...</option>
                       {contacts.filter(c => c.type === 'Cliente').map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -249,7 +263,7 @@ const Quotes: React.FC = () => {
                     </div>
                     <div className="space-y-3">
                       {newQuote.items?.map((item, idx) => {
-                        const prod = products.find(p => p.id === item.productId);
+                        const prod = products.find(p => p.id === item.product_id);
                         return (
                           <div key={idx} className="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl border border-gray-100">
                             <span className="flex-1 font-bold text-gray-700">{prod?.name}</span>
@@ -266,7 +280,7 @@ const Quotes: React.FC = () => {
                               />
                               <span className="text-[10px] font-bold text-gray-400">UN</span>
                             </div>
-                            <span className="font-black text-rose-600 min-w-[80px] text-right">R$ {(item.unitPrice * item.quantity).toFixed(2)}</span>
+                            <span className="font-black text-rose-600 min-w-[80px] text-right">R$ {(item.unit_price * item.quantity).toFixed(2)}</span>
                             <button onClick={() => {
                               const updated = [...(newQuote.items || [])].filter((_, i) => i !== idx);
                               setNewQuote({ ...newQuote, items: updated });
@@ -324,9 +338,9 @@ const Quotes: React.FC = () => {
           {/* Client Info */}
           <div className="mb-12 bg-gray-50/50 p-6 rounded-lg border border-gray-100">
             <p className="text-[10px] uppercase font-bold text-gray-400 mb-2">Cliente</p>
-            <p className="text-xl font-bold text-gray-800">{contacts.find(c => c.id === printQuote.clientId)?.name}</p>
-            <p className="text-sm text-gray-500">{contacts.find(c => c.id === printQuote.clientId)?.email}</p>
-            <p className="text-sm text-gray-500">{contacts.find(c => c.id === printQuote.clientId)?.phone}</p>
+            <p className="text-xl font-bold text-gray-800">{contacts.find(c => c.id === printQuote.customer_id || c.id === printQuote.clientId)?.name}</p>
+            <p className="text-sm text-gray-500">{contacts.find(c => c.id === printQuote.customer_id || c.id === printQuote.clientId)?.email}</p>
+            <p className="text-sm text-gray-500">{contacts.find(c => c.id === printQuote.customer_id || c.id === printQuote.clientId)?.phone}</p>
           </div>
 
           {/* Items Table */}
@@ -341,13 +355,13 @@ const Quotes: React.FC = () => {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {printQuote.items.map((item, idx) => {
-                const product = products.find(p => p.id === item.productId);
+                const product = products.find(p => p.id === item.product_id);
                 return (
                   <tr key={idx}>
-                    <td className="py-4 text-sm font-medium">{product?.name || 'Item Removido'}</td>
+                    <td className="py-4 text-sm font-medium">{product?.name || item.name || 'Item Removido'}</td>
                     <td className="py-4 text-center text-sm">{item.quantity}</td>
-                    <td className="py-4 text-right text-sm">R$ {item.unitPrice.toFixed(2)}</td>
-                    <td className="py-4 text-right text-sm font-bold">R$ {(item.quantity * item.unitPrice).toFixed(2)}</td>
+                    <td className="py-4 text-right text-sm">R$ {item.unit_price.toFixed(2)}</td>
+                    <td className="py-4 text-right text-sm font-bold">R$ {(item.quantity * item.unit_price).toFixed(2)}</td>
                   </tr>
                 );
               })}
@@ -359,15 +373,15 @@ const Quotes: React.FC = () => {
             <div className="w-64 space-y-3">
               <div className="flex justify-between text-sm text-gray-500">
                 <span>Subtotal</span>
-                <span>R$ {((printQuote.items || []).reduce((acc, i) => acc + (i.unitPrice * i.quantity), 0)).toFixed(2)}</span>
+                <span>R$ {((printQuote.items || []).reduce((acc, i) => acc + (i.unit_price * i.quantity), 0)).toFixed(2)}</span>
               </div>
-              {printQuote.extraCosts > 0 && (
+              {printQuote.extra_costs && printQuote.extra_costs > 0 && (
                 <div className="flex justify-between text-sm text-gray-500">
                   <span>Custos Extras</span>
-                  <span>+ R$ {printQuote.extraCosts.toFixed(2)}</span>
+                  <span>+ R$ {printQuote.extra_costs.toFixed(2)}</span>
                 </div>
               )}
-              {printQuote.discount > 0 && (
+              {printQuote.discount && printQuote.discount > 0 && (
                 <div className="flex justify-between text-sm text-green-600">
                   <span>Desconto</span>
                   <span>- R$ {printQuote.discount.toFixed(2)}</span>
@@ -375,7 +389,7 @@ const Quotes: React.FC = () => {
               )}
               <div className="flex justify-between text-xl font-bold text-gray-900 border-t-2 border-gray-900 pt-3">
                 <span>Total</span>
-                <span>R$ {printQuote.total.toFixed(2)}</span>
+                <span>R$ {printQuote.total_value.toFixed(2)}</span>
               </div>
             </div>
           </div>

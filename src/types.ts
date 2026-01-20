@@ -75,14 +75,20 @@ export interface OrderItem {
 export interface Order {
   id: string;
   customer_id?: string;
+  clientId?: string; // Alias for compatibility during refactor
   customer_name?: string; // For display
-  status: 'draft' | 'approved' | 'completed';
+  status: 'draft' | 'approved' | 'completed' | 'canceled';
   total_value: number;
   items: OrderItem[];
   created_at: string;
+  date?: string; // Alias
+  extra_costs?: number;
+  discount?: number;
+  notes?: string;
 }
 
 // Re-export aliases for compatibility if needed during migration
 export type Quote = Order;
+export type QuoteStatus = Order['status'];
 export type Insumo = Material;
 export type Produto = Product;

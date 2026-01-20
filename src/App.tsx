@@ -7,13 +7,15 @@ import {
     Building2,
     Calculator,
     Menu,
-    X
+    X,
+    FileText
 } from 'lucide-react';
 import Materials from './components/Materials';
 import Products from './components/Products';
 import Channels from './components/Channels';
 import FixedCosts from './components/FixedCosts';
 import PricingCalculator from './components/PricingCalculator';
+import Quotes from './components/Quotes';
 
 // Simple Dashboard Component
 const Dashboard = ({ onNavigate }: { onNavigate: (page: string) => void }) => (
@@ -28,6 +30,14 @@ const Dashboard = ({ onNavigate }: { onNavigate: (page: string) => void }) => (
                 <Calculator className="w-8 h-8 opacity-80 mb-4" />
                 <h3 className="text-2xl font-bold mb-1">Calculadora</h3>
                 <p className="opacity-70 text-sm">Simular preços de venda</p>
+            </button>
+
+            <button onClick={() => onNavigate('quotes')} className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm text-left hover:shadow-xl transition-all group">
+                <div className="w-12 h-12 bg-rose-50 rounded-xl flex items-center justify-center text-rose-600 mb-4 group-hover:scale-110 transition-transform">
+                    <FileText className="w-6 h-6" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900">Orçamentos</h3>
+                <p className="text-gray-400 text-sm mt-1">Gerar propostas em PDF</p>
             </button>
 
             <button onClick={() => onNavigate('products')} className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm text-left hover:shadow-xl transition-all group">
@@ -73,8 +83,8 @@ function App() {
         <button
             onClick={() => { setCurrentPage(page); setIsMobileMenuOpen(false); }}
             className={`w-full flex items-center gap-3 px-6 py-4 rounded-2xl transition-all font-bold ${currentPage === page
-                    ? 'bg-gray-900 text-white shadow-lg shadow-gray-200'
-                    : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
+                ? 'bg-gray-900 text-white shadow-lg shadow-gray-200'
+                : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
                 }`}
         >
             <Icon className="w-5 h-5" />
@@ -93,6 +103,8 @@ function App() {
 
                 <nav className="space-y-2 flex-1">
                     <NavItem page="dashboard" icon={LayoutDashboard} label="Dashboard" />
+                    <div className="pt-8 pb-4 px-6 text-xs font-bold text-gray-400 uppercase tracking-widest">Vendas</div>
+                    <NavItem page="quotes" icon={FileText} label="Orçamentos" />
                     <div className="pt-8 pb-4 px-6 text-xs font-bold text-gray-400 uppercase tracking-widest">Cadastros</div>
                     <NavItem page="products" icon={Box} label="Produtos" />
                     <NavItem page="materials" icon={Package} label="Materiais" />
@@ -115,6 +127,7 @@ function App() {
             {isMobileMenuOpen && (
                 <div className="lg:hidden fixed inset-0 z-40 bg-white pt-24 px-6 space-y-4">
                     <NavItem page="dashboard" icon={LayoutDashboard} label="Dashboard" />
+                    <NavItem page="quotes" icon={FileText} label="Orçamentos" />
                     <NavItem page="products" icon={Box} label="Produtos" />
                     <NavItem page="materials" icon={Package} label="Materiais" />
                     <NavItem page="channels" icon={ShoppingBag} label="Canais de Venda" />
@@ -127,6 +140,7 @@ function App() {
             <main className="flex-1 lg:ml-80 p-6 lg:p-12 pt-24 lg:pt-12 overflow-x-hidden">
                 <div className="max-w-7xl mx-auto">
                     {currentPage === 'dashboard' && <Dashboard onNavigate={setCurrentPage} />}
+                    {currentPage === 'quotes' && <Quotes />}
                     {currentPage === 'materials' && <Materials />}
                     {currentPage === 'products' && <Products />}
                     {currentPage === 'channels' && <Channels />}
