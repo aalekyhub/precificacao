@@ -52,6 +52,8 @@ export interface Product {
   steps?: ProcessoEtapa[];
   selling_price?: number; // Optional until calculation logic is implemented
   profit_margin?: number;
+  tax_rate?: number;
+  commission_rate?: number;
 }
 
 export type ContactType = 'Cliente' | 'Fornecedor';

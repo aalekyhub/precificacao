@@ -33,6 +33,8 @@ const schema = z.object({
         unitMinutes: z.number().min(0)
     })),
     profitMargin: z.number().min(0).max(100),
+    taxRate: z.number().min(0).max(100).default(0),
+    commissionRate: z.number().min(0).max(100).default(0),
     sellingPrice: z.number().optional()
 });
 
@@ -50,7 +52,9 @@ const Products: React.FC = () => {
             unit: 'UN',
             bomItems: [],
             steps: [],
-            profitMargin: 50, // Default margin
+            profitMargin: 50, // Default margin (Net Target)
+            taxRate: 4, // Default Simple Nacional approx
+            commissionRate: 0,
             sellingPrice: 0
         }
     });
@@ -88,14 +92,26 @@ const Products: React.FC = () => {
 
         const totalCost = matCost + laborCost;
 
-        // 3. Selling Price based on Margin
-        const marginDecimal = (watchedMargin || 0) / 100;
-        const suggestedPrice = marginDecimal >= 1 ? 0 : totalCost / (1 - marginDecimal);
+        // 3. Selling Price based on "Perfect Pricing" (Markup Multiplier approach for Target Net Profit)
+        // Formula: Price = Cost / (1 - (Tax% + Fee% + NetProfit%))
+        const taxDecimal = (watch('taxRate') || 0) / 100;
+        const commDecimal = (watch('commissionRate') || 0) / 100;
+        const profitDecimal = (watchedMargin || 0) / 100;
 
-        return { matCost, laborCost, totalCost, suggestedPrice, hourlyRate };
+        const variableCostsRate = taxDecimal + commDecimal + profitDecimal;
+
+        // Prevent division by zero or negative divisor if overheads > 100%
+        const divisor = 1 - variableCostsRate;
+        const suggestedPrice = divisor <= 0.01 ? 0 : totalCost / divisor; // Safety check
+
+        const taxValue = suggestedPrice * taxDecimal;
+        const commValue = suggestedPrice * commDecimal;
+        const netProfitValue = suggestedPrice * profitDecimal;
+
+        return { matCost, laborCost, totalCost, suggestedPrice, hourlyRate, taxValue, commValue, netProfitValue };
     };
 
-    const { matCost, laborCost, totalCost, suggestedPrice, hourlyRate } = calculateTotals();
+    const { matCost, laborCost, totalCost, suggestedPrice, hourlyRate, taxValue, commValue, netProfitValue } = calculateTotals();
 
     const onSubmit = async (data: FormData) => {
         try {
@@ -106,6 +122,8 @@ const Products: React.FC = () => {
                 description: data.description,
                 selling_price: suggestedPrice,
                 profit_margin: data.profitMargin,
+                tax_rate: data.taxRate,
+                commission_rate: data.commissionRate,
                 bomItems: data.bomItems,
                 steps: data.steps
             };
@@ -133,6 +151,8 @@ const Products: React.FC = () => {
         setValue('unit', item.unit);
         setValue('description', item.description || '');
         setValue('profitMargin', item.profit_margin || 50);
+        setValue('taxRate', item.tax_rate || 0);
+        setValue('commissionRate', item.commission_rate || 0);
 
         setValue('bomItems', (item.bomItems || []).map(b => ({
             insumoId: b.insumoId,
@@ -359,7 +379,7 @@ const Products: React.FC = () => {
                                         <div className="flex items-center gap-2">
                                             <div className="w-4 h-4 rounded bg-indigo-500 text-white flex items-center justify-center font-bold text-[9px] shadow-sm">4</div>
                                             <div>
-                                                <h4 className="text-[10px] font-bold">Precificação Final</h4>
+                                                <h4 className="text-[10px] font-bold">Precificação Final (Contábil)</h4>
                                             </div>
                                         </div>
                                     </div>
@@ -367,29 +387,47 @@ const Products: React.FC = () => {
                                     <div className="p-2">
                                         <div className="grid grid-cols-2 gap-2 mb-2">
                                             <div className="py-1 px-2 bg-indigo-50/50 rounded border border-indigo-50">
-                                                <p className="text-[8px] uppercase font-bold text-indigo-400 mb-0 tracking-wider">Materiais</p>
-                                                <p className="text-xs font-bold text-gray-900">R$ {matCost.toFixed(2)}</p>
+                                                <p className="text-[8px] uppercase font-bold text-indigo-400 mb-0 tracking-wider">Custo Direto</p>
+                                                <p className="text-xs font-bold text-gray-900">R$ {totalCost.toFixed(2)}</p>
                                             </div>
-                                            <div className="py-1 px-2 bg-indigo-50/50 rounded border border-indigo-50">
-                                                <p className="text-[8px] uppercase font-bold text-indigo-400 mb-0 tracking-wider">Mão de Obra</p>
-                                                <p className="text-xs font-bold text-gray-900">R$ {laborCost.toFixed(2)}</p>
+                                            <div className="py-1 px-2 bg-rose-50 rounded border border-rose-100">
+                                                <p className="text-[8px] uppercase font-bold text-rose-400 mb-0 tracking-wider">Taxas/Imp</p>
+                                                <p className="text-xs font-bold text-rose-600">R$ {(taxValue + commValue).toFixed(2)}</p>
                                             </div>
                                         </div>
 
-                                        <div className="flex items-center gap-3 pt-2 border-t border-gray-100">
-                                            <div>
-                                                <p className="text-[8px] uppercase font-bold text-gray-400 mb-0">Total</p>
-                                                <p className="text-sm font-bold text-gray-600">R$ {totalCost.toFixed(2)}</p>
-                                            </div>
-                                            <div className="flex-1 bg-gray-50 rounded p-1 flex items-center justify-between border border-gray-100 h-8">
-                                                <span className="text-[9px] font-bold text-gray-500 uppercase tracking-wider pl-1">Margem</span>
+                                        <div className="space-y-1 mb-2">
+                                            <div className="flex bg-gray-50 rounded p-1 items-center justify-between border border-gray-100 h-7">
+                                                <span className="text-[9px] font-bold text-gray-500 uppercase tracking-wider pl-1">Margem Líquida</span>
                                                 <div className="flex items-center gap-1">
                                                     <input
                                                         type="number"
-                                                        className="text-right text-sm font-black text-indigo-600 bg-transparent border-b border-indigo-200 w-10 focus:outline-none focus:border-indigo-500 transition-colors"
+                                                        className="text-right text-xs font-black text-indigo-600 bg-transparent border-b border-indigo-200 w-10 focus:outline-none focus:border-indigo-500"
                                                         {...register('profitMargin', { valueAsNumber: true })}
                                                     />
                                                     <span className="text-indigo-400 font-bold text-[10px]">%</span>
+                                                </div>
+                                            </div>
+                                            <div className="flex bg-gray-50 rounded p-1 items-center justify-between border border-gray-100 h-7">
+                                                <span className="text-[9px] font-bold text-gray-500 uppercase tracking-wider pl-1">Impostos (NF)</span>
+                                                <div className="flex items-center gap-1">
+                                                    <input
+                                                        type="number"
+                                                        className="text-right text-xs font-black text-gray-600 bg-transparent border-b border-gray-200 w-10 focus:outline-none focus:border-indigo-500"
+                                                        {...register('taxRate', { valueAsNumber: true })}
+                                                    />
+                                                    <span className="text-gray-400 font-bold text-[10px]">%</span>
+                                                </div>
+                                            </div>
+                                            <div className="flex bg-gray-50 rounded p-1 items-center justify-between border border-gray-100 h-7">
+                                                <span className="text-[9px] font-bold text-gray-500 uppercase tracking-wider pl-1">Taxas (MktPlace/Cartão)</span>
+                                                <div className="flex items-center gap-1">
+                                                    <input
+                                                        type="number"
+                                                        className="text-right text-xs font-black text-gray-600 bg-transparent border-b border-gray-200 w-10 focus:outline-none focus:border-indigo-500"
+                                                        {...register('commissionRate', { valueAsNumber: true })}
+                                                    />
+                                                    <span className="text-gray-400 font-bold text-[10px]">%</span>
                                                 </div>
                                             </div>
                                         </div>
