@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { prisma } from './app';
+import { prisma } from './db';
 import { calculatePricing, calculateMaterialCost, calculateOverhead } from './logic';
 import { z } from 'zod';
 
