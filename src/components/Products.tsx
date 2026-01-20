@@ -385,14 +385,18 @@ const Products: React.FC = () => {
                                     </div>
 
                                     <div className="p-2">
-                                        <div className="grid grid-cols-2 gap-2 mb-2">
-                                            <div className="py-1 px-2 bg-indigo-50/50 rounded border border-indigo-50">
-                                                <p className="text-[8px] uppercase font-bold text-indigo-400 mb-0 tracking-wider">Custo Direto</p>
+                                        <div className="grid grid-cols-3 gap-2 mb-2">
+                                            <div className="py-1 px-1 bg-indigo-50/50 rounded border border-indigo-50">
+                                                <p className="text-[7px] uppercase font-bold text-indigo-400 mb-0 tracking-wider truncate">Custo Direto</p>
                                                 <p className="text-xs font-bold text-gray-900">R$ {totalCost.toFixed(2)}</p>
                                             </div>
-                                            <div className="py-1 px-2 bg-rose-50 rounded border border-rose-100">
-                                                <p className="text-[8px] uppercase font-bold text-rose-400 mb-0 tracking-wider">Taxas/Imp</p>
+                                            <div className="py-1 px-1 bg-rose-50 rounded border border-rose-100">
+                                                <p className="text-[7px] uppercase font-bold text-rose-400 mb-0 tracking-wider truncate">Taxas/Imp</p>
                                                 <p className="text-xs font-bold text-rose-600">R$ {(taxValue + commValue).toFixed(2)}</p>
+                                            </div>
+                                            <div className="py-1 px-1 bg-emerald-50 rounded border border-emerald-100">
+                                                <p className="text-[7px] uppercase font-bold text-emerald-500 mb-0 tracking-wider truncate">Lucro Real</p>
+                                                <p className="text-xs font-bold text-emerald-700">R$ {netProfitValue.toFixed(2)}</p>
                                             </div>
                                         </div>
 
