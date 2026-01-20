@@ -1,186 +1,169 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { api, FixosMensais } from '../api/client';
+import { useStoreData } from '../hooks/useStoreData';
+import { FixedCost } from '../types';
 import {
-  Building2,
-  Calendar,
-  DollarSign,
-  Clock,
-  Save,
-  TrendingDown,
-  Receipt,
-  Edit3,
+  Wallet,
+  Plus,
   Trash2,
   X,
-  Info,
-  Wallet,
-  Plus
+  Save,
+  DollarSign
 } from 'lucide-react';
 
-const FixedCostPeriodicity = z.enum(['Mensal', 'Trimestral', 'Semestral', 'Anual']);
-type FixedCostPeriodicity = z.infer<typeof FixedCostPeriodicity>;
-const PERIODICITIES: FixedCostPeriodicity[] = ['Mensal', 'Trimestral', 'Semestral', 'Anual'];
-
 const schema = z.object({
-  month: z.string().regex(/^\d{4}-\d{2}$/, 'Formato inválido (YYYY-MM)'),
-  totalFixedCosts: z.number().min(0, 'Valor deve ser positivo'),
-  productiveHours: z.number().min(1, 'Horas devem ser positivas')
+  name: z.string().min(1, 'Nome é obrigatório'),
+  value: z.number().min(0, 'Valor deve ser positivo')
 });
 
 type FormData = z.infer<typeof schema>;
 
 const FixedCosts: React.FC = () => {
-  const [costs, setCosts] = useState<FixosMensais[]>([]);
+  const { fixedCosts, addFixedCost, updateFixedCost, deleteFixedCost } = useStoreData();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentMonth, setCurrentMonth] = useState(new Date().toISOString().slice(0, 7));
+  const [editingId, setEditingId] = useState<string | null>(null);
 
-  const { register, handleSubmit, reset, setValue, watch, formState: { errors, isSubmitting } } = useForm<FormData>({
+  const { register, handleSubmit, reset, setValue, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      month: currentMonth,
-      totalFixedCosts: 0,
-      productiveHours: 160
+      value: 0
     }
   });
 
-  useEffect(() => {
-    fetchCosts();
-  }, []);
-
-  const fetchCosts = async () => {
-    try {
-      const data = await api.get<FixosMensais[]>('/fixos');
-      setCosts(data);
-    } catch (error) { console.error(error); }
-  };
-
   const onSubmit = async (data: FormData) => {
     try {
-      await api.post('/fixos', data);
-      await fetchCosts();
-      setIsModalOpen(false);
-      reset();
-      alert('Custos atualizados com sucesso!');
+      if (editingId) {
+        await updateFixedCost({ id: editingId, ...data });
+      } else {
+        await addFixedCost({ id: '', ...data });
+      }
+      handleCloseModal();
     } catch (error) {
-      console.error(error);
-      alert('Erro ao salvar custos');
+      console.error('Failed to save fixed cost', error);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Excluir este registro?')) return;
-    try {
-      await api.delete(`/fixos/${id}`);
-      fetchCosts();
-    } catch (e) {
-      console.error(e);
-      alert('Erro ao excluir');
-    }
+    if (!confirm('Excluir este custo?')) return;
+    await deleteFixedCost(id);
   };
 
-  const hourlyRate = (costs.length > 0 && costs[0].productiveHours > 0)
-    ? (Number(costs[0].totalFixedCosts) / Number(costs[0].productiveHours))
-    : 0;
+  const handleEdit = (item: FixedCost) => {
+    setEditingId(item.id);
+    setValue('name', item.name);
+    setValue('value', Number(item.value));
+    setIsModalOpen(true);
+  };
 
-  const totalMonthly = costs.reduce((acc, c) => acc + Number(c.totalFixedCosts), 0); // Sum of all entries? Or just current month?
-  // Since the API returns a list of monthly configs, let's just sum typical monthly for now or show latest.
-  // Use latest entry for display
-  const latestCost = costs.length > 0 ? costs[costs.length - 1] : null;
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEditingId(null);
+    reset();
+  };
+
+  const totalMonthly = fixedCosts.reduce((acc, c) => acc + Number(c.value), 0);
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div>
-          <h2 className="text-4xl font-bold text-gray-900 font-serif tracking-tight">Custos Fixos</h2>
-          <p className="text-gray-500 mt-2 font-medium">Defina suas despesas mensais e horas de trabalho.</p>
+          <h2 className="text-4xl font-bold text-gray-900 font-serif tracking-tight">Custos Fixos Mensais</h2>
+          <p className="text-gray-500 mt-2 font-medium">Cadastre suas despesas recorrentes (Aluguel, Luz, Internet).</p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
           className="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100 hover:-translate-y-0.5 active:scale-95"
         >
           <Plus className="w-5 h-5" />
-          Novo Custo Fixo
+          Novo Custo
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Stats Card */}
-        <div className="lg:col-span-1 space-y-6">
+        <div className="lg:col-span-1">
           <div className="bg-gradient-to-br from-indigo-600 to-indigo-800 p-8 rounded-[2.5rem] text-white shadow-2xl shadow-indigo-200 relative overflow-hidden group">
             <Wallet className="absolute -right-8 -bottom-8 w-40 h-40 text-white/10 group-hover:scale-110 transition-transform duration-700" />
             <div className="relative z-10">
-              <h4 className="font-bold text-indigo-100 text-xs uppercase tracking-widest opacity-80">Custo Hora Técnica</h4>
-              <p className="text-4xl font-bold mt-2">R$ {hourlyRate.toFixed(2)}</p>
+              <h4 className="font-bold text-indigo-100 text-xs uppercase tracking-widest opacity-80">Total Mensal</h4>
+              <p className="text-4xl font-bold mt-2">R$ {totalMonthly.toFixed(2)}</p>
               <div className="mt-6 flex items-center gap-2 bg-white/10 w-fit px-3 py-1 rounded-full text-[10px] font-bold border border-white/10">
-                <TrendingDown className="w-3 h-3" />
-                Baseado em {latestCost?.productiveHours || 0}h/mês
+                <DollarSign className="w-3 h-3" />
+                {fixedCosts.length} despesas cadastradas
               </div>
             </div>
           </div>
         </div>
 
         {/* List */}
-        <div className="lg:col-span-3">
-          <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden min-h-[450px]">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="bg-gray-50/30">
-                    <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Mês de Referência</th>
-                    <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Horas Produtivas</th>
-                    <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total Custos</th>
-                    <th className="px-8 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-right">Ações</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-50">
-                  {costs.length === 0 ? (
-                    <tr><td colSpan={4} className="py-20 text-center text-gray-400">Nenhum custo registrado.</td></tr>
-                  ) : (
-                    costs.map(c => (
-                      <tr key={c.id} className="hover:bg-gray-50/50 transition-all">
-                        <td className="px-8 py-6 font-bold text-gray-800">{c.month}</td>
-                        <td className="px-8 py-6 text-gray-600">{Number(c.productiveHours)}h</td>
-                        <td className="px-8 py-6 font-bold text-indigo-600">R$ {Number(c.totalFixedCosts).toFixed(2)}</td>
-                        <td className="px-8 py-6 text-right">
-                          <button onClick={() => handleDelete(c.id)} className="p-2 text-gray-400 hover:text-rose-500"><Trash2 className="w-5 h-5" /></button>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
+        <div className="lg:col-span-2 space-y-4">
+          {fixedCosts.length === 0 ? (
+            <div className="text-center py-20 bg-white rounded-[2.5rem] border border-gray-100">
+              <p className="text-gray-400 font-medium">Nenhuma despesa cadastrada ainda.</p>
             </div>
-          </div>
+          ) : (
+            fixedCosts.map(item => (
+              <div key={item.id} className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm flex items-center justify-between group hover:shadow-md transition-all">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600">
+                    <DollarSign className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-900 text-lg">{item.name}</h3>
+                    <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">Despesa Mensal</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-6">
+                  <p className="font-bold text-gray-900 text-xl">R$ {Number(item.value).toFixed(2)}</p>
+                  <div className="flex gap-2">
+                    <button onClick={() => handleEdit(item)} className="p-2 text-gray-300 hover:text-indigo-600 transition-colors">
+                      <span className="sr-only">Editar</span>
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                    </button>
+                    <button onClick={() => handleDelete(item.id)} className="p-2 text-gray-300 hover:text-rose-500 transition-colors">
+                      <Trash2 className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
 
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
-          <div className="bg-white w-full max-w-xl rounded-[3rem] shadow-2xl overflow-hidden p-10">
+          <div className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden p-8 animate-in zoom-in-95 duration-200">
             <div className="flex justify-between items-center mb-8">
-              <h3 className="text-2xl font-bold font-serif">Novo Registro Mensal</h3>
-              <button onClick={() => setIsModalOpen(false)}><X className="w-6 h-6 text-gray-400" /></button>
+              <h3 className="text-2xl font-bold font-serif text-gray-900">
+                {editingId ? 'Editar Despesa' : 'Nova Despesa'}
+              </h3>
+              <button onClick={handleCloseModal}><X className="w-6 h-6 text-gray-400" /></button>
             </div>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <div>
-                <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest ml-1">Mês</label>
-                <input type="month" {...register('month')} className="w-full bg-gray-50 rounded-2xl p-4 outline-none font-bold" />
-                {errors.month && <p className="text-rose-500 text-sm">{errors.month.message}</p>}
+                <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest ml-1 mb-2 block">Nome da Despesa</label>
+                <input
+                  {...register('name')}
+                  placeholder="Ex: Conta de Luz"
+                  className="w-full bg-gray-50 border-2 border-transparent rounded-2xl px-6 py-4 outline-none focus:bg-white focus:border-indigo-500 transition-all font-bold text-gray-700"
+                />
+                {errors.name && <p className="text-rose-500 text-sm mt-1 ml-1">{errors.name.message}</p>}
               </div>
               <div>
-                <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest ml-1">Total Custos (R$)</label>
-                <input type="number" step="0.01" {...register('totalFixedCosts', { valueAsNumber: true })} className="w-full bg-gray-50 rounded-2xl p-4 outline-none font-bold" />
-                {errors.totalFixedCosts && <p className="text-rose-500 text-sm">{errors.totalFixedCosts.message}</p>}
+                <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest ml-1 mb-2 block">Valor Mensal (R$)</label>
+                <input
+                  type="number" step="0.01"
+                  {...register('value', { valueAsNumber: true })}
+                  className="w-full bg-gray-50 border-2 border-transparent rounded-2xl px-6 py-4 outline-none focus:bg-white focus:border-indigo-500 transition-all font-bold text-gray-700 text-lg"
+                />
+                {errors.value && <p className="text-rose-500 text-sm mt-1 ml-1">{errors.value.message}</p>}
               </div>
-              <div>
-                <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest ml-1">Horas Produtivas</label>
-                <input type="number" {...register('productiveHours', { valueAsNumber: true })} className="w-full bg-gray-50 rounded-2xl p-4 outline-none font-bold" />
-                {errors.productiveHours && <p className="text-rose-500 text-sm">{errors.productiveHours.message}</p>}
-              </div>
-              <button type="submit" disabled={isSubmitting} className="w-full py-4 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition-all">
-                {isSubmitting ? 'Salvando...' : 'Salvar'}
+              <button type="submit" disabled={isSubmitting} className="w-full py-4 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 flex items-center justify-center gap-2">
+                <Save className="w-5 h-5" />
+                {isSubmitting ? 'Salvando...' : 'Salvar Despesa'}
               </button>
             </form>
           </div>

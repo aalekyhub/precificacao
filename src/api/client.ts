@@ -2,11 +2,15 @@ import { supabase } from '../lib/supabase';
 
 // Helper to map generic paths to Supabase tables
 const getTable = (path: string) => {
-    if (path.includes('insumos')) return 'Insumo';
-    if (path.includes('produtos')) return 'Produto';
+    if (path.includes('insumos')) return 'Material'; // Legacy support
+    if (path.includes('materials')) return 'Material';
+    if (path.includes('produtos')) return 'Product'; // Legacy
+    if (path.includes('products')) return 'Product';
     if (path.includes('canais')) return 'Canal';
-    if (path.includes('fixos')) return 'FixosMensais';
+    if (path.includes('fixos')) return 'FixedCost';
+    if (path.includes('fixed-costs')) return 'FixedCost';
     if (path.includes('contacts')) return 'Contact';
+    if (path.includes('settings')) return 'Settings';
     return '';
 };
 

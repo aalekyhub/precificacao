@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { api, Insumo } from '../api/client';
+import { useStoreData } from '../hooks/useStoreData';
+import { Material } from '../types';
 import {
     Package,
     Plus,
@@ -10,22 +11,21 @@ import {
     Trash2,
     X,
     Save,
-    AlertCircle
+    AlertTriangle
 } from 'lucide-react';
 
 const schema = z.object({
     name: z.string().min(1, 'Nome é obrigatório'),
     unit: z.string().min(1, 'Unidade é obrigatória'),
-    unitCost: z.number().min(0, 'Preço deve ser maior ou igual a zero'),
-    lossPct: z.number().min(0).max(1, 'Perda deve ser entre 0 e 1 (ex: 0.1 para 10%)'),
-    yieldNotes: z.string().optional(),
-    supplier: z.string().optional()
+    price: z.number().min(0, 'Preço deve ser maior ou igual a zero'),
+    stock: z.number().min(0, 'Estoque deve ser maior ou igual a zero'),
+    min_stock: z.number().min(0, 'Estoque mínimo deve ser maior ou igual a zero'),
 });
 
 type FormData = z.infer<typeof schema>;
 
 const Materials: React.FC = () => {
-    const [materials, setMaterials] = useState<Insumo[]>([]);
+    const { materials, addMaterial, updateMaterial, deleteMaterial } = useStoreData();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
     const [search, setSearch] = useState('');
@@ -33,58 +33,38 @@ const Materials: React.FC = () => {
     const { register, handleSubmit, reset, setValue, formState: { errors, isSubmitting } } = useForm<FormData>({
         resolver: zodResolver(schema),
         defaultValues: {
-            lossPct: 0,
+            stock: 0,
+            min_stock: 0,
             unit: 'UN'
         }
     });
 
-    useEffect(() => {
-        fetchMaterials();
-    }, []);
-
-    const fetchMaterials = async () => {
-        try {
-            const data = await api.get<Insumo[]>('/insumos');
-            setMaterials(data);
-        } catch (error) {
-            console.error('Failed to fetch materials', error);
-        }
-    };
-
     const onSubmit = async (data: FormData) => {
         try {
             if (editingId) {
-                await api.put(`/insumos/${editingId}`, data);
+                await updateMaterial({ id: editingId, ...data });
             } else {
-                await api.post('/insumos', data);
+                // Pass empty ID for new creation, it will be stripped/ignored or handled
+                await addMaterial({ id: '', ...data });
             }
-            await fetchMaterials();
             handleCloseModal();
         } catch (error) {
             console.error('Failed to save material', error);
-            alert('Erro ao salvar material');
         }
     };
 
     const handleDelete = async (id: string) => {
         if (!confirm('Tem certeza que deseja excluir?')) return;
-        try {
-            await api.delete(`/insumos/${id}`);
-            await fetchMaterials();
-        } catch (error) {
-            console.error('Failed to delete', error);
-            alert('Erro ao excluir');
-        }
+        await deleteMaterial(id);
     };
 
-    const handleEdit = (item: Insumo) => {
+    const handleEdit = (item: Material) => {
         setEditingId(item.id);
         setValue('name', item.name);
         setValue('unit', item.unit);
-        setValue('unitCost', Number(item.unitCost));
-        setValue('lossPct', Number(item.lossPct));
-        setValue('yieldNotes', item.yieldNotes || '');
-        setValue('supplier', item.supplier || '');
+        setValue('price', Number(item.price));
+        setValue('stock', Number(item.stock));
+        setValue('min_stock', Number(item.min_stock));
         setIsModalOpen(true);
     };
 
@@ -102,8 +82,8 @@ const Materials: React.FC = () => {
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
                 <div>
-                    <h2 className="text-4xl font-bold text-gray-900 font-serif tracking-tight">Materiais e Insumos</h2>
-                    <p className="text-gray-500 mt-2 font-medium">Gerencie seus custos de matéria-prima e perdas.</p>
+                    <h2 className="text-4xl font-bold text-gray-900 font-serif tracking-tight">Meus Materiais</h2>
+                    <p className="text-gray-500 mt-2 font-medium">Cadastre tudo que você usa para produzir.</p>
                 </div>
                 <button
                     onClick={() => setIsModalOpen(true)}
@@ -129,8 +109,16 @@ const Materials: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filtered.map(item => (
-                    <div key={item.id} className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all group">
-                        <div className="flex justify-between items-start mb-6">
+                    <div key={item.id} className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all group relative overflow-hidden">
+
+                        {Number(item.stock) <= Number(item.min_stock) && (
+                            <div className="absolute top-0 right-0 bg-amber-100 text-amber-600 px-4 py-2 rounded-bl-2xl text-[10px] font-bold uppercase tracking-widest flex items-center gap-1">
+                                <AlertTriangle className="w-3 h-3" />
+                                Baixo Estoque
+                            </div>
+                        )}
+
+                        <div className="flex justify-between items-start mb-6 mt-2">
                             <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform">
                                 <Package className="w-7 h-7" />
                             </div>
@@ -145,17 +133,20 @@ const Materials: React.FC = () => {
                             </div>
                         </div>
 
-                        <h3 className="text-xl font-bold text-gray-900 mb-2">{item.name}</h3>
-                        <div className="flex justify-between items-end">
+                        <h3 className="text-xl font-bold text-gray-900 mb-1">{item.name}</h3>
+                        <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-4">{item.unit}</p>
+
+                        <div className="flex justify-between items-end border-t pt-4 border-gray-50">
                             <div>
-                                <p className="text-sm text-gray-400 font-medium uppercase tracking-wide">Custo por {item.unit}</p>
-                                <p className="text-2xl font-black text-gray-900 mt-1">R$ {Number(item.unitCost).toFixed(2)}</p>
+                                <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Preço Pago</p>
+                                <p className="text-2xl font-black text-gray-900 mt-1">R$ {Number(item.price).toFixed(2)}</p>
                             </div>
-                            {Number(item.lossPct) > 0 && (
-                                <span className="px-3 py-1 bg-rose-50 text-rose-600 rounded-lg text-xs font-bold uppercase tracking-wider">
-                                    Perda: {(Number(item.lossPct) * 100).toFixed(0)}%
-                                </span>
-                            )}
+                            <div className="text-right">
+                                <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Em Estoque</p>
+                                <p className={`text-xl font-bold mt-1 ${item.stock <= item.min_stock ? 'text-amber-500' : 'text-gray-700'}`}>
+                                    {item.stock}
+                                </p>
+                            </div>
                         </div>
                     </div>
                 ))}
@@ -197,41 +188,31 @@ const Materials: React.FC = () => {
                                         <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block mb-2">Custo Unitário (R$)</label>
                                         <input
                                             type="number" step="0.01"
-                                            {...register('unitCost', { valueAsNumber: true })}
+                                            {...register('price', { valueAsNumber: true })}
                                             className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm"
                                         />
-                                        {errors.unitCost && <p className="text-rose-500 text-sm mt-1">{errors.unitCost.message}</p>}
+                                        {errors.price && <p className="text-rose-500 text-sm mt-1">{errors.price.message}</p>}
                                     </div>
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block mb-2">Perda (%)</label>
+                                        <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block mb-2">Estoque Atual</label>
                                         <input
                                             type="number" step="0.01"
-                                            {...register('lossPct', { valueAsNumber: true })}
+                                            {...register('stock', { valueAsNumber: true })}
                                             className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm"
-                                            placeholder="0.10 para 10%"
                                         />
-                                        <p className="text-[10px] text-gray-400 mt-1 ml-1">Ex: 0.10 = 10% de perda</p>
-                                        {errors.lossPct && <p className="text-rose-500 text-sm mt-1">{errors.lossPct.message}</p>}
+                                        {errors.stock && <p className="text-rose-500 text-sm mt-1">{errors.stock.message}</p>}
                                     </div>
                                     <div>
-                                        <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block mb-2">Fornecedor (Opcional)</label>
+                                        <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block mb-2">Estoque Mínimo (Alerta)</label>
                                         <input
-                                            {...register('supplier')}
-                                            className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm"
+                                            type="number" step="0.01"
+                                            {...register('min_stock', { valueAsNumber: true })}
+                                            className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-white border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 transition-all shadow-sm"
                                         />
                                     </div>
-                                </div>
-
-                                <div>
-                                    <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block mb-2">Notas sobre Rendimento (Opcional)</label>
-                                    <textarea
-                                        {...register('yieldNotes')}
-                                        rows={3}
-                                        className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm resize-none"
-                                    />
                                 </div>
 
                             </div>
