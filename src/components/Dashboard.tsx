@@ -56,7 +56,7 @@ const Dashboard: React.FC = () => {
       try {
         const [p, m, f, o] = await Promise.all([
           api.get<Produto[]>('/produtos'),
-          api.get<Insumo[]>('/insumos'),
+          api.get<Insumo[]>('/materials'),
           api.get<FixedCost[]>('/fixos'),
           api.get<Order[]>('/orders')
         ]);
