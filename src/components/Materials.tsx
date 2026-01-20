@@ -173,124 +173,150 @@ const Materials: React.FC = () => {
 
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
-                    <div className="bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
-                        <div className="px-10 py-8 bg-gray-50/50 flex items-center justify-between border-b">
-                            <h3 className="text-2xl font-bold text-gray-900 font-serif">
-                                {editingId ? 'Editar Material' : 'Novo Material'}
-                            </h3>
-                            <button onClick={handleCloseModal}><X className="w-6 h-6 text-gray-400" /></button>
+                    <div className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[85vh]">
+                        <div className="px-8 py-6 bg-white border-b border-gray-100 flex items-center justify-between sticky top-0 z-10">
+                            <div>
+                                <h3 className="text-2xl font-bold text-gray-900 font-serif">
+                                    {editingId ? 'Editar Material' : 'Novo Material'}
+                                </h3>
+                                <p className="text-sm text-gray-500 mt-1">Preencha os detalhes do insumo.</p>
+                            </div>
+                            <button onClick={handleCloseModal} className="p-2 hover:bg-gray-100 rounded-full transition-colors"><X className="w-5 h-5 text-gray-400" /></button>
                         </div>
 
-                        <form onSubmit={handleSubmit(onSubmit)} className="p-10 space-y-6 max-h-[70vh] overflow-y-auto custom-scrollbar">
-                            <div className="space-y-4">
-                                <div>
-                                    <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block mb-2">Nome do Material</label>
-                                    <input
-                                        {...register('name')}
-                                        className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm"
-                                        placeholder="Ex: Papel Offset 180g"
-                                    />
-                                    {errors.name && <p className="text-rose-500 text-sm mt-1">{errors.name.message}</p>}
-                                </div>
-
-                                <div>
-                                    <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block mb-2">Unidade de Compra</label>
-                                    <input
-                                        {...register('unit')}
-                                        className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm"
-                                        placeholder="Selecione uma unidade"
-                                        list="units"
-                                    />
-                                    <datalist id="units">
-                                        <option value="UN">Unidade</option>
-                                        <option value="KG">Quilograma</option>
-                                        <option value="MT">Metro</option>
-                                        <option value="CX">Caixa</option>
-                                        <option value="L">Litro</option>
-                                    </datalist>
-                                    {errors.unit && <p className="text-rose-500 text-sm mt-1">{errors.unit.message}</p>}
-                                </div>
-
-                                <div>
-                                    <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block mb-2">Preço Total de Compra</label>
-                                    <input
-                                        type="number" step="0.01"
-                                        {...register('purchase_price', { valueAsNumber: true })}
-                                        className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm"
-                                        placeholder="R$ 0,00"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block mb-2">Quantidade por Embalagem</label>
-                                    <input
-                                        type="number" step="0.01"
-                                        {...register('pack_quantity', { valueAsNumber: true })}
-                                        className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm"
-                                        placeholder="Quantidade por embalagem"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block mb-2">Preço Unitário (Calculado)</label>
-                                    <input
-                                        type="number" step="0.01"
-                                        {...register('price', { valueAsNumber: true })}
-                                        className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-gray-100 border border-gray-200 rounded-xl outline-none cursor-not-allowed"
-                                        readOnly
-                                        placeholder="Preço por unidade"
-                                    />
-                                    {errors.price && <p className="text-rose-500 text-sm mt-1">{errors.price.message}</p>}
-                                </div>
-
-                                <div>
-                                    <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block mb-2">Observações</label>
-                                    <textarea
-                                        {...register('observations')}
-                                        className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm resize-none h-24"
-                                        placeholder="Notas adicionais sobre o material"
-                                    />
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-4">
+                        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col flex-1 overflow-hidden">
+                            <div className="p-8 space-y-8 overflow-y-auto custom-scrollbar flex-1">
+                                {/* Basic Info Section */}
+                                <div className="space-y-4">
                                     <div>
-                                        <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block mb-2">Estoque</label>
-                                        <input
-                                            type="number" step="0.01"
-                                            {...register('stock', { valueAsNumber: true })}
-                                            className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm"
-                                            placeholder="0"
-                                        />
-                                        {errors.stock && <p className="text-rose-500 text-sm mt-1">{errors.stock.message}</p>}
+                                        <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block mb-2">Identificação</label>
+                                        <div className="grid grid-cols-3 gap-4">
+                                            <div className="col-span-2">
+                                                <input
+                                                    {...register('name')}
+                                                    className="w-full text-sm font-medium text-gray-700 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
+                                                    placeholder="Nome do Material (ex: Papel Offset)"
+                                                />
+                                                {errors.name && <p className="text-rose-500 text-xs mt-1 ml-1">{errors.name.message}</p>}
+                                            </div>
+                                            <div>
+                                                <input
+                                                    {...register('unit')}
+                                                    className="w-full text-sm font-medium text-gray-700 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
+                                                    placeholder="Unidade"
+                                                    list="units"
+                                                />
+                                                <datalist id="units">
+                                                    <option value="UN">Unidade</option>
+                                                    <option value="KG">Quilograma</option>
+                                                    <option value="MT">Metro</option>
+                                                    <option value="CX">Caixa</option>
+                                                    <option value="L">Litro</option>
+                                                </datalist>
+                                                {errors.unit && <p className="text-rose-500 text-xs mt-1 ml-1">{errors.unit.message}</p>}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Pricing Section */}
+                                <div className="bg-blue-50/50 p-6 rounded-2xl border border-blue-100 space-y-4">
+                                    <h4 className="text-[11px] font-bold text-blue-500 uppercase tracking-wider flex items-center gap-2">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                                        Precificação e Custos
+                                    </h4>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider block mb-1.5">Preço Pago (Total)</label>
+                                            <div className="relative">
+                                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold">R$</span>
+                                                <input
+                                                    type="number" step="0.01"
+                                                    {...register('purchase_price', { valueAsNumber: true })}
+                                                    className="w-full text-sm font-bold text-gray-900 pl-8 pr-4 py-2.5 bg-white border border-blue-200 rounded-xl outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                                                    placeholder="0.00"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider block mb-1.5">Qtd na Embalagem</label>
+                                            <input
+                                                type="number" step="0.01"
+                                                {...register('pack_quantity', { valueAsNumber: true })}
+                                                className="w-full text-sm font-bold text-gray-900 px-4 py-2.5 bg-white border border-blue-200 rounded-xl outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                                                placeholder="1"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="pt-2 border-t border-blue-100 mt-2">
+                                        <div className="flex justify-between items-center">
+                                            <label className="text-[10px] font-bold text-blue-400 uppercase tracking-wider">Custo Unitário Final</label>
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-xs text-blue-300 font-medium">Auto-calculado</span>
+                                                <div className="bg-white px-4 py-1.5 rounded-lg border border-blue-200 shadow-sm">
+                                                    <span className="text-sm font-black text-blue-600">
+                                                        R$ {watch('price')?.toFixed(4) || '0.0000'}
+                                                    </span>
+                                                    {/* Hidden input to ensure value is registered */}
+                                                    <input type="hidden" {...register('price', { valueAsNumber: true })} />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Stock & Details */}
+                                <div className="grid grid-cols-2 gap-6">
+                                    <div className="space-y-4">
+                                        <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Controle de Estoque</label>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label className="text-[10px] text-gray-400 block mb-1">Atual</label>
+                                                <input
+                                                    type="number" step="0.01"
+                                                    {...register('stock', { valueAsNumber: true })}
+                                                    className="w-full text-sm font-bold text-gray-700 px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-blue-500 transition-all"
+                                                />
+                                                {errors.stock && <p className="text-rose-500 text-[10px] mt-1">{errors.stock.message}</p>}
+                                            </div>
+                                            <div>
+                                                <label className="text-[10px] text-gray-400 block mb-1">Mínimo</label>
+                                                <input
+                                                    type="number" step="0.01"
+                                                    {...register('min_stock', { valueAsNumber: true })}
+                                                    className="w-full text-sm font-bold text-amber-600 px-3 py-2.5 bg-amber-50 border border-amber-200 rounded-xl outline-none focus:bg-white focus:border-amber-500 transition-all"
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
                                     <div>
-                                        <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block mb-2">Estoque Mínimo</label>
-                                        <input
-                                            type="number" step="0.01"
-                                            {...register('min_stock', { valueAsNumber: true })}
-                                            className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-white border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 transition-all shadow-sm"
-                                            placeholder="0"
+                                        <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block mb-2">Observações</label>
+                                        <textarea
+                                            {...register('observations')}
+                                            className="w-full text-sm text-gray-600 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-blue-500 transition-all resize-none h-[88px]"
+                                            placeholder="..."
                                         />
                                     </div>
                                 </div>
                             </div>
 
-
-
-                            <div className="pt-6 border-t flex justify-end gap-4">
-                                <button type="button" onClick={handleCloseModal} className="px-8 py-4 bg-white border-2 rounded-2xl font-bold text-gray-500 hover:bg-gray-50 transition-colors">Cancelar</button>
+                            <div className="px-8 py-6 bg-gray-50 border-t border-gray-100 flex justify-end gap-3 sticky bottom-0">
+                                <button type="button" onClick={handleCloseModal} className="px-6 py-3 bg-white border border-gray-200 rounded-xl font-bold text-gray-500 hover:bg-gray-50 hover:text-gray-700 transition-all text-sm">
+                                    Cancelar
+                                </button>
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="px-10 py-4 bg-blue-600 text-white rounded-2xl font-bold shadow-xl shadow-blue-100 flex items-center gap-2 hover:bg-blue-700 transition-all disabled:opacity-70"
+                                    className="px-8 py-3 bg-blue-600 text-white rounded-xl font-bold shadow-lg shadow-blue-200 flex items-center gap-2 hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-200/50 transition-all disabled:opacity-70 disabled:shadow-none text-sm active:scale-95 transform"
                                 >
-                                    <Save className="w-5 h-5" />
+                                    <Save className="w-4 h-4" />
                                     {isSubmitting ? 'Salvando...' : 'Salvar Material'}
                                 </button>
                             </div>
                         </form>
                     </div>
-                </div >
+                </div>
             )}
         </div >
     );
