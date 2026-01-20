@@ -10,8 +10,38 @@ interface StoreSettingsProps {
 }
 
 const StoreSettings: React.FC<StoreSettingsProps> = ({ config, onUpdate }) => {
-  const totalHoursMonth = config.work_days_per_month * config.work_hours_per_day;
-  const hourlyRate = totalHoursMonth > 0 ? config.pro_labore / totalHoursMonth : 0;
+  // Use local state for form inputs to allow typing freely (strings)
+  const [formData, setFormData] = React.useState({
+    pro_labore: String(config.pro_labore || ''),
+    work_days_per_month: String(config.work_days_per_month || ''),
+    work_hours_per_day: String(config.work_hours_per_day || '')
+  });
+
+  // Sync with prop updates (initial load)
+  React.useEffect(() => {
+    setFormData({
+      pro_labore: String(config.pro_labore || ''),
+      work_days_per_month: String(config.work_days_per_month || ''),
+      work_hours_per_day: String(config.work_hours_per_day || '')
+    });
+  }, [config]);
+
+  const handleSave = () => {
+    onUpdate({
+      ...config,
+      pro_labore: parseFloat(formData.pro_labore) || 0,
+      work_days_per_month: parseFloat(formData.work_days_per_month) || 0,
+      work_hours_per_day: parseFloat(formData.work_hours_per_day) || 0
+    });
+    alert('Configurações salvas!');
+  };
+
+  // Derived for display
+  const days = parseFloat(formData.work_days_per_month) || 0;
+  const hours = parseFloat(formData.work_hours_per_day) || 0;
+  const salary = parseFloat(formData.pro_labore) || 0;
+  const totalHoursMonth = days * hours;
+  const hourlyRate = totalHoursMonth > 0 ? salary / totalHoursMonth : 0;
 
   return (
     <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -38,8 +68,8 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({ config, onUpdate }) => {
               <input
                 type="number"
                 className="w-full bg-gray-50 border-2 border-transparent rounded-2xl px-6 py-4 focus:bg-white focus:border-rose-500 outline-none transition-all font-bold text-lg"
-                value={config.pro_labore}
-                onChange={(e) => onUpdate({ ...config, pro_labore: parseFloat(e.target.value) || 0 })}
+                value={formData.pro_labore}
+                onChange={(e) => setFormData({ ...formData, pro_labore: e.target.value })}
               />
             </div>
 
@@ -50,8 +80,8 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({ config, onUpdate }) => {
                   <input
                     type="number"
                     className="w-full bg-gray-50 border-2 border-transparent rounded-2xl px-6 py-4 focus:bg-white focus:border-rose-500 outline-none transition-all font-bold"
-                    value={config.work_days_per_month}
-                    onChange={(e) => onUpdate({ ...config, work_days_per_month: parseFloat(e.target.value) || 0 })}
+                    value={formData.work_days_per_month}
+                    onChange={(e) => setFormData({ ...formData, work_days_per_month: e.target.value })}
                   />
                   <Calendar className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                 </div>
@@ -62,8 +92,8 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({ config, onUpdate }) => {
                   <input
                     type="number"
                     className="w-full bg-gray-50 border-2 border-transparent rounded-2xl px-6 py-4 focus:bg-white focus:border-rose-500 outline-none transition-all font-bold"
-                    value={config.work_hours_per_day}
-                    onChange={(e) => onUpdate({ ...config, work_hours_per_day: parseFloat(e.target.value) || 0 })}
+                    value={formData.work_hours_per_day}
+                    onChange={(e) => setFormData({ ...formData, work_hours_per_day: e.target.value })}
                   />
                   <Clock className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                 </div>
@@ -81,7 +111,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({ config, onUpdate }) => {
             </div>
 
             <button
-              onClick={() => onUpdate(config)}
+              onClick={handleSave}
               className="w-full py-4 bg-gray-900 text-white rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-gray-800 transition-all shadow-lg shadow-gray-200"
             >
               <Save className="w-5 h-5" />
