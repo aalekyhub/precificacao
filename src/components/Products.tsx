@@ -41,7 +41,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 const Products: React.FC = () => {
-    const { products, materials: insumos, addProduct, updateProduct, deleteProduct } = useStoreData();
+    const { products, materials: insumos, fixedCosts, addProduct, updateProduct, deleteProduct } = useStoreData();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
     const [search, setSearch] = useState('');
@@ -82,15 +82,23 @@ const Products: React.FC = () => {
             return acc + (item.qtyPerUnit * (mat?.price || 0));
         }, 0);
 
-        // 2. Labor Cost
+        // 2. Labor Cost & Fixed Cost Share
         // Hourly Rate = Pro Labore / (Days * Hours)
         const totalHoursMonth = (storeConfig.work_days_per_month * storeConfig.work_hours_per_day) || 160;
-        const hourlyRate = (storeConfig.pro_labore / totalHoursMonth) || 0;
+
+        // Hourly Rates
+        const hourlyLaborRate = (storeConfig.pro_labore / totalHoursMonth) || 0;
+
+        // Fixed Costs Rate (Rateio de Custos Fixos)
+        const totalFixedMonthly = (fixedCosts || []).reduce((acc, fc) => acc + fc.value, 0);
+        const hourlyFixedRate = (totalFixedMonthly / totalHoursMonth) || 0;
 
         const laborMinutes = (watchedSteps || []).reduce((acc, step) => acc + (step.setupMinutes || 0) + (step.unitMinutes || 0), 0);
-        const laborCost = (laborMinutes / 60) * hourlyRate;
 
-        const totalCost = matCost + laborCost;
+        const laborCost = (laborMinutes / 60) * hourlyLaborRate;
+        const fixedCostShare = (laborMinutes / 60) * hourlyFixedRate;
+
+        const totalCost = matCost + laborCost + fixedCostShare;
 
         // 3. Selling Price based on "Perfect Pricing" (Markup Multiplier approach for Target Net Profit)
         // Formula: Price = Cost / (1 - (Tax% + Fee% + NetProfit%))
