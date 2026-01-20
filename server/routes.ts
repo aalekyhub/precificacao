@@ -23,7 +23,16 @@ router.post('/insumos', async (req, res) => {
 
     try {
         const data = schema.parse(req.body);
-        const item = await prisma.insumo.create({ data });
+        const item = await prisma.insumo.create({
+            data: {
+                name: data.name,
+                unit: data.unit,
+                unitCost: data.unitCost,
+                lossPct: data.lossPct,
+                supplier: data.supplier || undefined,
+                yieldNotes: data.yieldNotes || undefined
+            }
+        });
         res.json(item);
     } catch (e) {
         res.status(400).json({ error: e });
