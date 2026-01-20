@@ -1,20 +1,20 @@
 
 import React, { useMemo } from 'react';
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer, 
-  AreaChart, 
-  Area 
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  AreaChart,
+  Area
 } from 'recharts';
-import { 
-  TrendingUp, 
-  DollarSign, 
-  Package, 
+import {
+  TrendingUp,
+  DollarSign,
+  Package,
   ShoppingCart,
   Sparkles,
   ArrowRight,
@@ -64,12 +64,12 @@ const Dashboard: React.FC<DashboardProps> = ({ products, materials, fixedCosts }
     const totalInvested = materials.reduce((acc, m) => acc + m.cost, 0);
     const activeProducts = products.length;
     const totalFixed = fixedCosts.reduce((acc, fc) => acc + fc.value, 0);
-    
+
     return {
       totalInvested: `R$ ${totalInvested.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
       totalFixed: `R$ ${totalFixed.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
       activeProducts: activeProducts.toString(),
-      avgMargin: activeProducts > 0 
+      avgMargin: activeProducts > 0
         ? `${Math.round(products.reduce((acc, p) => acc + p.markup, 0) / activeProducts)}%`
         : '0%'
     };
@@ -82,12 +82,7 @@ const Dashboard: React.FC<DashboardProps> = ({ products, materials, fixedCosts }
           <h2 className="text-4xl font-bold text-gray-900 font-serif tracking-tight">Painel de Controle</h2>
           <p className="text-gray-500 mt-2 font-medium">Bom dia, Mariana! Aqui está o resumo do seu ateliê hoje.</p>
         </div>
-        <div className="bg-white/80 backdrop-blur px-5 py-3 rounded-2xl text-sm font-bold text-rose-600 flex items-center gap-3 border border-rose-100 shadow-sm shadow-rose-50 animate-pulse">
-          <div className="bg-rose-500 p-1.5 rounded-lg shadow-sm">
-            <Sparkles className="w-4 h-4 text-white" />
-          </div>
-          Gemini: Margem média acima do mercado!
-        </div>
+
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -113,14 +108,14 @@ const Dashboard: React.FC<DashboardProps> = ({ products, materials, fixedCosts }
               <AreaChart data={data}>
                 <defs>
                   <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.15}/>
-                    <stop offset="95%" stopColor="#f43f5e" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.15} />
+                    <stop offset="95%" stopColor="#f43f5e" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 11, fontWeight: 700}} dy={10} />
-                <YAxis axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 11, fontWeight: 700}} />
-                <Tooltip 
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 11, fontWeight: 700 }} dy={10} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 11, fontWeight: 700 }} />
+                <Tooltip
                   contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)', padding: '15px' }}
                 />
                 <Area type="monotone" dataKey="revenue" stroke="#f43f5e" strokeWidth={4} fillOpacity={1} fill="url(#colorRev)" />
@@ -130,30 +125,7 @@ const Dashboard: React.FC<DashboardProps> = ({ products, materials, fixedCosts }
           </div>
         </div>
 
-        <div className="bg-gray-900 p-8 rounded-[2.5rem] shadow-2xl flex flex-col relative overflow-hidden group">
-          <div className="absolute -right-20 -top-20 w-64 h-64 bg-rose-500/10 rounded-full blur-3xl group-hover:bg-rose-500/20 transition-all duration-700"></div>
-          <h3 className="text-xl font-bold text-white font-serif mb-8 relative z-10 flex items-center gap-3">
-            <Sparkles className="w-6 h-6 text-rose-500" />
-            Sugestões da IA
-          </h3>
-          <div className="space-y-6 flex-grow relative z-10">
-            <div className="p-5 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-all cursor-default">
-              <p className="text-[10px] font-bold text-rose-500 uppercase tracking-widest mb-1">Insumos</p>
-              <p className="text-sm text-gray-300 leading-relaxed">O preço médio do Algodão subiu. Sugerimos atualizar o preço do 'Bastidor Floral' em 5%.</p>
-            </div>
-            <div className="p-5 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-all cursor-default">
-              <p className="text-[10px] font-bold text-orange-400 uppercase tracking-widest mb-1">Marketing</p>
-              <p className="text-sm text-gray-300 leading-relaxed">Produtos com margem acima de 60% representam 80% do seu lucro. Foque neles.</p>
-            </div>
-            <div className="p-5 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-all cursor-default">
-              <p className="text-[10px] font-bold text-teal-400 uppercase tracking-widest mb-1">Logística</p>
-              <p className="text-sm text-gray-300 leading-relaxed">Agrupar compras de materiais básicos pode reduzir custos fixos em até R$ {Math.min(200, stats.totalFixed)}/mês.</p>
-            </div>
-          </div>
-          <button className="mt-10 w-full py-4 bg-rose-500 text-white rounded-2xl font-bold hover:bg-rose-600 transition-all shadow-xl shadow-rose-500/20 relative z-10">
-            Relatório Detalhado
-          </button>
-        </div>
+
       </div>
 
       <div className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm">
@@ -190,7 +162,7 @@ const Dashboard: React.FC<DashboardProps> = ({ products, materials, fixedCosts }
                       </div>
                     </td>
                     <td className="py-5">
-                      <span className="text-rose-600 font-bold">R$ {((item.laborHours * item.laborRate + item.fixedCosts) * (1 + item.markup/100)).toFixed(2)}</span>
+                      <span className="text-rose-600 font-bold">R$ {((item.laborHours * item.laborRate + item.fixedCosts) * (1 + item.markup / 100)).toFixed(2)}</span>
                     </td>
                     <td className="py-5">
                       <span className="bg-rose-50 text-rose-600 px-3 py-1 rounded-full text-[10px] font-bold border border-rose-100">{item.markup}%</span>
