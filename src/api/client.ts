@@ -36,6 +36,9 @@ export const api = {
         if (table === 'Produto') {
             query = supabase.from(table).select('*, bomItems:BOMItem(*, insumo:Insumo(*)), steps:ProcessoEtapa(*)');
         }
+        if (table === 'Order') {
+            query = supabase.from(table).select('*, items:OrderItem(*)');
+        }
 
         const { data, error } = await query;
         if (error) throw error;
