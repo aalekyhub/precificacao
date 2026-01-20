@@ -10,10 +10,12 @@ import StoreSettings from './src/components/StoreSettings';
 import Contacts from './src/components/Contacts';
 import Quotes from './src/components/Quotes';
 import Sidebar from './src/components/Sidebar';
+import Login from './src/components/Login';
 import { useStoreData } from './src/hooks/useStoreData';
 import { supabase } from './src/lib/supabase';
 
 const App: React.FC = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const storeData = useStoreData();
@@ -28,6 +30,10 @@ const App: React.FC = () => {
     const interval = setInterval(checkHealth, 30000);
     return () => clearInterval(interval);
   }, []);
+
+  if (!isAuthenticated) {
+    return <Login onLogin={() => setIsAuthenticated(true)} />;
+  }
 
   return (
     <HashRouter>
