@@ -116,7 +116,7 @@ const Products: React.FC = () => {
         const commValue = suggestedPrice * commDecimal;
         const netProfitValue = suggestedPrice * profitDecimal;
 
-        return { matCost, laborCost, totalCost, suggestedPrice, hourlyRate, taxValue, commValue, netProfitValue };
+        return { matCost, laborCost, totalCost, suggestedPrice, hourlyRate: hourlyLaborRate, taxValue, commValue, netProfitValue };
     };
 
     const { matCost, laborCost, totalCost, suggestedPrice, hourlyRate, taxValue, commValue, netProfitValue } = calculateTotals();
