@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Insumo {
+  id          String   @id @default(uuid())
+  name        String
+  unit        String
+  unitCost    Decimal
+  lossPct     Decimal  @default(0)
+  yieldNotes  String?
+  supplier    String?
+  updatedAt   DateTime @updatedAt
+  
+  bomItems    BOMItem[]
+}
+
+model Produto {
+  id          String   @id @default(uuid())
+  name        String
+  category    String
+  unit        String   @default("UN")
+  description String?
+  
+  bomItems    BOMItem[]
+  steps       ProcessoEtapa[]
+  pricings    Precificacao[]
+}
+
+model BOMItem {
+  id          String   @id @default(uuid())
+  produtoId   String
+  insumoId    String
+  qtyPerUnit  Decimal
+  appliesTo   String   // "PRODUCT" | "PACKAGING"
+  notes       String?
+  
+  produto     Produto  @relation(fields: [produtoId], references: [id], onDelete: Cascade)
+  insumo      Insumo   @relation(fields: [insumoId], references: [id], onDelete: Restrict)
+}
+
+model ProcessoEtapa {
+  id              String   @id @default(uuid())
+  produtoId       String
+  name            String
+  setupMinutes    Decimal  @default(0)
+  unitMinutes     Decimal  @default(0)
+  laborRatePerHour Decimal? // Optional override
+  
+  produto         Produto  @relation(fields: [produtoId], references: [id], onDelete: Cascade)
+}
+
+model Canal {
+  id                String   @id @default(uuid())
+  name              String
+  percentFeesTotal  Decimal  // Commission + tax + ads
+  fixedFeePerOrder  Decimal
+  taxIncluded       Boolean  @default(false)
+  adsIncluded       Boolean  @default(false)
+  
+  pricings          Precificacao[]
+}
+
+model FixosMensais {
+  id              String   @id @default(uuid())
+  month           String   // YYYY-MM
+  totalFixedCosts Decimal
+  productiveHours Decimal
+  updatedAt       DateTime @updatedAt
+  
+  @@unique([month])
+}
+
+model Precificacao {
+  id              String   @id @default(uuid())
+  produtoId       String
+  canalId         String
+  quantity        Int
+  desiredMargin   Decimal
+  computedPrice   Decimal
+  breakdownJson   String   // JSON string with full cost breakdown
+  computedAt      DateTime @default(now())
+  
+  produto         Produto  @relation(fields: [produtoId], references: [id], onDelete: Cascade)
+  canal           Canal    @relation(fields: [canalId], references: [id], onDelete: Cascade)
+}
