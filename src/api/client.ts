@@ -50,6 +50,8 @@ export const api = {
             id = uuidv4();
         }
 
+        const bodyWithId = { ...body, id };
+
         // Handle deep writes for Product manually since Supabase doesn't do deep inserts like Prisma
         if (table === 'Produto') {
             const { bomItems, steps, ...productData } = bodyWithId;
