@@ -23,7 +23,7 @@ import Settings from './components/Settings';
 const Dashboard = ({ onNavigate }: { onNavigate: (page: string) => void }) => (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <div>
-            <h2 className="text-4xl font-bold text-gray-900 font-serif tracking-tight">Visão Geral</h2>
+            <h2 className="text-4xl font-bold text-gray-900 tracking-tight">Visão Geral</h2>
             <p className="text-gray-500 mt-2 font-medium">Bem-vindo ao sistema de precificação estratégica.</p>
         </div>
 
@@ -86,8 +86,16 @@ const Dashboard = ({ onNavigate }: { onNavigate: (page: string) => void }) => (
 );
 
 function App() {
-    const [currentPage, setCurrentPage] = useState('dashboard');
+    // Initialize from localStorage or default to 'dashboard'
+    const [currentPage, setCurrentPage] = useState(() => {
+        return localStorage.getItem('precificacao_last_page') || 'dashboard';
+    });
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+    // Persist navigation
+    React.useEffect(() => {
+        localStorage.setItem('precificacao_last_page', currentPage);
+    }, [currentPage]);
 
     const NavItem = ({ page, icon: Icon, label }: any) => (
         <button

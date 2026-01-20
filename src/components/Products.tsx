@@ -199,7 +199,7 @@ const Products: React.FC = () => {
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
                 <div>
-                    <h2 className="text-4xl font-bold text-gray-900 font-serif tracking-tight">Produtos</h2>
+                    <h2 className="text-4xl font-bold text-gray-900 tracking-tight">Produtos</h2>
                     <p className="text-gray-500 mt-2 font-medium">Gerencie seu catálogo, receitas e processos.</p>
                 </div>
                 <button
@@ -260,7 +260,7 @@ const Products: React.FC = () => {
                     <div className="bg-white w-full max-w-4xl rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200">
                         <div className="px-10 py-6 bg-white border-b border-gray-100 flex justify-between items-center sticky top-0 z-10">
                             <div>
-                                <h3 className="text-2xl font-bold font-serif text-gray-900">{editingId ? 'Editar Produto' : 'Novo Produto'}</h3>
+                                <h3 className="text-2xl font-bold text-gray-900">{editingId ? 'Editar Produto' : 'Novo Produto'}</h3>
                                 <p className="text-sm text-gray-500 mt-1">Configure todos os detalhes em um só lugar.</p>
                             </div>
                             <button onClick={handleCloseModal} className="p-2 hover:bg-gray-100 rounded-full transition-colors"><X className="w-6 h-6 text-gray-400" /></button>

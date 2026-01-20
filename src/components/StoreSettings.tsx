@@ -46,7 +46,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({ config, onUpdate }) => {
   return (
     <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div>
-        <h2 className="text-3xl font-bold text-gray-900 font-serif">Configurações do Negócio</h2>
+        <h2 className="text-3xl font-bold text-gray-900">Configurações do Negócio</h2>
         <p className="text-gray-500 mt-1">Defina quanto você quer ganhar para saber quanto vale sua hora.</p>
       </div>
 
@@ -105,7 +105,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({ config, onUpdate }) => {
                 <p className="text-[10px] text-emerald-500 font-bold uppercase tracking-widest mb-1">Valor da sua Hora</p>
                 <p className="text-xs text-emerald-600/70">Baseado em {totalHoursMonth} horas mensais</p>
               </div>
-              <p className="text-4xl font-black text-emerald-600 font-serif">
+              <p className="text-4xl font-black text-emerald-600">
                 R$ {hourlyRate.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </p>
             </div>

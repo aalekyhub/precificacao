@@ -39,7 +39,7 @@ const StatCard = ({ title, value, icon: Icon, trend, color, subtext }: any) => (
     </div>
     <div>
       <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">{title}</p>
-      <h3 className="text-3xl font-bold text-gray-900 font-serif">{value}</h3>
+      <h3 className="text-3xl font-bold text-gray-900">{value}</h3>
       {subtext && <p className="text-xs text-gray-400 mt-2 font-medium">{subtext}</p>}
     </div>
   </div>
@@ -164,7 +164,7 @@ const Dashboard: React.FC = () => {
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-6 duration-700">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h2 className="text-4xl font-bold text-gray-900 font-serif tracking-tight">Painel de Controle</h2>
+          <h2 className="text-4xl font-bold text-gray-900 tracking-tight">Painel de Controle</h2>
           <p className="text-gray-500 mt-2 font-medium">Bom dia, Mariana! Aqui está o resumo do seu ateliê hoje.</p>
         </div>
       </div>
@@ -179,7 +179,7 @@ const Dashboard: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm">
           <div className="flex items-center justify-between mb-8">
-            <h3 className="text-xl font-bold text-gray-900 font-serif">Performance de Vendas</h3>
+            <h3 className="text-xl font-bold text-gray-900">Performance de Vendas</h3>
             <div className="flex gap-2">
               <span className="w-3 h-3 rounded-full bg-rose-500 inline-block mr-1"></span>
               <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mr-4">Receita</span>
@@ -213,7 +213,7 @@ const Dashboard: React.FC = () => {
 
       <div className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm">
         <div className="flex items-center justify-between mb-8">
-          <h3 className="text-xl font-bold text-gray-900 font-serif">Catálogo Ativo</h3>
+          <h3 className="text-xl font-bold text-gray-900">Catálogo Ativo</h3>
           <Link to="/products" className="text-rose-500 font-bold text-sm hover:underline flex items-center gap-2">
             Ver Todos <ArrowRight className="w-4 h-4" />
           </Link>
