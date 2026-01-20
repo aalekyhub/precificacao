@@ -9,6 +9,14 @@ const getTable = (path: string) => {
     return '';
 };
 
+// Simple UUID generator
+const uuidv4 = () => {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+};
+
 export const api = {
     async get<T>(path: string): Promise<T> {
         const table = getTable(path);
@@ -28,16 +36,18 @@ export const api = {
 
     async post<T>(path: string, body: any): Promise<T> {
         if (path.includes('/precificacao/calcular')) {
-            // Calculator is client-side only now, this shouldn't be called.
-            // But if it is, we return a mock or throw.
             throw new Error("Pricing calculation is now client-side.");
         }
 
         const table = getTable(path);
 
+        // Ensure ID is present
+        const id = body.id || uuidv4();
+        const bodyWithId = { ...body, id };
+
         // Handle deep writes for Product manually since Supabase doesn't do deep inserts like Prisma
         if (table === 'Produto') {
-            const { bomItems, steps, ...productData } = body;
+            const { bomItems, steps, ...productData } = bodyWithId;
 
             // 1. Create Product
             const { data: prod, error: prodErr } = await supabase.from('Produto').insert(productData).select().single();
@@ -45,19 +55,19 @@ export const api = {
 
             // 2. Insert Relations
             if (bomItems && bomItems.length) {
-                const items = bomItems.map((b: any) => ({ ...b, produtoId: prod.id }));
+                const items = bomItems.map((b: any) => ({ ...b, id: uuidv4(), produtoId: prod.id }));
                 const { error: bomErr } = await supabase.from('BOMItem').insert(items);
                 if (bomErr) throw bomErr;
             }
             if (steps && steps.length) {
-                const s = steps.map((st: any) => ({ ...st, produtoId: prod.id }));
+                const s = steps.map((st: any) => ({ ...st, id: uuidv4(), produtoId: prod.id }));
                 const { error: stepErr } = await supabase.from('ProcessoEtapa').insert(s);
                 if (stepErr) throw stepErr;
             }
             return prod as T;
         }
 
-        const { data, error } = await supabase.from(table).insert(body).select().single();
+        const { data, error } = await supabase.from(table).insert(bodyWithId).select().single();
         if (error) throw error;
         return data as T;
     },
@@ -74,18 +84,17 @@ export const api = {
             if (prodErr) throw prodErr;
 
             // 2. Replace Relations (Delete all then insert)
-            // Transaction would be better but simple sequential works for this scale
             if (bomItems) {
                 await supabase.from('BOMItem').delete().eq('produtoId', id);
                 if (bomItems.length > 0) {
-                    const items = bomItems.map((b: any) => ({ ...b, produtoId: id }));
+                    const items = bomItems.map((b: any) => ({ ...b, id: uuidv4(), produtoId: id }));
                     await supabase.from('BOMItem').insert(items);
                 }
             }
             if (steps) {
                 await supabase.from('ProcessoEtapa').delete().eq('produtoId', id);
                 if (steps.length > 0) {
-                    const s = steps.map((st: any) => ({ ...st, produtoId: id }));
+                    const s = steps.map((st: any) => ({ ...st, id: uuidv4(), produtoId: id }));
                     await supabase.from('ProcessoEtapa').insert(s);
                 }
             }
@@ -109,7 +118,7 @@ export interface Insumo {
     id: string;
     name: string;
     unit: string;
-    unitCost: number; // Decimal string from backend usually, logic converts
+    unitCost: number;
     lossPct: number;
     yieldNotes?: string;
     supplier?: string;
