@@ -100,9 +100,9 @@ export const useStoreData = () => {
             const { id, ...rest } = p;
             await api.post('/products', rest);
             reloadProducts();
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
-            alert('Erro ao salvar produto');
+            alert(`Erro ao salvar produto: ${e.message || JSON.stringify(e)}`);
         }
     };
 
