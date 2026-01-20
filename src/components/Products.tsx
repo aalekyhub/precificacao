@@ -221,9 +221,15 @@ const Products: React.FC = () => {
                         </div>
 
                         <div className="flex border-b px-10 overflow-x-auto">
-                            <button onClick={() => setActiveTab('info')} className={`py-4 px-6 font-bold text-sm uppercase tracking-wider border-b-2 transition-colors ${activeTab === 'info' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-400 hover:text-gray-600'}`}>Informações</button>
-                            <button onClick={() => setActiveTab('bom')} className={`py-4 px-6 font-bold text-sm uppercase tracking-wider border-b-2 transition-colors ${activeTab === 'bom' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-400 hover:text-gray-600'}`}>Receita</button>
-                            <button onClick={() => setActiveTab('steps')} className={`py-4 px-6 font-bold text-sm uppercase tracking-wider border-b-2 transition-colors ${activeTab === 'steps' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-400 hover:text-gray-600'}`}>Processo</button>
+                            <button onClick={() => setActiveTab('info')} className={`py-4 px-6 font-bold text-sm uppercase tracking-wider border-b-2 transition-colors ${activeTab === 'info' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-400 hover:text-gray-600'} ${(errors.name || errors.category || errors.unit) ? 'text-rose-500' : ''}`}>
+                                Informações {(errors.name || errors.category || errors.unit) && '!'}
+                            </button>
+                            <button onClick={() => setActiveTab('bom')} className={`py-4 px-6 font-bold text-sm uppercase tracking-wider border-b-2 transition-colors ${activeTab === 'bom' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-400 hover:text-gray-600'} ${errors.bomItems ? 'text-rose-500' : ''}`}>
+                                Receita {errors.bomItems && '!'}
+                            </button>
+                            <button onClick={() => setActiveTab('steps')} className={`py-4 px-6 font-bold text-sm uppercase tracking-wider border-b-2 transition-colors ${activeTab === 'steps' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-400 hover:text-gray-600'} ${errors.steps ? 'text-rose-500' : ''}`}>
+                                Processo {errors.steps && '!'}
+                            </button>
                             <button onClick={() => setActiveTab('pricing')} className={`py-4 px-6 font-bold text-sm uppercase tracking-wider border-b-2 transition-colors ${activeTab === 'pricing' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-400 hover:text-gray-600'}`}>Precificação</button>
                         </div>
 
@@ -344,7 +350,12 @@ const Products: React.FC = () => {
                                 </div>
                             )}
 
-                            <div className="pt-6 mt-6 border-t flex justify-end gap-4">
+                            <div className="pt-6 mt-6 border-t flex items-center justify-end gap-4">
+                                {Object.keys(errors).length > 0 && (
+                                    <span className="text-sm font-bold text-rose-500 animate-pulse">
+                                        Corrija os erros nas abas acima!
+                                    </span>
+                                )}
                                 <button type="button" onClick={handleCloseModal} className="px-8 py-3 rounded-xl border font-bold text-gray-500">Cancelar</button>
                                 <button type="submit" disabled={isSubmitting} className="px-8 py-3 rounded-xl bg-indigo-600 text-white font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all">{isSubmitting ? 'Salvando...' : 'Salvar Produto'}</button>
                             </div>
