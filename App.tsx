@@ -11,7 +11,7 @@ import Contacts from './components/Contacts';
 import Quotes from './components/Quotes';
 import Sidebar from './components/Sidebar';
 import { useStoreData } from './hooks/useStoreData';
-import { api } from './src/api/client';
+import { supabase } from './src/lib/supabase';
 
 const App: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -20,12 +20,13 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const checkHealth = async () => {
-      try {
-        const res = await fetch('/api/health'); // Direct fetch to avoid error throwing
-        setIsConnected(res.ok);
-      } catch (e) {
-        setIsConnected(false);
+      const { error, count } = await supabase.from('Insumo').select('*', { count: 'exact', head: true });
+      if (error) {
+        console.error("Supabase Connection Error:", error.message, error.details, error.hint);
+      } else {
+        console.log("Supabase Connected. Insumo count:", count);
       }
+      setIsConnected(!error);
     };
 
     checkHealth();
@@ -56,33 +57,10 @@ const App: React.FC = () => {
 
           <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
             <Routes>
-              <Route path="/" element={<Dashboard products={storeData.products} materials={storeData.materials} fixedCosts={storeData.fixedCosts} />} />
-              <Route path="/products" element={
-                <Products
-                  products={storeData.products}
-                  materials={storeData.materials}
-                  fixedCosts={storeData.fixedCosts}
-                  storeConfig={storeData.storeConfig}
-                  onAdd={storeData.addProduct}
-                  onDelete={storeData.deleteProduct}
-                />
-              } />
-              <Route path="/materials" element={
-                <Materials
-                  materials={storeData.materials}
-                  onAdd={storeData.addMaterial}
-                  onUpdate={storeData.updateMaterial}
-                  onDelete={storeData.deleteMaterial}
-                />
-              } />
-              <Route path="/fixed-costs" element={
-                <FixedCosts
-                  fixedCosts={storeData.fixedCosts}
-                  onAdd={storeData.addFixedCost}
-                  onUpdate={storeData.updateFixedCost}
-                  onDelete={storeData.deleteFixedCost}
-                />
-              } />
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/materials" element={<Materials />} />
+              <Route path="/fixed-costs" element={<FixedCosts />} />
               <Route path="/contacts" element={
                 <Contacts
                   contacts={storeData.contacts}

@@ -21,13 +21,9 @@ import {
   Receipt
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Product, Material, FixedCost } from '../types';
+import { api, Produto, Insumo, FixosMensais } from '../src/api/client';
 
-interface DashboardProps {
-  products: Product[];
-  materials: Material[];
-  fixedCosts: FixedCost[];
-}
+
 
 const data = [
   { name: 'Jan', revenue: 4000, costs: 2400 },
@@ -59,19 +55,37 @@ const StatCard = ({ title, value, icon: Icon, trend, color, subtext }: any) => (
   </div>
 );
 
-const Dashboard: React.FC<DashboardProps> = ({ products, materials, fixedCosts }) => {
+const Dashboard: React.FC = () => {
+  const [products, setProducts] = React.useState<Produto[]>([]);
+  const [materials, setMaterials] = React.useState<Insumo[]>([]);
+  const [fixedCosts, setFixedCosts] = React.useState<FixosMensais[]>([]);
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [p, m, f] = await Promise.all([
+          api.get<Produto[]>('/produtos'),
+          api.get<Insumo[]>('/insumos'),
+          api.get<FixosMensais[]>('/fixos')
+        ]);
+        setProducts(p);
+        setMaterials(m);
+        setFixedCosts(f);
+      } catch (e) { console.error("Dashboard fetch error", e); }
+    };
+    fetchData();
+  }, []);
+
   const stats = useMemo(() => {
-    const totalInvested = materials.reduce((acc, m) => acc + m.cost, 0);
+    const totalInvested = materials.reduce((acc, m) => acc + (Number(m.unitCost) * 1), 0); // Assuming 1 unit stock for now as stock isn't in Insumo model yet
     const activeProducts = products.length;
-    const totalFixed = fixedCosts.reduce((acc, fc) => acc + fc.value, 0);
+    const totalFixed = fixedCosts.length > 0 ? Number(fixedCosts[0].totalFixedCosts) : 0;
 
     return {
       totalInvested: `R$ ${totalInvested.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
       totalFixed: `R$ ${totalFixed.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
       activeProducts: activeProducts.toString(),
-      avgMargin: activeProducts > 0
-        ? `${Math.round(products.reduce((acc, p) => acc + p.markup, 0) / activeProducts)}%`
-        : '0%'
+      avgMargin: '20%' // Placeholder as margin is calculated per deal
     };
   }, [products, materials, fixedCosts]);
 
@@ -162,13 +176,13 @@ const Dashboard: React.FC<DashboardProps> = ({ products, materials, fixedCosts }
                       </div>
                     </td>
                     <td className="py-5">
-                      <span className="text-rose-600 font-bold">R$ {((item.laborHours * item.laborRate + item.fixedCosts) * (1 + item.markup / 100)).toFixed(2)}</span>
+                      <span className="text-gray-400 text-sm">Calculado na venda</span>
                     </td>
                     <td className="py-5">
-                      <span className="bg-rose-50 text-rose-600 px-3 py-1 rounded-full text-[10px] font-bold border border-rose-100">{item.markup}%</span>
+                      <span className="bg-rose-50 text-rose-600 px-3 py-1 rounded-full text-[10px] font-bold border border-rose-100">Var.</span>
                     </td>
                     <td className="py-5 text-right">
-                      <button className="text-gray-400 hover:text-gray-900 font-bold text-xs">Editar</button>
+                      <Link to="/products" className="text-gray-400 hover:text-gray-900 font-bold text-xs">Editar</Link>
                     </td>
                   </tr>
                 ))

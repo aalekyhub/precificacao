@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { api, Produto, Canal, FixosMensais } from '../api/client';
+import { calculatePricing, calculateMaterialCost, calculateOverhead, CostBreakdown } from '../utils/pricing';
 import {
     Calculator,
     Check,
@@ -9,21 +10,7 @@ import {
 } from 'lucide-react';
 import { PieChart as RePie, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
-interface CalculationResult {
-    suggestedPrice: number;
-    variableCosts: number;
-    fixedCostsAllocated: number;
-    channelFixedFee: number;
-    channelPercentFee: number;
-    desiredMargin: number;
-    isValid: boolean;
-    error?: string;
-    // details
-    materialCost: number;
-    packagingCost: number;
-    directLaborCost: number;
-    setupCostAllocated: number;
-}
+
 
 const PricingCalculator: React.FC = () => {
     const [products, setProducts] = useState<Produto[]>([]);
@@ -37,7 +24,7 @@ const PricingCalculator: React.FC = () => {
     const [margin, setMargin] = useState(0.20); // 20%
 
     // Result
-    const [result, setResult] = useState<CalculationResult | null>(null);
+    const [result, setResult] = useState<CostBreakdown | null>(null);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -63,14 +50,60 @@ const PricingCalculator: React.FC = () => {
 
         setLoading(true);
         try {
-            const res = await api.post<CalculationResult>('/precificacao/calcular', {
-                produtoId: selectedProduct,
-                canalId: selectedChannel,
-                quantity: Number(quantity),
-                month: fixedCosts.month,
+            // Find full objects
+            const product = products.find(p => p.id === selectedProduct);
+            const channel = channels.find(c => c.id === selectedChannel);
+
+            if (!product || !channel) return;
+
+            // 1. Calculate Materials Cost
+            let materialCost = 0;
+            let packagingCost = 0;
+
+            if (product.bomItems) {
+                for (const item of product.bomItems) {
+                    // Insumo data might be nested or we need to ensure it's loaded. 
+                    // The get products API usually includes it.
+                    if (item.insumo) {
+                        const cost = calculateMaterialCost(
+                            Number(item.qtyPerUnit) * quantity,
+                            Number(item.insumo.unitCost),
+                            Number(item.insumo.lossPct)
+                        );
+                        if (item.appliesTo === 'PACKAGING') packagingCost += cost;
+                        else materialCost += cost;
+                    }
+                }
+            }
+
+            // 2. Calculate Overhead
+            let totalSetupMins = 0;
+            let totalUnitMins = 0;
+            if (product.steps) {
+                for (const step of product.steps) {
+                    totalSetupMins += Number(step.setupMinutes);
+                    totalUnitMins += Number(step.unitMinutes);
+                }
+            }
+
+            const fixedCostPerHour = Number(fixedCosts.totalFixedCosts) / Number(fixedCosts.productiveHours);
+            const overheadCost = calculateOverhead(totalSetupMins, totalUnitMins, quantity, fixedCostPerHour);
+            const directLaborCost = 0; // Configurable later
+
+            // 3. Formula
+            const calcResult = calculatePricing({
+                materialCost: materialCost / quantity,
+                packagingCost: packagingCost / quantity,
+                laborCost: directLaborCost / quantity,
+                setupCost: 0,
+                overheadCost: overheadCost / quantity,
+                channelFixedFee: Number(channel.fixedFeePerOrder) / quantity,
+                channelPercentTotal: Number(channel.percentFeesTotal),
                 desiredMargin: Number(margin)
             });
-            setResult(res);
+
+            setResult(calcResult);
+
         } catch (e) {
             console.error(e);
             alert('Erro ao calcular');

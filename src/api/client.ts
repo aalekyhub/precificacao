@@ -1,35 +1,107 @@
-export const api = {
-    baseUrl: '/api',
+import { supabase } from '../lib/supabase';
 
+// Helper to map generic paths to Supabase tables
+const getTable = (path: string) => {
+    if (path.includes('insumos')) return 'Insumo';
+    if (path.includes('produtos')) return 'Produto';
+    if (path.includes('canais')) return 'Canal';
+    if (path.includes('fixos')) return 'FixosMensais';
+    return '';
+};
+
+export const api = {
     async get<T>(path: string): Promise<T> {
-        const res = await fetch(`${this.baseUrl}${path}`);
-        if (!res.ok) throw new Error(res.statusText);
-        return res.json();
+        const table = getTable(path);
+        if (!table) throw new Error(`Unknown table for path: ${path}`);
+
+        let query = supabase.from(table).select('*');
+
+        // Specific includes for Products
+        if (table === 'Produto') {
+            query = supabase.from(table).select('*, bomItems:BOMItem(*, insumo:Insumo(*)), steps:ProcessoEtapa(*)');
+        }
+
+        const { data, error } = await query;
+        if (error) throw error;
+        return data as T;
     },
 
     async post<T>(path: string, body: any): Promise<T> {
-        const res = await fetch(`${this.baseUrl}${path}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body)
-        });
-        if (!res.ok) throw new Error(await res.text());
-        return res.json();
+        if (path.includes('/precificacao/calcular')) {
+            // Calculator is client-side only now, this shouldn't be called.
+            // But if it is, we return a mock or throw.
+            throw new Error("Pricing calculation is now client-side.");
+        }
+
+        const table = getTable(path);
+
+        // Handle deep writes for Product manually since Supabase doesn't do deep inserts like Prisma
+        if (table === 'Produto') {
+            const { bomItems, steps, ...productData } = body;
+
+            // 1. Create Product
+            const { data: prod, error: prodErr } = await supabase.from('Produto').insert(productData).select().single();
+            if (prodErr) throw prodErr;
+
+            // 2. Insert Relations
+            if (bomItems && bomItems.length) {
+                const items = bomItems.map((b: any) => ({ ...b, produtoId: prod.id }));
+                const { error: bomErr } = await supabase.from('BOMItem').insert(items);
+                if (bomErr) throw bomErr;
+            }
+            if (steps && steps.length) {
+                const s = steps.map((st: any) => ({ ...st, produtoId: prod.id }));
+                const { error: stepErr } = await supabase.from('ProcessoEtapa').insert(s);
+                if (stepErr) throw stepErr;
+            }
+            return prod as T;
+        }
+
+        const { data, error } = await supabase.from(table).insert(body).select().single();
+        if (error) throw error;
+        return data as T;
     },
 
     async put<T>(path: string, body: any): Promise<T> {
-        const res = await fetch(`${this.baseUrl}${path}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body)
-        });
-        if (!res.ok) throw new Error(await res.text());
-        return res.json();
+        const table = getTable(path);
+        const id = path.split('/').pop();
+
+        if (table === 'Produto') {
+            const { bomItems, steps, ...productData } = body;
+
+            // 1. Update Product
+            const { data: prod, error: prodErr } = await supabase.from('Produto').update(productData).eq('id', id).select().single();
+            if (prodErr) throw prodErr;
+
+            // 2. Replace Relations (Delete all then insert)
+            // Transaction would be better but simple sequential works for this scale
+            if (bomItems) {
+                await supabase.from('BOMItem').delete().eq('produtoId', id);
+                if (bomItems.length > 0) {
+                    const items = bomItems.map((b: any) => ({ ...b, produtoId: id }));
+                    await supabase.from('BOMItem').insert(items);
+                }
+            }
+            if (steps) {
+                await supabase.from('ProcessoEtapa').delete().eq('produtoId', id);
+                if (steps.length > 0) {
+                    const s = steps.map((st: any) => ({ ...st, produtoId: id }));
+                    await supabase.from('ProcessoEtapa').insert(s);
+                }
+            }
+            return prod as T;
+        }
+
+        const { data, error } = await supabase.from(table).update(body).eq('id', id).select().single();
+        if (error) throw error;
+        return data as T;
     },
 
     async delete(path: string): Promise<void> {
-        const res = await fetch(`${this.baseUrl}${path}`, { method: 'DELETE' });
-        if (!res.ok) throw new Error(res.statusText);
+        const table = getTable(path);
+        const id = path.split('/').pop();
+        const { error } = await supabase.from(table).delete().eq('id', id);
+        if (error) throw error;
     }
 };
 
