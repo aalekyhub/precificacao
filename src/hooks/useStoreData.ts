@@ -90,8 +90,9 @@ export const useStoreData = () => {
         try {
             const data = await api.get<Product[]>('/products');
             setProducts(data);
-        } catch (error) {
+        } catch (error: any) {
             console.error('Failed to load products', error);
+            alert('Debug: Falha ao carregar produtos: ' + (error.message || JSON.stringify(error)));
         }
     };
 
