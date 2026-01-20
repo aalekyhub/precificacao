@@ -305,9 +305,9 @@ const Products: React.FC = () => {
                                             </div>
                                         ))}
                                         {bomFields.length === 0 && (
-                                            <div className="text-center py-4 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50/50">
-                                                <Layers className="w-6 h-6 text-gray-300 mx-auto mb-1" />
-                                                <p className="text-xs font-bold text-gray-400">Nenhum material</p>
+                                            <div className="text-center py-2 border-2 border-dashed border-gray-200 rounded-lg bg-gray-50/50">
+                                                <Layers className="w-4 h-4 text-gray-300 mx-auto mb-0.5" />
+                                                <p className="text-[10px] font-bold text-gray-400">Nenhum material</p>
                                             </div>
                                         )}
                                     </div>
@@ -346,58 +346,58 @@ const Products: React.FC = () => {
                                             </div>
                                         ))}
                                         {stepFields.length === 0 && (
-                                            <div className="text-center py-4 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50/50">
-                                                <Clock className="w-6 h-6 text-gray-300 mx-auto mb-1" />
-                                                <p className="text-xs font-bold text-gray-400">Nenhuma etapa</p>
+                                            <div className="text-center py-2 border-2 border-dashed border-gray-200 rounded-lg bg-gray-50/50">
+                                                <Clock className="w-4 h-4 text-gray-300 mx-auto mb-0.5" />
+                                                <p className="text-[10px] font-bold text-gray-400">Nenhuma etapa</p>
                                             </div>
                                         )}
                                     </div>
                                 </section>
 
-                                <section className=" rounded-2xl overflow-hidden shadow-sm border border-gray-100 bg-white">
-                                    <div className="px-3 py-2 bg-gradient-to-r from-gray-900 to-gray-800 text-white flex items-center justify-between">
+                                <section className=" rounded-xl overflow-hidden shadow-sm border border-gray-100 bg-white">
+                                    <div className="px-3 py-1.5 bg-gradient-to-r from-gray-900 to-gray-800 text-white flex items-center justify-between">
                                         <div className="flex items-center gap-2">
-                                            <div className="w-5 h-5 rounded bg-indigo-500 text-white flex items-center justify-center font-bold text-[10px] shadow-sm">4</div>
+                                            <div className="w-4 h-4 rounded bg-indigo-500 text-white flex items-center justify-center font-bold text-[9px] shadow-sm">4</div>
                                             <div>
-                                                <h4 className="text-xs font-bold">Precificação Final</h4>
+                                                <h4 className="text-[10px] font-bold">Precificação Final</h4>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div className="p-3">
-                                        <div className="grid grid-cols-2 gap-3 mb-3">
-                                            <div className="p-2 bg-indigo-50/50 rounded-lg border border-indigo-50">
-                                                <p className="text-[9px] uppercase font-bold text-indigo-400 mb-0.5 tracking-wider">Materiais</p>
-                                                <p className="text-sm font-bold text-gray-900">R$ {matCost.toFixed(2)}</p>
+                                    <div className="p-2">
+                                        <div className="grid grid-cols-2 gap-2 mb-2">
+                                            <div className="py-1 px-2 bg-indigo-50/50 rounded border border-indigo-50">
+                                                <p className="text-[8px] uppercase font-bold text-indigo-400 mb-0 tracking-wider">Materiais</p>
+                                                <p className="text-xs font-bold text-gray-900">R$ {matCost.toFixed(2)}</p>
                                             </div>
-                                            <div className="p-2 bg-indigo-50/50 rounded-lg border border-indigo-50">
-                                                <p className="text-[9px] uppercase font-bold text-indigo-400 mb-0.5 tracking-wider">Mão de Obra</p>
-                                                <p className="text-sm font-bold text-gray-900">R$ {laborCost.toFixed(2)}</p>
+                                            <div className="py-1 px-2 bg-indigo-50/50 rounded border border-indigo-50">
+                                                <p className="text-[8px] uppercase font-bold text-indigo-400 mb-0 tracking-wider">Mão de Obra</p>
+                                                <p className="text-xs font-bold text-gray-900">R$ {laborCost.toFixed(2)}</p>
                                             </div>
                                         </div>
 
-                                        <div className="flex items-center gap-4 pt-3 border-t border-gray-100">
+                                        <div className="flex items-center gap-3 pt-2 border-t border-gray-100">
                                             <div>
-                                                <p className="text-[9px] uppercase font-bold text-gray-400 mb-0.5">Total</p>
-                                                <p className="text-base font-bold text-gray-600">R$ {totalCost.toFixed(2)}</p>
+                                                <p className="text-[8px] uppercase font-bold text-gray-400 mb-0">Total</p>
+                                                <p className="text-sm font-bold text-gray-600">R$ {totalCost.toFixed(2)}</p>
                                             </div>
-                                            <div className="flex-1 bg-gray-50 rounded-lg p-2 flex items-center justify-between border border-gray-100 h-10">
-                                                <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Margem</span>
+                                            <div className="flex-1 bg-gray-50 rounded p-1 flex items-center justify-between border border-gray-100 h-8">
+                                                <span className="text-[9px] font-bold text-gray-500 uppercase tracking-wider pl-1">Margem</span>
                                                 <div className="flex items-center gap-1">
                                                     <input
                                                         type="number"
-                                                        className="text-right text-base font-black text-indigo-600 bg-transparent border-b-2 border-indigo-200 w-12 focus:outline-none focus:border-indigo-500 transition-colors"
+                                                        className="text-right text-sm font-black text-indigo-600 bg-transparent border-b border-indigo-200 w-10 focus:outline-none focus:border-indigo-500 transition-colors"
                                                         {...register('profitMargin', { valueAsNumber: true })}
                                                     />
-                                                    <span className="text-indigo-400 font-bold text-xs">%</span>
+                                                    <span className="text-indigo-400 font-bold text-[10px]">%</span>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div className="mt-3 bg-indigo-600 p-3 rounded-xl shadow-md shadow-indigo-200 text-center relative overflow-hidden flex flex-col items-center justify-center group cursor-default">
+                                        <div className="mt-2 bg-indigo-600 p-2 rounded-lg shadow-sm shadow-indigo-200 text-center relative overflow-hidden flex flex-col items-center justify-center group cursor-default">
                                             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
-                                            <p className="text-[9px] uppercase tracking-[0.2em] text-indigo-100 mb-0.5 font-bold relative z-10">Preço Sugerido</p>
-                                            <p className="text-2xl font-black text-white tracking-tight relative z-10 group-hover:scale-105 transition-transform duration-300">
+                                            <p className="text-[8px] uppercase tracking-[0.2em] text-indigo-100 mb-0 font-bold relative z-10">Preço Sugerido</p>
+                                            <p className="text-xl font-black text-white tracking-tight relative z-10 group-hover:scale-105 transition-transform duration-300">
                                                 R$ {suggestedPrice.toFixed(2)}
                                             </p>
                                         </div>
