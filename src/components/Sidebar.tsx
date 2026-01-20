@@ -1,11 +1,11 @@
 
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  Package, 
-  Layers, 
-  Settings, 
+import {
+  LayoutDashboard,
+  Package,
+  Layers,
+  Settings,
   X,
   Calculator,
   Receipt,
@@ -22,12 +22,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggle }) => {
   const location = useLocation();
 
   const links = [
-    { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
-    { name: 'Produtos', icon: Package, path: '/products' },
-    { name: 'Materiais', icon: Layers, path: '/materials' },
-    { name: 'Orçamentos', icon: FileText, path: '/quotes' },
-    { name: 'Contatos', icon: Users, path: '/contacts' },
-    { name: 'Custos Fixos', icon: Receipt, path: '/fixed-costs' },
+    { name: 'Painel de Controle', icon: LayoutDashboard, path: '/' },
+    { name: 'Meus Materiais', icon: Package, path: '/materials' },
+    { name: 'Meus Produtos', icon: Layers, path: '/products' },
+    { name: 'Custos Fixos', icon: Calculator, path: '/fixed-costs' },
+    { name: 'Clientes / Fornecedores', icon: Users, path: '/contacts' },
+    { name: 'Fluxo de Caixa', icon: FileText, path: '/quotes' },
     { name: 'Configurações', icon: Settings, path: '/settings' },
   ];
 
@@ -54,11 +54,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggle }) => {
               key={link.path}
               to={link.path}
               onClick={() => toggle()}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                isActive 
-                  ? 'bg-rose-50 text-rose-600 font-semibold shadow-sm shadow-rose-100' 
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isActive
+                  ? 'bg-rose-50 text-rose-600 font-semibold shadow-sm shadow-rose-100'
                   : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
-              }`}
+                }`}
             >
               <Icon className="w-5 h-5" />
               {link.name}

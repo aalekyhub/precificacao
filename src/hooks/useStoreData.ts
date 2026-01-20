@@ -52,36 +52,49 @@ export const useStoreData = () => {
         return saved ? JSON.parse(saved) : [];
     });
 
-    const [storeConfig, setStoreConfig] = useState<StoreConfig>(() => {
-        const saved = localStorage.getItem('precifica_config');
-        return saved ? JSON.parse(saved) : DEFAULT_CONFIG;
+    const [storeConfig, setStoreConfig] = useState<Settings>({
+        pro_labore: 0,
+        work_days_per_month: 20,
+        work_hours_per_day: 8
     });
 
-
-
-    // Sync OTHER states to localStorage
-    useEffect(() => {
-        localStorage.setItem('precifica_materials', JSON.stringify(materials));
-        localStorage.setItem('precifica_products', JSON.stringify(products));
-        localStorage.setItem('precifica_fixed_costs', JSON.stringify(fixedCosts));
-        // localStorage.setItem('precifica_contacts', JSON.stringify(contacts)); // No longer syncing contacts to local
-        localStorage.setItem('precifica_quotes', JSON.stringify(quotes));
-        localStorage.setItem('precifica_config', JSON.stringify(storeConfig));
-    }, [materials, products, fixedCosts, quotes, storeConfig]);
-
-    // Fetch contacts from API
-    const reloadContacts = async () => {
+    const reloadSettings = async () => {
         try {
-            const data = await api.get<Contact[]>('/contacts');
-            setContacts(data);
+            const data = await api.get<Settings[]>('/settings');
+            if (data && data.length > 0) {
+                setStoreConfig(data[0]);
+            } else {
+                // Initialize default settings if none exist
+                const defaultSettings = { pro_labore: 2000, work_days_per_month: 20, work_hours_per_day: 8 };
+                const newSettings = await api.post<Settings>('/settings', defaultSettings);
+                setStoreConfig(newSettings);
+            }
         } catch (error) {
-            console.error('Failed to load contacts', error);
+            console.error('Failed to load settings', error);
+        }
+    };
+
+    const updateStoreConfig = async (newConfig: Settings) => {
+        try {
+            if (newConfig.id) {
+                await api.put(`/settings/${newConfig.id}`, newConfig);
+            } else {
+                await api.post('/settings', newConfig);
+            }
+            reloadSettings();
+        } catch (error) {
+            console.error('Failed to update settings', error);
+            alert('Erro ao salvar configurações');
         }
     };
 
     useEffect(() => {
+        reloadSettings();
         reloadContacts();
     }, []);
+
+    // ... (rest of the code for products/materials/etc remains the same, just removing config from local storage sync)
+
 
     const addProduct = (p: Product) => setProducts([...products, p]);
     const deleteProduct = (id: string) => setProducts(products.filter(p => p.id !== id));
@@ -140,7 +153,7 @@ export const useStoreData = () => {
         fixedCosts, setFixedCosts,
         contacts, setContacts,
         quotes, setQuotes,
-        storeConfig, setStoreConfig,
+        storeConfig, setStoreConfig: updateStoreConfig, // Expose the async update function as setStoreConfig
         addProduct, deleteProduct,
         addMaterial, updateMaterial, deleteMaterial,
         addFixedCost, updateFixedCost, deleteFixedCost,
