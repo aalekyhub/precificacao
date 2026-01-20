@@ -34,7 +34,7 @@ export const api = {
         // Specific includes for Products
         // Specific includes for Products
         if (table === 'Produto') {
-            query = supabase.from(table).select('*, bomItems:BOMItem(*, insumo:Insumo(*)), steps:ProcessoEtapa(*)');
+            query = supabase.from(table).select('*, bomItems:BOMItem(*, insumo:Material(*)), steps:ProcessoEtapa(*)');
         }
         if (table === 'Order') {
             query = supabase.from(table).select('*, items:OrderItem(*)');
