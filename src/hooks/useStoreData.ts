@@ -28,8 +28,22 @@ export const useStoreData = () => {
 
     const updateStoreConfig = async (newConfig: Settings) => {
         try {
-            if (newConfig.id) {
-                await api.put(`/settings/${newConfig.id}`, newConfig);
+            let configId = newConfig.id;
+
+            // Safety check: if no ID, try to find one from server before creating/updating
+            if (!configId) {
+                try {
+                    const existing = await api.get<Settings[]>('/settings');
+                    if (existing && existing.length > 0) {
+                        configId = existing[0].id;
+                    }
+                } catch (e) {
+                    console.warn('Could not check existing settings:', e);
+                }
+            }
+
+            if (configId) {
+                await api.put(`/settings/${configId}`, { ...newConfig, id: configId });
             } else {
                 await api.post('/settings', newConfig);
             }
