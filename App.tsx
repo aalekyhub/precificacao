@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { HashRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Menu, Cloud, CloudOff } from 'lucide-react';
 import Dashboard from './src/components/Dashboard';
 import Products from './src/components/Products';
@@ -60,7 +60,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <HashRouter>
+    <BrowserRouter>
       <div className="min-h-screen bg-[#FAFAFA]">
         <Sidebar isOpen={isSidebarOpen} toggle={() => setIsSidebarOpen(false)} />
 
@@ -114,7 +114,7 @@ const App: React.FC = () => {
           </div>
         </main>
       </div>
-    </HashRouter>
+    </BrowserRouter>
   );
 };
 
