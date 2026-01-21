@@ -27,7 +27,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggle }) => {
     { name: 'Meus Produtos', icon: Layers, path: '/products' },
     { name: 'Custos Fixos', icon: Calculator, path: '/fixed-costs' },
     { name: 'Clientes / Fornecedores', icon: Users, path: '/contacts' },
-    { name: 'Fluxo de Caixa', icon: FileText, path: '/quotes' },
+    { name: 'Orçamento', icon: FileText, path: '/quotes' },
     { name: 'Configurações', icon: Settings, path: '/settings' },
   ];
 
@@ -55,8 +55,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggle }) => {
               to={link.path}
               onClick={() => toggle()}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isActive
-                  ? 'bg-rose-50 text-rose-600 font-semibold shadow-sm shadow-rose-100'
-                  : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                ? 'bg-rose-50 text-rose-600 font-semibold shadow-sm shadow-rose-100'
+                : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
                 }`}
             >
               <Icon className="w-5 h-5" />
