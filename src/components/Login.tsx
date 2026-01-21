@@ -36,7 +36,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                         <span className="text-2xl font-black tracking-tight">PrecificaMaster</span>
                     </div>
 
-                    <h1 className="text-5xl font-bold font-serif leading-tight mb-8">
+                    <h1 className="text-5xl font-bold leading-tight mb-8">
                         Domine a arte de <br />
                         <span className="text-blue-200">precificar com lucro.</span>
                     </h1>
@@ -87,7 +87,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
             <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-gray-50">
                 <div className="w-full max-w-md bg-white p-10 rounded-[2.5rem] shadow-xl shadow-gray-100 border border-gray-100/50">
                     <div className="text-center mb-10">
-                        <h2 className="text-3xl font-bold text-gray-900 font-serif mb-3">Bem-vindo de volta!</h2>
+                        <h2 className="text-3xl font-bold text-gray-900 mb-3">Bem-vindo de volta!</h2>
                         <p className="text-gray-500 font-medium">Acesse sua conta para continuar.</p>
                     </div>
 

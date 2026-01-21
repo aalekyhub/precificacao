@@ -38,7 +38,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggle }) => {
           <div className="bg-rose-500 p-2 rounded-lg shadow-lg shadow-rose-200">
             <Calculator className="w-6 h-6 text-white" />
           </div>
-          <span className="text-xl font-bold text-gray-800 font-serif tracking-tight">Precifica</span>
+          <span className="text-xl font-bold text-gray-800 tracking-tight">Precifica</span>
         </div>
         <button onClick={toggle} className="lg:hidden text-gray-400">
           <X className="w-6 h-6" />
@@ -69,7 +69,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggle }) => {
       <div className="absolute bottom-0 w-full p-4">
         <div className="bg-gradient-to-br from-gray-900 to-gray-800 p-5 rounded-2xl shadow-xl">
           <p className="text-[10px] text-rose-400 font-bold uppercase tracking-widest mb-1">Assinatura</p>
-          <p className="text-sm font-semibold text-white font-serif">Artesã Profissional</p>
+          <p className="text-sm font-semibold text-white">Artesã Profissional</p>
           <div className="mt-4 flex items-center justify-between">
             <div className="h-1.5 w-full bg-gray-700 rounded-full overflow-hidden mr-3">
               <div className="h-full bg-rose-500 w-3/4"></div>

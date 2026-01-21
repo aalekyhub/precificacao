@@ -91,7 +91,7 @@ const Channels: React.FC = () => {
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
                 <div>
-                    <h2 className="text-4xl font-bold text-gray-900 font-serif tracking-tight">Canais de Venda</h2>
+                    <h2 className="text-4xl font-bold text-gray-900 tracking-tight">Canais de Venda</h2>
                     <p className="text-gray-500 mt-2 font-medium">Marketplaces, taxas e comissões.</p>
                 </div>
                 <button
@@ -139,7 +139,7 @@ const Channels: React.FC = () => {
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
                     <div className="bg-white w-full max-w-lg rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
                         <div className="px-10 py-8 bg-gray-50 flex justify-between items-center border-b">
-                            <h3 className="text-2xl font-bold font-serif">{editingId ? 'Editar Canal' : 'Novo Canal'}</h3>
+                            <h3 className="text-2xl font-bold">{editingId ? 'Editar Canal' : 'Novo Canal'}</h3>
                             <button onClick={handleCloseModal}><X className="w-6 h-6 text-gray-400" /></button>
                         </div>
 

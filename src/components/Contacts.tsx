@@ -73,7 +73,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div>
-          <h2 className="text-4xl font-bold text-gray-900 font-serif tracking-tight">Agenda de Contatos</h2>
+          <h2 className="text-4xl font-bold text-gray-900 tracking-tight">Agenda de Contatos</h2>
           <p className="text-gray-500 mt-2 font-medium">Clientes e fornecedores em um só lugar.</p>
         </div>
         <button
@@ -161,7 +161,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
           <div className="bg-white w-full max-w-xl rounded-[3rem] shadow-2xl overflow-hidden">
             <div className="px-10 py-8 bg-gray-50/50 flex items-center justify-between border-b">
-              <h3 className="text-2xl font-bold text-gray-900 font-serif">{editingContact ? 'Editar Contato' : 'Novo Contato'}</h3>
+              <h3 className="text-2xl font-bold text-gray-900">{editingContact ? 'Editar Contato' : 'Novo Contato'}</h3>
               <button onClick={() => setIsModalOpen(false)}><X className="w-6 h-6 text-gray-400" /></button>
             </div>
             <div className="p-10 space-y-6 max-h-[70vh] overflow-y-auto">

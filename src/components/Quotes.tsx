@@ -136,7 +136,7 @@ const Quotes: React.FC = () => {
       <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 print:hidden">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           <div>
-            <h2 className="text-4xl font-bold text-gray-900 font-serif tracking-tight">Orçamentos</h2>
+            <h2 className="text-4xl font-bold text-gray-900 tracking-tight">Orçamentos</h2>
             <p className="text-gray-500 mt-2 font-medium">Transforme cotações em vendas de sucesso.</p>
           </div>
           <button
@@ -206,7 +206,7 @@ const Quotes: React.FC = () => {
               {/* Resumo lateral */}
               <div className="w-full md:w-[35%] bg-gray-900 p-12 text-white flex flex-col justify-between">
                 <div>
-                  <h3 className="text-4xl font-bold font-serif mb-8">Resumo do Orçamento</h3>
+                  <h3 className="text-4xl font-bold mb-8">Resumo do Orçamento</h3>
                   <div className="space-y-6">
                     <div className="p-6 bg-white/5 rounded-2xl border border-white/10">
                       <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Total Estimado</p>
@@ -325,7 +325,7 @@ const Quotes: React.FC = () => {
           {/* Header */}
           <div className="flex justify-between items-center mb-12 border-b-2 border-gray-100 pb-8">
             <div>
-              <h1 className="text-3xl font-serif font-bold text-gray-900">ORÇAMENTO</h1>
+              <h1 className="text-3xl font-bold text-gray-900">ORÇAMENTO</h1>
               <p className="text-sm text-gray-500 mt-1">Ref: #{printQuote.id.split('-')[0].toUpperCase()}</p>
               <p className="text-sm text-gray-500">Data: {new Date(printQuote.date).toLocaleDateString()}</p>
             </div>
