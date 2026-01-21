@@ -61,8 +61,9 @@ const FinancialControl: React.FC = () => {
                 date: new Date().toISOString().split('T')[0]
             });
             loadTransactions();
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error saving transaction', error);
+            alert('Erro ao salvar transação: ' + (error.message || JSON.stringify(error)));
         }
     };
 
