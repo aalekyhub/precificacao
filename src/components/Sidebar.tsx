@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
 import {
   LayoutDashboard,
   Package,
@@ -11,7 +12,8 @@ import {
   Receipt,
   Users,
   FileText,
-  DollarSign
+  DollarSign,
+  LogOut
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -68,7 +70,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggle }) => {
         })}
       </nav>
 
-      <div className="absolute bottom-0 w-full p-4">
+      <div className="absolute bottom-0 w-full p-4 space-y-4">
         <div className="bg-gradient-to-br from-gray-900 to-gray-800 p-5 rounded-2xl shadow-xl">
           <p className="text-[10px] text-rose-400 font-bold uppercase tracking-widest mb-1">Assinatura</p>
           <p className="text-sm font-semibold text-white">Artesã Profissional</p>
@@ -79,6 +81,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggle }) => {
             <span className="text-[10px] text-gray-400 font-bold whitespace-nowrap">75%</span>
           </div>
         </div>
+
+        <button
+          onClick={() => supabase.auth.signOut()}
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:bg-rose-50 hover:text-rose-600 transition-all font-medium"
+        >
+          <LogOut className="w-5 h-5" />
+          Sair do Sistema
+        </button>
       </div>
     </aside>
   );
