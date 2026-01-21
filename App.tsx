@@ -11,16 +11,32 @@ import Contacts from './src/components/Contacts';
 import Quotes from './src/components/Quotes';
 import Sidebar from './src/components/Sidebar';
 import Login from './src/components/Login';
+import FinancialControl from './src/components/FinancialControl';
 import { useStoreData } from './src/hooks/useStoreData';
 import { supabase } from './src/lib/supabase';
 
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Persist check loading state
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const storeData = useStoreData();
 
   useEffect(() => {
+    // Check initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsAuthenticated(!!session);
+      setIsLoading(false);
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(!!session);
+      setIsLoading(false);
+    });
+
     const checkHealth = async () => {
       const { error } = await supabase.from('Insumo').select('count', { count: 'exact', head: true });
       setIsConnected(!error);
@@ -28,11 +44,18 @@ const App: React.FC = () => {
 
     checkHealth();
     const interval = setInterval(checkHealth, 30000);
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      subscription.unsubscribe();
+    };
   }, []);
 
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center bg-[#FAFAFA] font-bold text-gray-400">Carregando...</div>;
+  }
+
   if (!isAuthenticated) {
-    return <Login onLogin={() => setIsAuthenticated(true)} />;
+    return <Login onLogin={() => { }} />; // No-op, handled by auth listener
   }
 
   return (
@@ -59,6 +82,7 @@ const App: React.FC = () => {
           <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
             <Routes>
               <Route path="/" element={<Dashboard />} />
+              <Route path="/financial" element={<FinancialControl />} />
               <Route path="/products" element={<Products />} />
               <Route path="/materials" element={<Materials />} />
               <Route path="/fixed-costs" element={<FixedCosts />} />

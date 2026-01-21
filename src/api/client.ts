@@ -13,6 +13,7 @@ const getTable = (path: string) => {
     if (path.includes('settings')) return 'Settings';
     if (path.includes('orders')) return 'Order';
     if (path.includes('quotes')) return 'Order';
+    if (path.includes('financial')) return 'FinancialTransaction';
     return '';
 };
 

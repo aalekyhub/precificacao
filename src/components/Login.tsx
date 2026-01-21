@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, Lock, ArrowRight, CheckCircle2, Star, ShieldCheck } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 interface LoginProps {
     onLogin: () => void;
@@ -10,14 +11,21 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
-        // Simulate API call
-        setTimeout(() => {
-            setIsLoading(false);
-            onLogin(); // Call the parent function to "authenticate"
-        }, 800);
+        const { error } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+        });
+
+        if (error) {
+            alert('Erro ao fazer login: ' + error.message);
+        } else {
+            // parent auth state listener will handle the redirect/state update
+            if (onLogin) onLogin();
+        }
+        setIsLoading(false);
     };
 
     return (
