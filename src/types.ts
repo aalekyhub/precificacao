@@ -108,4 +108,5 @@ export interface FinancialTransaction {
   category: string;
   status: 'paid' | 'pending';
   date: string;
+  observations?: string;
 }
