@@ -253,32 +253,32 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
 
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
-          <div className="bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="px-10 py-8 bg-gray-50/50 flex items-center justify-between border-b">
-              <h3 className="text-2xl font-bold text-gray-900">{editingContact ? 'Editar Contato' : 'Novo Contato'}</h3>
+          <div className="bg-white w-full max-w-2xl rounded-lg shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="px-8 py-6 bg-gray-50/50 flex items-center justify-between border-b">
+              <h3 className="text-xl font-bold text-gray-900">{editingContact ? 'Editar Contato' : 'Novo Contato'}</h3>
               <button onClick={() => setIsModalOpen(false)}><X className="w-6 h-6 text-gray-400" /></button>
             </div>
 
-            <div className="p-10 space-y-8 max-h-[75vh] overflow-y-auto custom-scrollbar">
+            <div className="p-8 space-y-6 max-h-[75vh] overflow-y-auto custom-scrollbar">
 
               {/* Type Selection */}
               <div className="grid grid-cols-2 gap-4">
                 <button
                   onClick={() => setFormState({ ...formState, type: 'Cliente' })}
-                  className={`py-4 rounded-2xl font-bold border-2 transition-all ${formState.type === 'Cliente' ? 'border-rose-500 bg-rose-50 text-rose-600' : 'border-gray-100 text-gray-400'}`}
+                  className={`py-3 rounded-md font-bold border-2 transition-all ${formState.type === 'Cliente' ? 'border-rose-500 bg-rose-50 text-rose-600' : 'border-gray-200 text-gray-400'}`}
                 >
                   Cliente
                 </button>
                 <button
                   onClick={() => setFormState({ ...formState, type: 'Fornecedor' })}
-                  className={`py-4 rounded-2xl font-bold border-2 transition-all ${formState.type === 'Fornecedor' ? 'border-blue-500 bg-blue-50 text-blue-600' : 'border-gray-100 text-gray-400'}`}
+                  className={`py-3 rounded-md font-bold border-2 transition-all ${formState.type === 'Fornecedor' ? 'border-blue-500 bg-blue-50 text-blue-600' : 'border-gray-200 text-gray-400'}`}
                 >
                   Fornecedor
                 </button>
               </div>
 
               {/* Document Section */}
-              <div className="bg-indigo-50/50 p-6 rounded-3xl border border-indigo-100 space-y-4">
+              <div className="bg-indigo-50/30 p-6 rounded-lg border border-indigo-100 space-y-4">
                 <div className="flex items-center gap-4 mb-2">
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
@@ -286,7 +286,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
                       name="docType"
                       checked={formState.document_type === 'CPF'}
                       onChange={() => setFormState({ ...formState, document_type: 'CPF', document: '' })}
-                      className="w-4 h-4 text-indigo-600"
+                      className="w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500"
                     />
                     <span className="text-sm font-bold text-gray-600">Pessoa Física (CPF)</span>
                   </label>
@@ -296,7 +296,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
                       name="docType"
                       checked={formState.document_type === 'CNPJ'}
                       onChange={() => setFormState({ ...formState, document_type: 'CNPJ', document: '' })}
-                      className="w-4 h-4 text-indigo-600"
+                      className="w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500"
                     />
                     <span className="text-sm font-bold text-gray-600">Pessoa Jurídica (CNPJ)</span>
                   </label>
@@ -305,7 +305,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
                 <div className="relative">
                   <input
                     type="text"
-                    className="w-full text-lg font-bold text-gray-900 pl-4 pr-12 py-3 bg-white border border-indigo-100 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500/20 shadow-sm"
+                    className="w-full text-lg font-bold text-gray-900 pl-4 pr-12 py-3 bg-white border border-indigo-100 rounded-md outline-none focus:ring-2 focus:ring-indigo-500/20 shadow-sm"
                     placeholder={formState.document_type === 'CPF' ? '000.000.000-00' : '00.000.000/0000-00'}
                     value={formState.document}
                     onChange={(e) => {
@@ -323,7 +323,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
                     </div>
                   )}
                   {!isLoadingCnpj && formState.document_type === 'CNPJ' && (
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-indigo-400 bg-indigo-50 px-2 py-1 rounded-md pointer-events-none">
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-indigo-400 bg-indigo-50 px-2 py-1 rounded pointer-events-none">
                       AUTO
                     </div>
                   )}
@@ -342,7 +342,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
                   <div className="relative">
                     <input
                       type="text"
-                      className="w-full font-bold text-gray-700 pl-10 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-indigo-500 transition-all"
+                      className="w-full font-bold text-gray-700 pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-indigo-500 transition-all"
                       value={formState.name}
                       onChange={(e) => setFormState({ ...formState, name: e.target.value })}
                     />
@@ -356,7 +356,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
                     <div className="relative">
                       <input
                         type="text"
-                        className="w-full font-medium text-gray-700 pl-10 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-indigo-500 transition-all"
+                        className="w-full font-medium text-gray-700 pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-indigo-500 transition-all"
                         value={formState.phone}
                         onChange={(e) => setFormState({ ...formState, phone: masks.phone(e.target.value) })}
                       />
@@ -368,7 +368,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
                     <div className="relative">
                       <input
                         type="email"
-                        className="w-full font-medium text-gray-700 pl-10 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-indigo-500 transition-all"
+                        className="w-full font-medium text-gray-700 pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-indigo-500 transition-all"
                         value={formState.email}
                         onChange={(e) => setFormState({ ...formState, email: e.target.value })}
                       />
@@ -379,7 +379,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
               </div>
 
               {/* Address Section */}
-              <div className="pt-4 border-t border-gray-100">
+              <div className="pt-6 border-t border-gray-100">
                 <h4 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
                   <MapPin className="w-5 h-5 text-indigo-500" />
                   Endereço
@@ -391,7 +391,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
                     <div className="relative">
                       <input
                         type="text"
-                        className="w-full font-bold text-gray-700 pl-3 pr-8 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-indigo-500 transition-all"
+                        className="w-full font-bold text-gray-700 pl-3 pr-8 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-indigo-500 transition-all"
                         placeholder="00000-000"
                         value={formState.cep}
                         onChange={(e) => setFormState({ ...formState, cep: masks.cep(e.target.value) })}
@@ -408,7 +408,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
                     <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1 block mb-1">Rua / Logradouro</label>
                     <input
                       type="text"
-                      className="w-full font-medium text-gray-700 px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-indigo-500 transition-all"
+                      className="w-full font-medium text-gray-700 px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-indigo-500 transition-all"
                       value={formState.street}
                       onChange={(e) => setFormState({ ...formState, street: e.target.value })}
                     />
@@ -420,7 +420,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
                     <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1 block mb-1">Número</label>
                     <input
                       type="text"
-                      className="w-full font-medium text-gray-700 px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-indigo-500 transition-all"
+                      className="w-full font-medium text-gray-700 px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-indigo-500 transition-all"
                       value={formState.number}
                       onChange={(e) => setFormState({ ...formState, number: e.target.value })}
                     />
@@ -429,7 +429,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
                     <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1 block mb-1">Bairro</label>
                     <input
                       type="text"
-                      className="w-full font-medium text-gray-700 px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-indigo-500 transition-all"
+                      className="w-full font-medium text-gray-700 px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-indigo-500 transition-all"
                       value={formState.neighborhood}
                       onChange={(e) => setFormState({ ...formState, neighborhood: e.target.value })}
                     />
@@ -441,7 +441,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
                     <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1 block mb-1">Cidade</label>
                     <input
                       type="text"
-                      className="w-full font-medium text-gray-700 px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-indigo-500 transition-all"
+                      className="w-full font-medium text-gray-700 px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-indigo-500 transition-all"
                       value={formState.city}
                       onChange={(e) => setFormState({ ...formState, city: e.target.value })}
                     />
@@ -450,7 +450,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
                     <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1 block mb-1">Estado (UF)</label>
                     <input
                       type="text"
-                      className="w-full font-medium text-gray-700 px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-indigo-500 transition-all"
+                      className="w-full font-medium text-gray-700 px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-indigo-500 transition-all"
                       value={formState.state}
                       maxLength={2}
                       onChange={(e) => setFormState({ ...formState, state: e.target.value.toUpperCase() })}
@@ -461,11 +461,16 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
 
             </div>
 
-            <div className="p-10 bg-gray-50/50 border-t flex justify-end gap-4">
-              <button onClick={() => setIsModalOpen(false)} className="px-8 py-4 bg-white border-2 border-gray-200 rounded-2xl font-bold text-gray-500 hover:bg-gray-50 hover:border-gray-300 transition-all">Cancelar</button>
+            <div className="px-8 py-6 bg-gray-50/50 border-t flex justify-end gap-3">
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="px-6 py-3 bg-white border border-gray-300 rounded-md font-bold text-gray-600 hover:bg-gray-50 transition-all"
+              >
+                Cancelar
+              </button>
               <button
                 onClick={handleSave}
-                className="px-10 py-4 bg-indigo-600 text-white rounded-2xl font-bold shadow-xl shadow-indigo-100 flex items-center gap-2 hover:bg-indigo-700 active:scale-95 transition-all"
+                className="px-8 py-3 bg-indigo-600 text-white rounded-md font-bold shadow-lg shadow-indigo-100 flex items-center gap-2 hover:bg-indigo-700 active:scale-95 transition-all"
               >
                 <Save className="w-5 h-5" /> Salvar Contato
               </button>
