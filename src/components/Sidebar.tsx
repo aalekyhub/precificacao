@@ -23,6 +23,13 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggle }) => {
   const location = useLocation();
+  const [userEmail, setUserEmail] = React.useState<string>('');
+
+  React.useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user?.email) setUserEmail(data.user.email);
+    });
+  }, []);
 
   const links = [
     { name: 'Painel de Controle', icon: LayoutDashboard, path: '/' },
@@ -71,14 +78,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggle }) => {
       </nav>
 
       <div className="absolute bottom-0 w-full p-4 space-y-4">
-        <div className="bg-gradient-to-br from-gray-900 to-gray-800 p-5 rounded-2xl shadow-xl">
-          <p className="text-[10px] text-rose-400 font-bold uppercase tracking-widest mb-1">Assinatura</p>
-          <p className="text-sm font-semibold text-white">Artesã Profissional</p>
-          <div className="mt-4 flex items-center justify-between">
-            <div className="h-1.5 w-full bg-gray-700 rounded-full overflow-hidden mr-3">
-              <div className="h-full bg-rose-500 w-3/4"></div>
-            </div>
-            <span className="text-[10px] text-gray-400 font-bold whitespace-nowrap">75%</span>
+        <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100 flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-xs">
+            {userEmail.charAt(0).toUpperCase()}
+          </div>
+          <div className="overflow-hidden">
+            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Usuário</p>
+            <p className="text-xs font-bold text-gray-900 truncate" title={userEmail}>{userEmail || 'Carregando...'}</p>
           </div>
         </div>
 
