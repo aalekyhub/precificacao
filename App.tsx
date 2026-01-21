@@ -12,6 +12,7 @@ import Quotes from './src/components/Quotes';
 import Sidebar from './src/components/Sidebar';
 import Login from './src/components/Login';
 import FinancialControl from './src/components/FinancialControl';
+import Equipments from './src/components/Equipments';
 import { useStoreData } from './src/hooks/useStoreData';
 import { supabase } from './src/lib/supabase';
 
@@ -83,6 +84,7 @@ const App: React.FC = () => {
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/financial" element={<FinancialControl />} />
+              <Route path="/equipments" element={<Equipments />} />
               <Route path="/products" element={<Products />} />
               <Route path="/materials" element={<Materials />} />
               <Route path="/fixed-costs" element={<FixedCosts />} />
