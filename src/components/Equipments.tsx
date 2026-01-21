@@ -26,7 +26,7 @@ const Equipments: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
-    const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<FormData>({
+    const { register, handleSubmit, reset, watch, formState: { errors, isSubmitting } } = useForm<FormData>({
         resolver: zodResolver(schema),
         defaultValues: {
             value: 0,
@@ -206,7 +206,7 @@ const Equipments: React.FC = () => {
                             </div>
 
                             <div className="bg-sky-50 p-4 rounded-xl text-sky-700 text-sm font-medium">
-                                O sistema dividirá o valor pela vida útil ({Number(useForm().getValues().lifespan_years) || 0} anos) para encontrar o custo mensal.
+                                O sistema dividirá o valor pela vida útil ({watch('lifespan_years') || 0} anos) para encontrar o custo mensal.
                             </div>
 
                             <button type="submit" disabled={isSubmitting} className="w-full py-4 bg-sky-600 text-white rounded-2xl font-bold hover:bg-sky-700 transition-all shadow-lg shadow-sky-200 flex items-center justify-center gap-2">
