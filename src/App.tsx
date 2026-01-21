@@ -9,7 +9,9 @@ import {
     Menu,
     X,
     FileText,
-    Settings as SettingsIcon
+
+    Settings as SettingsIcon,
+    DollarSign
 } from 'lucide-react';
 import Materials from './components/Materials';
 import Products from './components/Products';
@@ -18,6 +20,7 @@ import FixedCosts from './components/FixedCosts';
 import PricingCalculator from './components/PricingCalculator';
 import Quotes from './components/Quotes';
 import Settings from './components/Settings';
+import FinancialControl from './components/FinancialControl';
 
 // Simple Dashboard Component
 const Dashboard = ({ onNavigate }: { onNavigate: (page: string) => void }) => (
@@ -127,6 +130,7 @@ function App() {
                     <NavItem page="products" icon={Box} label="Produtos" />
                     <NavItem page="materials" icon={Package} label="Materiais" />
                     <NavItem page="channels" icon={ShoppingBag} label="Canais de Venda" />
+                    <NavItem page="financial" icon={DollarSign} label="Controle Financeiro" />
                     <NavItem page="fixed-costs" icon={Building2} label="Custos Fixos" />
                     <NavItem page="settings" icon={SettingsIcon} label="Configurações" />
                     <div className="pt-8 pb-4 px-6 text-xs font-bold text-gray-400 uppercase tracking-widest">Estratégia</div>
@@ -150,6 +154,7 @@ function App() {
                     <NavItem page="products" icon={Box} label="Produtos" />
                     <NavItem page="materials" icon={Package} label="Materiais" />
                     <NavItem page="channels" icon={ShoppingBag} label="Canais de Venda" />
+                    <NavItem page="financial" icon={DollarSign} label="Controle Financeiro" />
                     <NavItem page="fixed-costs" icon={Building2} label="Custos Fixos" />
                     <NavItem page="settings" icon={SettingsIcon} label="Configurações" />
                     <NavItem page="calculator" icon={Calculator} label="Calculadora" />
@@ -164,6 +169,7 @@ function App() {
                     {currentPage === 'materials' && <Materials />}
                     {currentPage === 'products' && <Products />}
                     {currentPage === 'channels' && <Channels />}
+                    {currentPage === 'financial' && <FinancialControl />}
                     {currentPage === 'fixed-costs' && <FixedCosts />}
                     {currentPage === 'settings' && <Settings />}
                     {currentPage === 'calculator' && <PricingCalculator />}

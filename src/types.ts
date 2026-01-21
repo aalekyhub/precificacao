@@ -98,3 +98,14 @@ export type Quote = Order;
 export type QuoteStatus = Order['status'];
 export type Insumo = Material;
 export type Produto = Product;
+
+export interface FinancialTransaction {
+  id: string;
+  user_id?: string;
+  description: string;
+  amount: number;
+  type: 'income' | 'expense';
+  category: string;
+  status: 'paid' | 'pending';
+  date: string;
+}

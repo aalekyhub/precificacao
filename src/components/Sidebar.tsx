@@ -10,7 +10,8 @@ import {
   Calculator,
   Receipt,
   Users,
-  FileText
+  FileText,
+  DollarSign
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -25,6 +26,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggle }) => {
     { name: 'Painel de Controle', icon: LayoutDashboard, path: '/' },
     { name: 'Meus Materiais', icon: Package, path: '/materials' },
     { name: 'Meus Produtos', icon: Layers, path: '/products' },
+    { name: 'Controle Financeiro', icon: DollarSign, path: '/financial' },
     { name: 'Custos Fixos', icon: Calculator, path: '/fixed-costs' },
     { name: 'Clientes / Fornecedores', icon: Users, path: '/contacts' },
     { name: 'Orçamento', icon: FileText, path: '/quotes' },
