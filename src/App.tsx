@@ -11,7 +11,8 @@ import {
     FileText,
 
     Settings as SettingsIcon,
-    DollarSign
+    DollarSign,
+    Monitor
 } from 'lucide-react';
 import Materials from './components/Materials';
 import Products from './components/Products';
@@ -21,6 +22,7 @@ import PricingCalculator from './components/PricingCalculator';
 import Quotes from './components/Quotes';
 import Settings from './components/Settings';
 import FinancialControl from './components/FinancialControl';
+import Equipments from './components/Equipments';
 
 // Simple Dashboard Component
 const Dashboard = ({ onNavigate }: { onNavigate: (page: string) => void }) => (
@@ -170,6 +172,7 @@ function App() {
                     {currentPage === 'products' && <Products />}
                     {currentPage === 'channels' && <Channels />}
                     {currentPage === 'financial' && <FinancialControl />}
+                    {currentPage === 'equipments' && <Equipments />}
                     {currentPage === 'fixed-costs' && <FixedCosts />}
                     {currentPage === 'settings' && <Settings />}
                     {currentPage === 'calculator' && <PricingCalculator />}

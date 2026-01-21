@@ -14,6 +14,7 @@ const getTable = (path: string) => {
     if (path.includes('orders')) return 'Order';
     if (path.includes('quotes')) return 'Order';
     if (path.includes('financial')) return 'FinancialTransaction';
+    if (path.includes('equipments')) return 'Equipments';
     return '';
 };
 

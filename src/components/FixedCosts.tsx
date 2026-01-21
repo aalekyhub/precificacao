@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useStoreData } from '../hooks/useStoreData';
-import { FixedCost } from '../types';
+import { FixedCost, Equipment } from '../types';
+import { api } from '../api/client';
 import {
   Wallet,
   Plus,
   Trash2,
   X,
   Save,
-  DollarSign
+  DollarSign,
+  Monitor
 } from 'lucide-react';
 
 const schema = z.object({
@@ -25,12 +27,29 @@ const FixedCosts: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
+  // State for depreciation
+  const [equipmentDepreciation, setEquipmentDepreciation] = useState(0);
+
   const { register, handleSubmit, reset, setValue, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
       value: 0
     }
   });
+
+  useEffect(() => {
+    // Fetch equipment depreciation totals
+    api.get<Equipment[]>('/equipments').then(data => {
+      if (data) {
+        const total = data.reduce((acc, item) => {
+          const monthly = Number(item.value) / (Number(item.lifespan_years) * 12);
+          return acc + (item.lifespan_years ? monthly : 0);
+        }, 0);
+        setEquipmentDepreciation(total);
+      }
+    }).catch(err => console.error('Failed to load depreciation', err));
+  }, [fixedCosts]); // Re-fetch when costs change? Maybe just on mount is fine, or better yet, separate. 
+  // Actually, equipments change rarely. Just on mount is fine.
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -63,7 +82,8 @@ const FixedCosts: React.FC = () => {
     reset();
   };
 
-  const totalMonthly = fixedCosts.reduce((acc, c) => acc + Number(c.value), 0);
+  const manualTotal = fixedCosts.reduce((acc, c) => acc + Number(c.value), 0);
+  const totalMonthly = manualTotal + equipmentDepreciation;
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -89,9 +109,21 @@ const FixedCosts: React.FC = () => {
             <div className="relative z-10">
               <h4 className="font-bold text-indigo-100 text-xs uppercase tracking-widest opacity-80">Total Mensal</h4>
               <p className="text-4xl font-bold mt-2">R$ {totalMonthly.toFixed(2)}</p>
+
+              <div className="mt-4 space-y-1">
+                <p className="text-xs text-indigo-200 flex justify-between">
+                  <span>Despesas Fixas:</span>
+                  <span>R$ {manualTotal.toFixed(2)}</span>
+                </p>
+                <p className="text-xs text-indigo-200 flex justify-between">
+                  <span>Depreciação:</span>
+                  <span>R$ {equipmentDepreciation.toFixed(2)}</span>
+                </p>
+              </div>
+
               <div className="mt-6 flex items-center gap-2 bg-white/10 w-fit px-3 py-1 rounded-full text-[10px] font-bold border border-white/10">
                 <DollarSign className="w-3 h-3" />
-                {fixedCosts.length} despesas cadastradas
+                {fixedCosts.length} despesas + Equipamentos
               </div>
             </div>
           </div>
@@ -99,7 +131,27 @@ const FixedCosts: React.FC = () => {
 
         {/* List */}
         <div className="lg:col-span-2 space-y-4">
-          {fixedCosts.length === 0 ? (
+
+          {/* Automatic Depreciation Entry */}
+          {equipmentDepreciation > 0 && (
+            <div className="bg-indigo-50 p-6 rounded-[2rem] border border-indigo-100 shadow-sm flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-indigo-600 shadow-sm">
+                  <Monitor className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-indigo-900 text-lg">Depreciação de Equipamentos</h3>
+                  <p className="text-xs text-indigo-400 font-bold uppercase tracking-wider">Cálculo Automático</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-6">
+                <p className="font-bold text-indigo-900 text-xl">R$ {equipmentDepreciation.toFixed(2)}</p>
+                <div className="w-9 h-9"></div> {/* Spacer to align with delete buttons */}
+              </div>
+            </div>
+          )}
+
+          {fixedCosts.length === 0 && equipmentDepreciation === 0 ? (
             <div className="text-center py-20 bg-white rounded-[2.5rem] border border-gray-100">
               <p className="text-gray-400 font-medium">Nenhuma despesa cadastrada ainda.</p>
             </div>

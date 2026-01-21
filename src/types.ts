@@ -110,3 +110,12 @@ export interface FinancialTransaction {
   date: string;
   observations?: string;
 }
+
+export interface Equipment {
+  id: string;
+  name: string;
+  value: number;
+  lifespan_years: number;
+  date: string;
+  tenant_id?: string;
+}
