@@ -109,7 +109,7 @@ const Equipments: React.FC = () => {
                 {/* Stats Section */}
                 <div className="lg:col-span-1 space-y-4">
                     {/* Depreciation Card */}
-                    <div className="bg-gradient-to-br from-rose-500 to-orange-600 p-8 rounded-[2.5rem] text-white shadow-2xl shadow-rose-200 relative overflow-hidden">
+                    <div className="bg-gradient-to-br from-rose-500 to-orange-600 p-8 rounded-lg text-white shadow-2xl shadow-rose-200 relative overflow-hidden">
                         <TrendingDown className="absolute -right-8 -bottom-8 w-40 h-40 text-white/10" />
                         <div className="relative z-10">
                             <h4 className="font-bold text-rose-100 text-xs uppercase tracking-widest opacity-90">Depreciação Mensal (Total)</h4>
@@ -121,7 +121,7 @@ const Equipments: React.FC = () => {
                     </div>
 
                     {/* Total Invested */}
-                    <div className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm relative overflow-hidden">
+                    <div className="bg-white p-8 rounded-lg border border-gray-100 shadow-sm relative overflow-hidden">
                         <h4 className="font-bold text-gray-400 text-xs uppercase tracking-widest">Total Investido</h4>
                         <p className="text-3xl font-bold text-gray-900 mt-2">R$ {totalInvested.toFixed(2)}</p>
                     </div>
@@ -130,7 +130,7 @@ const Equipments: React.FC = () => {
                 {/* List */}
                 <div className="lg:col-span-2 space-y-4">
                     {equipments.length === 0 ? (
-                        <div className="text-center py-20 bg-white rounded-[2.5rem] border border-gray-100">
+                        <div className="text-center py-20 bg-white rounded-lg border border-gray-100">
                             <Monitor className="w-16 h-16 text-gray-200 mx-auto mb-4" />
                             <p className="text-gray-400 font-medium">Nenhum equipamento cadastrado ainda.</p>
                         </div>
@@ -138,7 +138,7 @@ const Equipments: React.FC = () => {
                         equipments.map(item => {
                             const monthly = calculateDepreciation(Number(item.value), Number(item.lifespan_years));
                             return (
-                                <div key={item.id} className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm flex items-center justify-between group hover:shadow-md transition-all">
+                                <div key={item.id} className="bg-white p-6 rounded-lg border border-gray-100 shadow-sm flex items-center justify-between group hover:shadow-md transition-all">
                                     <div className="flex items-center gap-4">
                                         <div className="w-12 h-12 bg-sky-50 rounded-lg flex items-center justify-center text-sky-600">
                                             <Monitor className="w-6 h-6" />
@@ -168,7 +168,7 @@ const Equipments: React.FC = () => {
 
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
-                    <div className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden p-8 animate-in zoom-in-95 duration-200">
+                    <div className="bg-white w-full max-w-lg rounded-lg shadow-2xl overflow-hidden p-8 animate-in zoom-in-95 duration-200">
                         <div className="flex justify-between items-center mb-8">
                             <h3 className="text-2xl font-bold text-gray-900">Novo Equipamento</h3>
                             <button onClick={handleCloseModal}><X className="w-6 h-6 text-gray-400" /></button>
@@ -205,7 +205,7 @@ const Equipments: React.FC = () => {
                                 </div>
                             </div>
 
-                            <div className="bg-sky-50 p-4 rounded-md text-sky-700 text-sm font-medium">
+                            <div className="bg-sky-50 p-4 rounded-lg text-sky-700 text-sm font-medium">
                                 O sistema dividirá o valor pela vida útil ({watch('lifespan_years') || 0} anos) para encontrar o custo mensal.
                             </div>
 

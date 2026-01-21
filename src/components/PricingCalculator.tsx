@@ -130,7 +130,7 @@ const PricingCalculator: React.FC = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Configuration Panel */}
-                <div className="lg:col-span-1 bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-xl shadow-indigo-50/50 h-fit">
+                <div className="lg:col-span-1 bg-white p-8 rounded-lg border border-gray-100 shadow-xl shadow-indigo-50/50 h-fit">
                     <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
                         <Calculator className="w-6 h-6 text-indigo-600" /> Parâmetros
                     </h3>
@@ -199,7 +199,7 @@ const PricingCalculator: React.FC = () => {
                     {result ? (
                         <>
                             {/* Main Price Card */}
-                            <div className="bg-gradient-to-br from-gray-900 to-gray-800 p-10 rounded-[3rem] text-white shadow-2xl relative overflow-hidden">
+                            <div className="bg-gradient-to-br from-gray-900 to-gray-800 p-10 rounded-lg text-white shadow-2xl relative overflow-hidden">
                                 <div className="absolute top-0 right-0 p-10 opacity-10"><DollarSign className="w-64 h-64" /></div>
                                 <div className="relative z-10">
                                     <h4 className="text-gray-400 font-medium text-lg mb-2">Preço de Venda Sugerido (Unitário)</h4>
@@ -222,7 +222,7 @@ const PricingCalculator: React.FC = () => {
 
                             {/* Details Grid */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm">
+                                <div className="bg-white p-8 rounded-lg border border-gray-100 shadow-sm">
                                     <h4 className="font-bold text-gray-900 mb-6 flex items-center gap-2">
                                         <PieChart className="w-5 h-5 text-gray-400" />
                                         Composição do Preço
@@ -240,7 +240,7 @@ const PricingCalculator: React.FC = () => {
                                     </div>
                                 </div>
 
-                                <div className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm space-y-4">
+                                <div className="bg-white p-8 rounded-lg border border-gray-100 shadow-sm space-y-4">
                                     <h4 className="font-bold text-gray-900 mb-6">Detalhamento de Custos</h4>
 
                                     <div className="flex justify-between items-center p-3 bg-blue-50/50 rounded-md">
@@ -262,7 +262,7 @@ const PricingCalculator: React.FC = () => {
                             </div>
                         </>
                     ) : (
-                        <div className="h-full flex flex-col items-center justify-center text-gray-400 bg-gray-50 rounded-[3rem] border border-gray-200 border-dashed p-10 min-h-[400px]">
+                        <div className="h-full flex flex-col items-center justify-center text-gray-400 bg-gray-50 rounded-lg border border-gray-200 border-dashed p-10 min-h-[400px]">
                             <Calculator className="w-16 h-16 mb-4 opacity-20" />
                             <p className="text-lg font-medium">Preencha os parâmetros para calcular</p>
                             <p className="text-sm opacity-60 max-w-xs text-center mt-2">Selecione produto, canal e margem para visualizar a sugestão de preço.</p>

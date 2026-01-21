@@ -67,7 +67,7 @@ const Settings: React.FC = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Configuration Card */}
-                <div className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm md:col-span-1">
+                <div className="bg-white p-8 rounded-lg border border-gray-100 shadow-sm md:col-span-1">
                     <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
                         <SettingsIcon className="w-5 h-5 text-indigo-600" />
                         Parâmetros de Produção
@@ -128,7 +128,7 @@ const Settings: React.FC = () => {
 
                 {/* Documentation Card */}
                 <div className="space-y-6 md:col-span-1">
-                    <div className="bg-gradient-to-br from-indigo-600 to-purple-700 p-8 rounded-[2.5rem] text-white shadow-2xl shadow-indigo-200 relative overflow-hidden">
+                    <div className="bg-gradient-to-br from-indigo-600 to-purple-700 p-8 rounded-lg text-white shadow-2xl shadow-indigo-200 relative overflow-hidden">
                         <FileText className="absolute -right-6 -bottom-6 w-40 h-40 text-white/10" />
 
                         <div className="relative z-10">
@@ -145,7 +145,7 @@ const Settings: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm">
+                    <div className="bg-white p-8 rounded-lg border border-gray-100 shadow-sm">
                         <h4 className="font-bold text-gray-900 mb-4">Resumo da sua Hora</h4>
                         <div className="space-y-4">
                             <div className="flex justify-between items-center py-2 border-b border-gray-50">

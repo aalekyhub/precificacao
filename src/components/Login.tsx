@@ -105,7 +105,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
             {/* Right Side - Login Form */}
             <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-gray-50">
-                <div className="w-full max-w-md bg-white p-10 rounded-[2.5rem] shadow-xl shadow-gray-100 border border-gray-100/50">
+                <div className="w-full max-w-md bg-white p-10 rounded-lg shadow-xl shadow-gray-100 border border-gray-100/50">
                     <div className="text-center mb-10">
                         <h2 className="text-3xl font-bold text-gray-900 mb-3">
                             {isSignUp ? 'Crie sua conta' : 'Bem-vindo de volta!'}

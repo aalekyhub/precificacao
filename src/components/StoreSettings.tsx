@@ -51,7 +51,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({ config, onUpdate }) => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm space-y-8 h-fit">
+        <div className="bg-white p-8 rounded-lg border border-gray-100 shadow-sm space-y-8 h-fit">
           <div className="flex items-center gap-3">
             <div className="bg-rose-500 p-3 rounded-lg text-white shadow-lg shadow-rose-100">
               <Wallet className="w-6 h-6" />
@@ -100,7 +100,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({ config, onUpdate }) => {
               </div>
             </div>
 
-            <div className="p-6 bg-emerald-50 rounded-3xl border border-emerald-100 flex items-center justify-between">
+            <div className="p-6 bg-emerald-50 rounded-lg border border-emerald-100 flex items-center justify-between">
               <div>
                 <p className="text-[10px] text-emerald-500 font-bold uppercase tracking-widest mb-1">Valor da sua Hora</p>
                 <p className="text-xs text-emerald-600/70">Baseado em {totalHoursMonth} horas mensais</p>
@@ -122,7 +122,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({ config, onUpdate }) => {
 
         {/* Manual Card */}
         <div className="space-y-6">
-          <div className="bg-gradient-to-br from-indigo-600 to-purple-700 p-8 rounded-[2.5rem] text-white shadow-2xl shadow-indigo-200 relative overflow-hidden group">
+          <div className="bg-gradient-to-br from-indigo-600 to-purple-700 p-8 rounded-lg text-white shadow-2xl shadow-indigo-200 relative overflow-hidden group">
             <FileText className="absolute -right-6 -bottom-6 w-40 h-40 text-white/10 group-hover:scale-110 transition-transform duration-500" />
 
             <div className="relative z-10">
@@ -131,7 +131,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({ config, onUpdate }) => {
 
               <button
                 onClick={generateManual}
-                className="bg-white text-indigo-700 px-6 py-3 rounded-md font-bold shadow-lg flex items-center gap-2 hover:bg-gray-50 transition-all active:scale-95"
+                className="bg-white text-indigo-700 px-6 py-3 rounded-lg font-bold shadow-lg flex items-center gap-2 hover:bg-gray-50 transition-all active:scale-95"
               >
                 <Download className="w-5 h-5" />
                 Baixar Tutorial PDF
@@ -139,7 +139,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({ config, onUpdate }) => {
             </div>
           </div>
 
-          <div className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm">
+          <div className="bg-white p-8 rounded-lg border border-gray-100 shadow-sm">
             <h4 className="font-bold text-gray-900 mb-2">Precisa de Ajuda?</h4>
             <p className="text-sm text-gray-500">O manual explica o passo a passo de:</p>
             <ul className="mt-4 space-y-2 text-sm font-medium text-gray-600">

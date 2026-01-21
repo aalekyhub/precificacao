@@ -148,7 +148,7 @@ const Quotes: React.FC = () => {
           </button>
         </div>
 
-        <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead>
@@ -202,7 +202,7 @@ const Quotes: React.FC = () => {
 
         {isModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-xl">
-            <div className="bg-white w-full max-w-5xl rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[95vh]">
+            <div className="bg-white w-full max-w-5xl rounded-lg shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[95vh]">
               {/* Resumo lateral */}
               <div className="w-full md:w-[35%] bg-gray-900 p-12 text-white flex flex-col justify-between">
                 <div>
@@ -292,7 +292,7 @@ const Quotes: React.FC = () => {
                   </div>
 
                   {/* Ajustes Financeiros */}
-                  <div className="grid grid-cols-2 gap-6 p-6 bg-gray-50 rounded-[1.5rem] border border-gray-100">
+                  <div className="grid grid-cols-2 gap-6 p-6 bg-gray-50 rounded-lg border border-gray-100">
                     <div className="space-y-2">
                       <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider block">Custos Extras</label>
                       <input

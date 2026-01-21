@@ -109,7 +109,7 @@ const FinancialControl: React.FC = () => {
 
             {/* Config Resumo */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-gray-100">
+                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
                     <div className="flex items-center gap-4 mb-4">
                         <div className="p-3 bg-green-50 text-green-600 rounded-lg">
                             <TrendingUp className="w-6 h-6" />
@@ -118,7 +118,7 @@ const FinancialControl: React.FC = () => {
                     </div>
                     <p className="text-3xl font-black text-gray-900">R$ {summary.income.toFixed(2)}</p>
                 </div>
-                <div className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-gray-100">
+                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
                     <div className="flex items-center gap-4 mb-4">
                         <div className="p-3 bg-red-50 text-red-600 rounded-lg">
                             <TrendingDown className="w-6 h-6" />
@@ -127,7 +127,7 @@ const FinancialControl: React.FC = () => {
                     </div>
                     <p className="text-3xl font-black text-gray-900">R$ {summary.expense.toFixed(2)}</p>
                 </div>
-                <div className="bg-gray-900 p-6 rounded-[2.5rem] shadow-xl text-white">
+                <div className="bg-gray-900 p-6 rounded-lg shadow-xl text-white">
                     <div className="flex items-center gap-4 mb-4">
                         <div className="p-3 bg-white/10 text-white rounded-lg">
                             <DollarSign className="w-6 h-6" />
@@ -141,7 +141,7 @@ const FinancialControl: React.FC = () => {
             </div>
 
             {/* Listagem */}
-            <div className="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
                 <div className="p-8 border-b border-gray-100 flex flex-col md:flex-row justify-between gap-4 items-center">
                     <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
                         <PieChart className="w-5 h-5 text-indigo-500" />
@@ -213,7 +213,7 @@ const FinancialControl: React.FC = () => {
 
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
-                    <div className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl p-8 animate-in zoom-in-95 duration-200">
+                    <div className="bg-white w-full max-w-lg rounded-lg shadow-2xl p-8 animate-in zoom-in-95 duration-200">
                         <div className="flex justify-between items-center mb-6">
                             <h3 className="text-2xl font-bold text-gray-900">Nova Transação</h3>
                             <button onClick={() => setIsModalOpen(false)}><X className="w-6 h-6 text-gray-400" /></button>

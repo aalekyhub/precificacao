@@ -115,7 +115,7 @@ const Materials: React.FC = () => {
                 </button>
             </div>
 
-            <div className="bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm flex items-center gap-4">
+            <div className="bg-white p-6 rounded-lg border border-gray-100 shadow-sm flex items-center gap-4">
                 <div className="relative flex-1">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <input
@@ -130,7 +130,7 @@ const Materials: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filtered.map(item => (
-                    <div key={item.id} className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all group relative overflow-hidden">
+                    <div key={item.id} className="bg-white p-8 rounded-lg border border-gray-100 shadow-sm hover:shadow-xl transition-all group relative overflow-hidden">
 
                         {Number(item.stock) <= Number(item.min_stock) && (
                             <div className="absolute top-0 right-0 bg-amber-100 text-amber-600 px-4 py-2 rounded-bl-2xl text-[10px] font-bold uppercase tracking-widest flex items-center gap-1">
@@ -175,7 +175,7 @@ const Materials: React.FC = () => {
 
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
-                    <div className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[85vh]">
+                    <div className="bg-white w-full max-w-2xl rounded-lg shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[85vh]">
                         <div className="px-8 py-6 bg-white border-b border-gray-100 flex items-center justify-between sticky top-0 z-10">
                             <div>
                                 <h3 className="text-2xl font-bold text-gray-900">

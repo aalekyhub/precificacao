@@ -104,7 +104,7 @@ const FixedCosts: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Stats Card */}
         <div className="lg:col-span-1">
-          <div className="bg-gradient-to-br from-indigo-600 to-indigo-800 p-8 rounded-[2.5rem] text-white shadow-2xl shadow-indigo-200 relative overflow-hidden group">
+          <div className="bg-gradient-to-br from-indigo-600 to-indigo-800 p-8 rounded-lg text-white shadow-2xl shadow-indigo-200 relative overflow-hidden group">
             <Wallet className="absolute -right-8 -bottom-8 w-40 h-40 text-white/10 group-hover:scale-110 transition-transform duration-700" />
             <div className="relative z-10">
               <h4 className="font-bold text-indigo-100 text-xs uppercase tracking-widest opacity-80">Total Mensal</h4>
@@ -134,7 +134,7 @@ const FixedCosts: React.FC = () => {
 
           {/* Automatic Depreciation Entry */}
           {equipmentDepreciation > 0 && (
-            <div className="bg-indigo-50 p-6 rounded-[2rem] border border-indigo-100 shadow-sm flex items-center justify-between">
+            <div className="bg-indigo-50 p-6 rounded-lg border border-indigo-100 shadow-sm flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center text-indigo-600 shadow-sm">
                   <Monitor className="w-6 h-6" />
@@ -152,12 +152,12 @@ const FixedCosts: React.FC = () => {
           )}
 
           {fixedCosts.length === 0 && equipmentDepreciation === 0 ? (
-            <div className="text-center py-20 bg-white rounded-[2.5rem] border border-gray-100">
+            <div className="text-center py-20 bg-white rounded-lg border border-gray-100">
               <p className="text-gray-400 font-medium">Nenhuma despesa cadastrada ainda.</p>
             </div>
           ) : (
             fixedCosts.map(item => (
-              <div key={item.id} className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm flex items-center justify-between group hover:shadow-md transition-all">
+              <div key={item.id} className="bg-white p-6 rounded-lg border border-gray-100 shadow-sm flex items-center justify-between group hover:shadow-md transition-all">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-600">
                     <DollarSign className="w-6 h-6" />
@@ -187,7 +187,7 @@ const FixedCosts: React.FC = () => {
 
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
-          <div className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden p-8 animate-in zoom-in-95 duration-200">
+          <div className="bg-white w-full max-w-lg rounded-lg shadow-2xl overflow-hidden p-8 animate-in zoom-in-95 duration-200">
             <div className="flex justify-between items-center mb-8">
               <h3 className="text-2xl font-bold text-gray-900">
                 {editingId ? 'Editar Despesa' : 'Nova Despesa'}

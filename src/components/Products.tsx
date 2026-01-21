@@ -210,7 +210,7 @@ const Products: React.FC = () => {
                 </button>
             </div>
 
-            <div className="bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm">
+            <div className="bg-white p-6 rounded-lg border border-gray-100 shadow-sm">
                 <div className="relative">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <input
@@ -231,7 +231,7 @@ const Products: React.FC = () => {
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filtered.map(item => (
-                        <div key={item.id} className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all group relative overflow-hidden">
+                        <div key={item.id} className="bg-white p-8 rounded-lg border border-gray-100 shadow-sm hover:shadow-xl transition-all group relative overflow-hidden">
                             <div className="flex justify-between items-start mb-6">
                                 <div className="w-14 h-14 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-500 group-hover:scale-110 transition-transform">
                                     <Box className="w-7 h-7" />
@@ -257,7 +257,7 @@ const Products: React.FC = () => {
 
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
-                    <div className="bg-white w-full max-w-4xl rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200">
+                    <div className="bg-white w-full max-w-4xl rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200">
                         <div className="px-10 py-6 bg-white border-b border-gray-100 flex justify-between items-center sticky top-0 z-10">
                             <div>
                                 <h3 className="text-2xl font-bold text-gray-900">{editingId ? 'Editar Produto' : 'Novo Produto'}</h3>
