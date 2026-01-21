@@ -90,6 +90,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggle }) => {
           </div>
         </div>
 
+        <div className="text-center">
+          <p className="text-[10px] text-gray-300 font-bold uppercase tracking-widest">Versão 1.0.0</p>
+        </div>
+
         <button
           onClick={() => supabase.auth.signOut()}
           className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:bg-rose-50 hover:text-rose-600 transition-all font-medium"
