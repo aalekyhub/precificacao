@@ -74,13 +74,13 @@ const Settings: React.FC = () => {
                     </h3>
 
                     <div className="space-y-6">
-                        <div className="bg-indigo-50/50 p-6 rounded-2xl border border-indigo-50">
+                        <div className="bg-indigo-50/50 p-6 rounded-lg border border-indigo-50">
                             <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Pro-Labore Mensal (Salário)</label>
                             <div className="relative">
                                 <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-indigo-400" />
                                 <input
                                     type="number"
-                                    className="w-full pl-12 pr-4 py-3 bg-white border border-indigo-100 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-gray-900 text-lg"
+                                    className="w-full pl-12 pr-4 py-3 bg-white border border-indigo-100 rounded-md outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-gray-900 text-lg"
                                     value={formData.pro_labore}
                                     onChange={e => setFormData({ ...formData, pro_labore: e.target.value })}
                                 />
@@ -95,7 +95,7 @@ const Settings: React.FC = () => {
                                     <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                                     <input
                                         type="number"
-                                        className="w-full pl-9 pr-3 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-indigo-500 font-bold text-gray-900"
+                                        className="w-full pl-9 pr-3 py-3 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-indigo-500 font-bold text-gray-900"
                                         value={formData.work_days_per_month}
                                         onChange={e => setFormData({ ...formData, work_days_per_month: e.target.value })}
                                     />
@@ -107,7 +107,7 @@ const Settings: React.FC = () => {
                                     <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                                     <input
                                         type="number"
-                                        className="w-full pl-9 pr-3 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-indigo-500 font-bold text-gray-900"
+                                        className="w-full pl-9 pr-3 py-3 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-indigo-500 font-bold text-gray-900"
                                         value={formData.work_hours_per_day}
                                         onChange={e => setFormData({ ...formData, work_hours_per_day: e.target.value })}
                                     />
@@ -118,7 +118,7 @@ const Settings: React.FC = () => {
                         <button
                             onClick={handleSave}
                             disabled={isSaving}
-                            className="w-full py-4 bg-gray-900 text-white rounded-xl font-bold hover:bg-black transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
+                            className="w-full py-4 bg-gray-900 text-white rounded-md font-bold hover:bg-black transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
                         >
                             <Save className="w-5 h-5" />
                             {isSaving ? 'Salvando...' : 'Salvar Alterações'}
@@ -137,7 +137,7 @@ const Settings: React.FC = () => {
 
                             <button
                                 onClick={generateManual}
-                                className="bg-white text-indigo-700 px-6 py-3 rounded-xl font-bold shadow-lg flex items-center gap-2 hover:bg-gray-50 transition-all active:scale-95"
+                                className="bg-white text-indigo-700 px-6 py-3 rounded-md font-bold shadow-lg flex items-center gap-2 hover:bg-gray-50 transition-all active:scale-95"
                             >
                                 <Download className="w-5 h-5" />
                                 Baixar Tutorial PDF

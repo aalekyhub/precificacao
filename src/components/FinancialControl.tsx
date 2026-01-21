@@ -100,7 +100,7 @@ const FinancialControl: React.FC = () => {
                 </div>
                 <button
                     onClick={() => setIsModalOpen(true)}
-                    className="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100 active:scale-95"
+                    className="bg-indigo-600 text-white px-8 py-4 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100 active:scale-95"
                 >
                     <Plus className="w-5 h-5" />
                     Nova Transação
@@ -111,7 +111,7 @@ const FinancialControl: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-gray-100">
                     <div className="flex items-center gap-4 mb-4">
-                        <div className="p-3 bg-green-50 text-green-600 rounded-2xl">
+                        <div className="p-3 bg-green-50 text-green-600 rounded-lg">
                             <TrendingUp className="w-6 h-6" />
                         </div>
                         <span className="text-sm font-bold text-gray-400 uppercase tracking-wider">Receitas</span>
@@ -120,7 +120,7 @@ const FinancialControl: React.FC = () => {
                 </div>
                 <div className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-gray-100">
                     <div className="flex items-center gap-4 mb-4">
-                        <div className="p-3 bg-red-50 text-red-600 rounded-2xl">
+                        <div className="p-3 bg-red-50 text-red-600 rounded-lg">
                             <TrendingDown className="w-6 h-6" />
                         </div>
                         <span className="text-sm font-bold text-gray-400 uppercase tracking-wider">Despesas</span>
@@ -129,7 +129,7 @@ const FinancialControl: React.FC = () => {
                 </div>
                 <div className="bg-gray-900 p-6 rounded-[2.5rem] shadow-xl text-white">
                     <div className="flex items-center gap-4 mb-4">
-                        <div className="p-3 bg-white/10 text-white rounded-2xl">
+                        <div className="p-3 bg-white/10 text-white rounded-lg">
                             <DollarSign className="w-6 h-6" />
                         </div>
                         <span className="text-sm font-bold text-gray-400 uppercase tracking-wider">Saldo Total</span>
@@ -147,7 +147,7 @@ const FinancialControl: React.FC = () => {
                         <PieChart className="w-5 h-5 text-indigo-500" />
                         Histórico de Transações
                     </h3>
-                    <div className="flex bg-gray-50 p-1 rounded-xl">
+                    <div className="flex bg-gray-50 p-1 rounded-md">
                         {(['all', 'income', 'expense'] as const).map(type => (
                             <button
                                 key={type}
@@ -223,13 +223,13 @@ const FinancialControl: React.FC = () => {
                             <div className="grid grid-cols-2 gap-4">
                                 <button
                                     onClick={() => setForm({ ...form, type: 'income' })}
-                                    className={`py-3 rounded-xl font-bold border-2 transition-all ${form.type === 'income' ? 'border-green-500 bg-green-50 text-green-600' : 'border-gray-100 text-gray-400'}`}
+                                    className={`py-3 rounded-md font-bold border-2 transition-all ${form.type === 'income' ? 'border-green-500 bg-green-50 text-green-600' : 'border-gray-100 text-gray-400'}`}
                                 >
                                     Receita
                                 </button>
                                 <button
                                     onClick={() => setForm({ ...form, type: 'expense' })}
-                                    className={`py-3 rounded-xl font-bold border-2 transition-all ${form.type === 'expense' ? 'border-red-500 bg-red-50 text-red-600' : 'border-gray-100 text-gray-400'}`}
+                                    className={`py-3 rounded-md font-bold border-2 transition-all ${form.type === 'expense' ? 'border-red-500 bg-red-50 text-red-600' : 'border-gray-100 text-gray-400'}`}
                                 >
                                     Despesa
                                 </button>
@@ -239,7 +239,7 @@ const FinancialControl: React.FC = () => {
                                 <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block mb-2">Descrição</label>
                                 <input
                                     type="text"
-                                    className="w-full bg-gray-50 border-none rounded-xl p-4 font-bold text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500/20"
+                                    className="w-full bg-gray-50 border-none rounded-md p-4 font-bold text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500/20"
                                     value={form.description}
                                     onChange={e => setForm({ ...form, description: e.target.value })}
                                     placeholder="Ex: Venda de Produto, Aluguel..."
@@ -251,7 +251,7 @@ const FinancialControl: React.FC = () => {
                                     <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block mb-2">Valor (R$)</label>
                                     <input
                                         type="number"
-                                        className="w-full bg-gray-50 border-none rounded-xl p-4 font-bold text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500/20"
+                                        className="w-full bg-gray-50 border-none rounded-md p-4 font-bold text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500/20"
                                         value={form.amount}
                                         onChange={e => setForm({ ...form, amount: parseFloat(e.target.value) })}
                                     />
@@ -260,7 +260,7 @@ const FinancialControl: React.FC = () => {
                                     <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block mb-2">Data</label>
                                     <input
                                         type="date"
-                                        className="w-full bg-gray-50 border-none rounded-xl p-4 font-bold text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500/20"
+                                        className="w-full bg-gray-50 border-none rounded-md p-4 font-bold text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500/20"
                                         value={form.date}
                                         onChange={e => setForm({ ...form, date: e.target.value })}
                                     />
@@ -271,7 +271,7 @@ const FinancialControl: React.FC = () => {
                                 <div>
                                     <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block mb-2">Categoria</label>
                                     <select
-                                        className="w-full bg-gray-50 border-none rounded-xl p-4 font-bold text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500/20"
+                                        className="w-full bg-gray-50 border-none rounded-md p-4 font-bold text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500/20"
                                         value={form.category}
                                         onChange={e => setForm({ ...form, category: e.target.value })}
                                     >
@@ -286,7 +286,7 @@ const FinancialControl: React.FC = () => {
                                 <div>
                                     <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block mb-2">Status</label>
                                     <select
-                                        className="w-full bg-gray-50 border-none rounded-xl p-4 font-bold text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500/20"
+                                        className="w-full bg-gray-50 border-none rounded-md p-4 font-bold text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500/20"
                                         value={form.status}
                                         onChange={e => setForm({ ...form, status: e.target.value as any })}
                                     >
@@ -298,7 +298,7 @@ const FinancialControl: React.FC = () => {
 
                             <button
                                 onClick={handleSave}
-                                className="w-full py-4 mt-4 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200"
+                                className="w-full py-4 mt-4 bg-indigo-600 text-white rounded-md font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200"
                             >
                                 Salvar Transação
                             </button>

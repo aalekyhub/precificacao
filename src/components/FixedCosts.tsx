@@ -94,7 +94,7 @@ const FixedCosts: React.FC = () => {
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100 hover:-translate-y-0.5 active:scale-95"
+          className="bg-indigo-600 text-white px-8 py-4 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100 hover:-translate-y-0.5 active:scale-95"
         >
           <Plus className="w-5 h-5" />
           Novo Custo
@@ -136,7 +136,7 @@ const FixedCosts: React.FC = () => {
           {equipmentDepreciation > 0 && (
             <div className="bg-indigo-50 p-6 rounded-[2rem] border border-indigo-100 shadow-sm flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-indigo-600 shadow-sm">
+                <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center text-indigo-600 shadow-sm">
                   <Monitor className="w-6 h-6" />
                 </div>
                 <div>
@@ -159,7 +159,7 @@ const FixedCosts: React.FC = () => {
             fixedCosts.map(item => (
               <div key={item.id} className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm flex items-center justify-between group hover:shadow-md transition-all">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600">
+                  <div className="w-12 h-12 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-600">
                     <DollarSign className="w-6 h-6" />
                   </div>
                   <div>
@@ -200,7 +200,7 @@ const FixedCosts: React.FC = () => {
                 <input
                   {...register('name')}
                   placeholder="Ex: Conta de Luz"
-                  className="w-full bg-gray-50 border-2 border-transparent rounded-2xl px-6 py-4 outline-none focus:bg-white focus:border-indigo-500 transition-all font-bold text-gray-700"
+                  className="w-full bg-gray-50 border-2 border-transparent rounded-lg px-6 py-4 outline-none focus:bg-white focus:border-indigo-500 transition-all font-bold text-gray-700"
                 />
                 {errors.name && <p className="text-rose-500 text-sm mt-1 ml-1">{errors.name.message}</p>}
               </div>
@@ -209,11 +209,11 @@ const FixedCosts: React.FC = () => {
                 <input
                   type="number" step="0.01"
                   {...register('value', { valueAsNumber: true })}
-                  className="w-full bg-gray-50 border-2 border-transparent rounded-2xl px-6 py-4 outline-none focus:bg-white focus:border-indigo-500 transition-all font-bold text-gray-700 text-lg"
+                  className="w-full bg-gray-50 border-2 border-transparent rounded-lg px-6 py-4 outline-none focus:bg-white focus:border-indigo-500 transition-all font-bold text-gray-700 text-lg"
                 />
                 {errors.value && <p className="text-rose-500 text-sm mt-1 ml-1">{errors.value.message}</p>}
               </div>
-              <button type="submit" disabled={isSubmitting} className="w-full py-4 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 flex items-center justify-center gap-2">
+              <button type="submit" disabled={isSubmitting} className="w-full py-4 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 flex items-center justify-center gap-2">
                 <Save className="w-5 h-5" />
                 {isSubmitting ? 'Salvando...' : 'Salvar Despesa'}
               </button>

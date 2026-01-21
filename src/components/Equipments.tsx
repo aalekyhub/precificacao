@@ -98,7 +98,7 @@ const Equipments: React.FC = () => {
                 </div>
                 <button
                     onClick={() => setIsModalOpen(true)}
-                    className="bg-sky-600 text-white px-8 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-sky-700 transition-all shadow-xl shadow-sky-100 hover:-translate-y-0.5 active:scale-95"
+                    className="bg-sky-600 text-white px-8 py-4 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-sky-700 transition-all shadow-xl shadow-sky-100 hover:-translate-y-0.5 active:scale-95"
                 >
                     <Plus className="w-5 h-5" />
                     Novo Equipamento
@@ -140,7 +140,7 @@ const Equipments: React.FC = () => {
                             return (
                                 <div key={item.id} className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm flex items-center justify-between group hover:shadow-md transition-all">
                                     <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 bg-sky-50 rounded-2xl flex items-center justify-center text-sky-600">
+                                        <div className="w-12 h-12 bg-sky-50 rounded-lg flex items-center justify-center text-sky-600">
                                             <Monitor className="w-6 h-6" />
                                         </div>
                                         <div>
@@ -179,7 +179,7 @@ const Equipments: React.FC = () => {
                                 <input
                                     {...register('name')}
                                     placeholder="Ex: Máquina de Costura Industrial"
-                                    className="w-full bg-gray-50 border-2 border-transparent rounded-2xl px-6 py-4 outline-none focus:bg-white focus:border-sky-500 transition-all font-bold text-gray-700"
+                                    className="w-full bg-gray-50 border-2 border-transparent rounded-lg px-6 py-4 outline-none focus:bg-white focus:border-sky-500 transition-all font-bold text-gray-700"
                                 />
                                 {errors.name && <p className="text-rose-500 text-sm mt-1 ml-1">{errors.name.message}</p>}
                             </div>
@@ -190,7 +190,7 @@ const Equipments: React.FC = () => {
                                     <input
                                         type="number" step="0.01"
                                         {...register('value', { valueAsNumber: true })}
-                                        className="w-full bg-gray-50 border-2 border-transparent rounded-2xl px-6 py-4 outline-none focus:bg-white focus:border-sky-500 transition-all font-bold text-gray-700 text-lg"
+                                        className="w-full bg-gray-50 border-2 border-transparent rounded-lg px-6 py-4 outline-none focus:bg-white focus:border-sky-500 transition-all font-bold text-gray-700 text-lg"
                                     />
                                     {errors.value && <p className="text-rose-500 text-sm mt-1 ml-1">{errors.value.message}</p>}
                                 </div>
@@ -199,17 +199,17 @@ const Equipments: React.FC = () => {
                                     <input
                                         type="number" step="1"
                                         {...register('lifespan_years', { valueAsNumber: true })}
-                                        className="w-full bg-gray-50 border-2 border-transparent rounded-2xl px-6 py-4 outline-none focus:bg-white focus:border-sky-500 transition-all font-bold text-gray-700 text-lg"
+                                        className="w-full bg-gray-50 border-2 border-transparent rounded-lg px-6 py-4 outline-none focus:bg-white focus:border-sky-500 transition-all font-bold text-gray-700 text-lg"
                                     />
                                     {errors.lifespan_years && <p className="text-rose-500 text-sm mt-1 ml-1">{errors.lifespan_years.message}</p>}
                                 </div>
                             </div>
 
-                            <div className="bg-sky-50 p-4 rounded-xl text-sky-700 text-sm font-medium">
+                            <div className="bg-sky-50 p-4 rounded-md text-sky-700 text-sm font-medium">
                                 O sistema dividirá o valor pela vida útil ({watch('lifespan_years') || 0} anos) para encontrar o custo mensal.
                             </div>
 
-                            <button type="submit" disabled={isSubmitting} className="w-full py-4 bg-sky-600 text-white rounded-2xl font-bold hover:bg-sky-700 transition-all shadow-lg shadow-sky-200 flex items-center justify-center gap-2">
+                            <button type="submit" disabled={isSubmitting} className="w-full py-4 bg-sky-600 text-white rounded-lg font-bold hover:bg-sky-700 transition-all shadow-lg shadow-sky-200 flex items-center justify-center gap-2">
                                 <Save className="w-5 h-5" />
                                 {isSubmitting ? 'Salvando...' : 'Salvar Equipamento'}
                             </button>

@@ -108,7 +108,7 @@ const Materials: React.FC = () => {
                 </div>
                 <button
                     onClick={() => setIsModalOpen(true)}
-                    className="bg-blue-600 text-white px-8 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-blue-700 transition-all shadow-xl shadow-blue-100 active:scale-95"
+                    className="bg-blue-600 text-white px-8 py-4 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-blue-700 transition-all shadow-xl shadow-blue-100 active:scale-95"
                 >
                     <Plus className="w-5 h-5" />
                     Novo Material
@@ -121,7 +121,7 @@ const Materials: React.FC = () => {
                     <input
                         type="text"
                         placeholder="Buscar material..."
-                        className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-transparent rounded-2xl outline-none focus:bg-white focus:border-blue-500 transition-all font-medium"
+                        className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-transparent rounded-lg outline-none focus:bg-white focus:border-blue-500 transition-all font-medium"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
@@ -140,7 +140,7 @@ const Materials: React.FC = () => {
                         )}
 
                         <div className="flex justify-between items-start mb-6 mt-2">
-                            <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform">
+                            <div className="w-14 h-14 bg-blue-50 rounded-lg flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform">
                                 <Package className="w-7 h-7" />
                             </div>
                             <div className="flex gap-2">
@@ -196,7 +196,7 @@ const Materials: React.FC = () => {
                                             <div className="col-span-2">
                                                 <input
                                                     {...register('name')}
-                                                    className="w-full text-sm font-medium text-gray-700 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
+                                                    className="w-full text-sm font-medium text-gray-700 px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
                                                     placeholder="Nome do Material (ex: Papel Offset)"
                                                 />
                                                 {errors.name && <p className="text-rose-500 text-xs mt-1 ml-1">{errors.name.message}</p>}
@@ -204,7 +204,7 @@ const Materials: React.FC = () => {
                                             <div>
                                                 <input
                                                     {...register('unit')}
-                                                    className="w-full text-sm font-medium text-gray-700 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
+                                                    className="w-full text-sm font-medium text-gray-700 px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
                                                     placeholder="Unidade"
                                                     list="units"
                                                 />
@@ -222,7 +222,7 @@ const Materials: React.FC = () => {
                                 </div>
 
                                 {/* Pricing Section */}
-                                <div className="bg-blue-50/50 p-6 rounded-2xl border border-blue-100 space-y-4">
+                                <div className="bg-blue-50/50 p-6 rounded-lg border border-blue-100 space-y-4">
                                     <h4 className="text-[11px] font-bold text-blue-500 uppercase tracking-wider flex items-center gap-2">
                                         <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
                                         Precificação e Custos
@@ -235,7 +235,7 @@ const Materials: React.FC = () => {
                                                 <input
                                                     type="number" step="0.01"
                                                     {...register('purchase_price', { valueAsNumber: true })}
-                                                    className="w-full text-sm font-bold text-gray-900 pl-8 pr-4 py-2.5 bg-white border border-blue-200 rounded-xl outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                                                    className="w-full text-sm font-bold text-gray-900 pl-8 pr-4 py-2.5 bg-white border border-blue-200 rounded-md outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
                                                     placeholder="0.00"
                                                 />
                                             </div>
@@ -245,7 +245,7 @@ const Materials: React.FC = () => {
                                             <input
                                                 type="number" step="0.01"
                                                 {...register('pack_quantity', { valueAsNumber: true })}
-                                                className="w-full text-sm font-bold text-gray-900 px-4 py-2.5 bg-white border border-blue-200 rounded-xl outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                                                className="w-full text-sm font-bold text-gray-900 px-4 py-2.5 bg-white border border-blue-200 rounded-md outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
                                                 placeholder="1"
                                             />
                                         </div>
@@ -278,7 +278,7 @@ const Materials: React.FC = () => {
                                                 <input
                                                     type="number" step="0.01"
                                                     {...register('stock', { valueAsNumber: true })}
-                                                    className="w-full text-sm font-bold text-gray-700 px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-blue-500 transition-all"
+                                                    className="w-full text-sm font-bold text-gray-700 px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-blue-500 transition-all"
                                                 />
                                                 {errors.stock && <p className="text-rose-500 text-[10px] mt-1">{errors.stock.message}</p>}
                                             </div>
@@ -287,7 +287,7 @@ const Materials: React.FC = () => {
                                                 <input
                                                     type="number" step="0.01"
                                                     {...register('min_stock', { valueAsNumber: true })}
-                                                    className="w-full text-sm font-bold text-amber-600 px-3 py-2.5 bg-amber-50 border border-amber-200 rounded-xl outline-none focus:bg-white focus:border-amber-500 transition-all"
+                                                    className="w-full text-sm font-bold text-amber-600 px-3 py-2.5 bg-amber-50 border border-amber-200 rounded-md outline-none focus:bg-white focus:border-amber-500 transition-all"
                                                 />
                                             </div>
                                         </div>
@@ -296,7 +296,7 @@ const Materials: React.FC = () => {
                                         <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block mb-2">Observações</label>
                                         <textarea
                                             {...register('observations')}
-                                            className="w-full text-sm text-gray-600 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-blue-500 transition-all resize-none h-[88px]"
+                                            className="w-full text-sm text-gray-600 px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-blue-500 transition-all resize-none h-[88px]"
                                             placeholder="..."
                                         />
                                     </div>
@@ -304,13 +304,13 @@ const Materials: React.FC = () => {
                             </div>
 
                             <div className="px-8 py-6 bg-gray-50 border-t border-gray-100 flex justify-end gap-3 sticky bottom-0">
-                                <button type="button" onClick={handleCloseModal} className="px-6 py-3 bg-white border border-gray-200 rounded-xl font-bold text-gray-500 hover:bg-gray-50 hover:text-gray-700 transition-all text-sm">
+                                <button type="button" onClick={handleCloseModal} className="px-6 py-3 bg-white border border-gray-200 rounded-md font-bold text-gray-500 hover:bg-gray-50 hover:text-gray-700 transition-all text-sm">
                                     Cancelar
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="px-8 py-3 bg-blue-600 text-white rounded-xl font-bold shadow-lg shadow-blue-200 flex items-center gap-2 hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-200/50 transition-all disabled:opacity-70 disabled:shadow-none text-sm active:scale-95 transform"
+                                    className="px-8 py-3 bg-blue-600 text-white rounded-md font-bold shadow-lg shadow-blue-200 flex items-center gap-2 hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-200/50 transition-all disabled:opacity-70 disabled:shadow-none text-sm active:scale-95 transform"
                                 >
                                     <Save className="w-4 h-4" />
                                     {isSubmitting ? 'Salvando...' : 'Salvar Material'}

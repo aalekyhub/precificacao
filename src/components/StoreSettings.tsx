@@ -53,7 +53,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({ config, onUpdate }) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm space-y-8 h-fit">
           <div className="flex items-center gap-3">
-            <div className="bg-rose-500 p-3 rounded-2xl text-white shadow-lg shadow-rose-100">
+            <div className="bg-rose-500 p-3 rounded-lg text-white shadow-lg shadow-rose-100">
               <Wallet className="w-6 h-6" />
             </div>
             <div>
@@ -67,7 +67,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({ config, onUpdate }) => {
               <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Salário Desejado (Pro-labore) R$</label>
               <input
                 type="number"
-                className="w-full bg-gray-50 border-2 border-transparent rounded-2xl px-6 py-4 focus:bg-white focus:border-rose-500 outline-none transition-all font-bold text-lg"
+                className="w-full bg-gray-50 border-2 border-transparent rounded-lg px-6 py-4 focus:bg-white focus:border-rose-500 outline-none transition-all font-bold text-lg"
                 value={formData.pro_labore}
                 onChange={(e) => setFormData({ ...formData, pro_labore: e.target.value })}
               />
@@ -79,7 +79,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({ config, onUpdate }) => {
                 <div className="relative">
                   <input
                     type="number"
-                    className="w-full bg-gray-50 border-2 border-transparent rounded-2xl px-6 py-4 focus:bg-white focus:border-rose-500 outline-none transition-all font-bold"
+                    className="w-full bg-gray-50 border-2 border-transparent rounded-lg px-6 py-4 focus:bg-white focus:border-rose-500 outline-none transition-all font-bold"
                     value={formData.work_days_per_month}
                     onChange={(e) => setFormData({ ...formData, work_days_per_month: e.target.value })}
                   />
@@ -91,7 +91,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({ config, onUpdate }) => {
                 <div className="relative">
                   <input
                     type="number"
-                    className="w-full bg-gray-50 border-2 border-transparent rounded-2xl px-6 py-4 focus:bg-white focus:border-rose-500 outline-none transition-all font-bold"
+                    className="w-full bg-gray-50 border-2 border-transparent rounded-lg px-6 py-4 focus:bg-white focus:border-rose-500 outline-none transition-all font-bold"
                     value={formData.work_hours_per_day}
                     onChange={(e) => setFormData({ ...formData, work_hours_per_day: e.target.value })}
                   />
@@ -112,7 +112,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({ config, onUpdate }) => {
 
             <button
               onClick={handleSave}
-              className="w-full py-4 bg-gray-900 text-white rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-gray-800 transition-all shadow-lg shadow-gray-200"
+              className="w-full py-4 bg-gray-900 text-white rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-gray-800 transition-all shadow-lg shadow-gray-200"
             >
               <Save className="w-5 h-5" />
               Salvar Configurações
@@ -131,7 +131,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({ config, onUpdate }) => {
 
               <button
                 onClick={generateManual}
-                className="bg-white text-indigo-700 px-6 py-3 rounded-xl font-bold shadow-lg flex items-center gap-2 hover:bg-gray-50 transition-all active:scale-95"
+                className="bg-white text-indigo-700 px-6 py-3 rounded-md font-bold shadow-lg flex items-center gap-2 hover:bg-gray-50 transition-all active:scale-95"
               >
                 <Download className="w-5 h-5" />
                 Baixar Tutorial PDF

@@ -204,7 +204,7 @@ const Products: React.FC = () => {
                 </div>
                 <button
                     onClick={() => setIsModalOpen(true)}
-                    className="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100 active:scale-95"
+                    className="bg-indigo-600 text-white px-8 py-4 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100 active:scale-95"
                 >
                     <Plus className="w-5 h-5" /> Novo Produto
                 </button>
@@ -215,7 +215,7 @@ const Products: React.FC = () => {
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <input
                         type="text"
-                        className="w-full pl-12 pr-4 py-4 bg-gray-50 rounded-2xl outline-none focus:bg-white focus:border-indigo-500 border-2 border-transparent transition-all font-medium"
+                        className="w-full pl-12 pr-4 py-4 bg-gray-50 rounded-lg outline-none focus:bg-white focus:border-indigo-500 border-2 border-transparent transition-all font-medium"
                         placeholder="Buscar produtos..."
                         value={search}
                         onChange={e => setSearch(e.target.value)}
@@ -233,7 +233,7 @@ const Products: React.FC = () => {
                     {filtered.map(item => (
                         <div key={item.id} className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all group relative overflow-hidden">
                             <div className="flex justify-between items-start mb-6">
-                                <div className="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-500 group-hover:scale-110 transition-transform">
+                                <div className="w-14 h-14 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-500 group-hover:scale-110 transition-transform">
                                     <Box className="w-7 h-7" />
                                 </div>
                                 <div className="flex gap-2">
@@ -270,7 +270,7 @@ const Products: React.FC = () => {
                             <div className="flex-1 overflow-y-auto p-5 custom-scrollbar space-y-4">
 
                                 {/* SECTION: PRODUTO (INFO) */}
-                                <section className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm relative overflow-hidden">
+                                <section className="bg-white p-4 rounded-lg border border-gray-100 shadow-sm relative overflow-hidden">
                                     <div className="flex items-center gap-3 mb-4">
                                         <div className="w-6 h-6 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-md">1</div>
                                         <div>
@@ -301,7 +301,7 @@ const Products: React.FC = () => {
                                 </section>
 
                                 {/* SECTION: MATERIAIS (RECEITA) */}
-                                <section className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm relative overflow-hidden">
+                                <section className="bg-white p-4 rounded-lg border border-gray-100 shadow-sm relative overflow-hidden">
                                     <div className="flex items-center justify-between mb-4">
                                         <div className="flex items-center gap-3">
                                             <div className="w-6 h-6 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-md">2</div>
@@ -348,7 +348,7 @@ const Products: React.FC = () => {
                                 </section>
 
                                 {/* SECTION: PROCESSO */}
-                                <section className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm relative overflow-hidden">
+                                <section className="bg-white p-4 rounded-lg border border-gray-100 shadow-sm relative overflow-hidden">
                                     <div className="flex items-center justify-between mb-4">
                                         <div className="flex items-center gap-3">
                                             <div className="w-6 h-6 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-md">3</div>
@@ -388,7 +388,7 @@ const Products: React.FC = () => {
                                     </div>
                                 </section>
 
-                                <section className=" rounded-xl overflow-hidden shadow-sm border border-gray-100 bg-white">
+                                <section className=" rounded-md overflow-hidden shadow-sm border border-gray-100 bg-white">
                                     <div className="px-3 py-1.5 bg-gradient-to-r from-gray-900 to-gray-800 text-white flex items-center justify-between">
                                         <div className="flex items-center gap-2">
                                             <div className="w-4 h-4 rounded bg-indigo-500 text-white flex items-center justify-center font-bold text-[9px] shadow-sm">4</div>
@@ -479,8 +479,8 @@ const Products: React.FC = () => {
                                         Corrija os erros no formulário antes de salvar!
                                     </span>
                                 )}
-                                <button type="button" onClick={handleCloseModal} className="px-6 py-3 bg-white border border-gray-200 rounded-xl font-bold text-gray-500 hover:bg-gray-100 transition-all">Cancelar</button>
-                                <button type="submit" disabled={isSubmitting} className="px-8 py-3 bg-indigo-600 text-white rounded-xl font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all disabled:opacity-70 flex items-center gap-2">
+                                <button type="button" onClick={handleCloseModal} className="px-6 py-3 bg-white border border-gray-200 rounded-md font-bold text-gray-500 hover:bg-gray-100 transition-all">Cancelar</button>
+                                <button type="submit" disabled={isSubmitting} className="px-8 py-3 bg-indigo-600 text-white rounded-md font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all disabled:opacity-70 flex items-center gap-2">
                                     <Save className="w-4 h-4" />
                                     {isSubmitting ? 'Salvando...' : 'Salvar Produto'}
                                 </button>

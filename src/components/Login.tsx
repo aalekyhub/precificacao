@@ -52,7 +52,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                 {/* Content */}
                 <div className="relative z-10">
                     <div className="flex items-center gap-3 mb-12">
-                        <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-blue-600 font-black text-xl shadow-lg">P</div>
+                        <div className="w-10 h-10 bg-white rounded-md flex items-center justify-center text-blue-600 font-black text-xl shadow-lg">P</div>
                         <span className="text-2xl font-black tracking-tight">PrecificaMaster</span>
                     </div>
 
@@ -67,7 +67,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
                     <div className="space-y-6">
                         <div className="flex items-center gap-4 group">
-                            <div className="p-3 bg-white/10 rounded-xl group-hover:bg-white/20 transition-colors">
+                            <div className="p-3 bg-white/10 rounded-md group-hover:bg-white/20 transition-colors">
                                 <CheckCircle2 className="w-6 h-6 text-blue-200" />
                             </div>
                             <div>
@@ -77,7 +77,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                         </div>
 
                         <div className="flex items-center gap-4 group">
-                            <div className="p-3 bg-white/10 rounded-xl group-hover:bg-white/20 transition-colors">
+                            <div className="p-3 bg-white/10 rounded-md group-hover:bg-white/20 transition-colors">
                                 <Star className="w-6 h-6 text-blue-200" />
                             </div>
                             <div>
@@ -87,7 +87,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                         </div>
 
                         <div className="flex items-center gap-4 group">
-                            <div className="p-3 bg-white/10 rounded-xl group-hover:bg-white/20 transition-colors">
+                            <div className="p-3 bg-white/10 rounded-md group-hover:bg-white/20 transition-colors">
                                 <ShieldCheck className="w-6 h-6 text-blue-200" />
                             </div>
                             <div>
@@ -121,7 +121,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                             <div className="relative">
                                 <input
                                     type="email"
-                                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-700"
+                                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-700"
                                     placeholder="seu@email.com"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
@@ -143,7 +143,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                             <div className="relative">
                                 <input
                                     type="password"
-                                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-700"
+                                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-700"
                                     placeholder="••••••••"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
@@ -159,7 +159,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-blue-500/30 hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-500/40 active:scale-[0.98] transition-all flex items-center justify-center gap-2 group mb-6"
+                            className="w-full bg-blue-600 text-white py-4 rounded-lg font-bold text-lg shadow-lg shadow-blue-500/30 hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-500/40 active:scale-[0.98] transition-all flex items-center justify-center gap-2 group mb-6"
                         >
                             {isLoading ? (
                                 <span className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>

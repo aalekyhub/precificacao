@@ -141,7 +141,7 @@ const Quotes: React.FC = () => {
           </div>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="bg-rose-500 text-white px-8 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-rose-600 transition-all shadow-xl shadow-rose-100 active:scale-95"
+            className="bg-rose-500 text-white px-8 py-4 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-rose-600 transition-all shadow-xl shadow-rose-100 active:scale-95"
           >
             <Plus className="w-5 h-5" />
             Gerar Orçamento
@@ -208,7 +208,7 @@ const Quotes: React.FC = () => {
                 <div>
                   <h3 className="text-4xl font-bold mb-8">Resumo do Orçamento</h3>
                   <div className="space-y-6">
-                    <div className="p-6 bg-white/5 rounded-2xl border border-white/10">
+                    <div className="p-6 bg-white/5 rounded-lg border border-white/10">
                       <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Total Estimado</p>
                       <p className="text-5xl font-black text-rose-500">R$ {quoteTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
                     </div>
@@ -217,7 +217,7 @@ const Quotes: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                <button onClick={handleSave} className="w-full py-5 bg-rose-500 rounded-2xl font-black text-xl hover:bg-rose-600 transition-all shadow-xl shadow-rose-500/20">
+                <button onClick={handleSave} className="w-full py-5 bg-rose-500 rounded-lg font-black text-xl hover:bg-rose-600 transition-all shadow-xl shadow-rose-500/20">
                   Finalizar e Salvar
                 </button>
               </div>
@@ -226,7 +226,7 @@ const Quotes: React.FC = () => {
               <div className="w-full md:w-[65%] p-12 overflow-y-auto custom-scrollbar bg-white">
                 <div className="flex justify-between items-center mb-10">
                   <div className="flex items-center gap-3">
-                    <div className="bg-rose-100 p-3 rounded-2xl text-rose-600">
+                    <div className="bg-rose-100 p-3 rounded-lg text-rose-600">
                       <FileText className="w-6 h-6" />
                     </div>
                     <h4 className="text-2xl font-bold text-gray-900">Configurar Cotação</h4>
@@ -239,7 +239,7 @@ const Quotes: React.FC = () => {
                   <div className="space-y-2">
                     <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider flex items-center gap-2"><User className="w-3 h-3" /> Selecionar Cliente</label>
                     <select
-                      className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 transition-all shadow-sm"
+                      className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 transition-all shadow-sm"
                       value={newQuote.customer_id}
                       onChange={(e) => setNewQuote({ ...newQuote, customer_id: e.target.value })}
                     >
@@ -265,7 +265,7 @@ const Quotes: React.FC = () => {
                       {newQuote.items?.map((item, idx) => {
                         const prod = products.find(p => p.id === item.product_id);
                         return (
-                          <div key={idx} className="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                          <div key={idx} className="flex items-center gap-4 bg-gray-50 p-4 rounded-lg border border-gray-100">
                             <span className="flex-1 font-bold text-gray-700">{prod?.name}</span>
                             <div className="flex items-center gap-2">
                               <input
@@ -297,7 +297,7 @@ const Quotes: React.FC = () => {
                       <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider block">Custos Extras</label>
                       <input
                         type="number"
-                        className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-white border border-gray-200 rounded-xl outline-none focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 transition-all shadow-sm"
+                        className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-white border border-gray-200 rounded-md outline-none focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 transition-all shadow-sm"
                         value={newQuote.extraCosts}
                         onChange={(e) => setNewQuote({ ...newQuote, extraCosts: parseFloat(e.target.value) || 0 })}
                       />
@@ -306,7 +306,7 @@ const Quotes: React.FC = () => {
                       <label className="text-[11px] font-semibold text-green-600 uppercase tracking-wider block">Desconto</label>
                       <input
                         type="number"
-                        className="w-full text-sm font-medium text-green-700 px-4 py-2.5 bg-white border border-green-200 rounded-xl outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 transition-all shadow-sm"
+                        className="w-full text-sm font-medium text-green-700 px-4 py-2.5 bg-white border border-green-200 rounded-md outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 transition-all shadow-sm"
                         value={newQuote.discount}
                         onChange={(e) => setNewQuote({ ...newQuote, discount: parseFloat(e.target.value) || 0 })}
                       />

@@ -139,7 +139,7 @@ const PricingCalculator: React.FC = () => {
                         <div>
                             <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider block mb-2">Produto</label>
                             <select
-                                className="input-standard w-full p-4 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium"
+                                className="input-standard w-full p-4 bg-gray-50 rounded-md outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium"
                                 value={selectedProduct}
                                 onChange={e => setSelectedProduct(e.target.value)}
                             >
@@ -151,7 +151,7 @@ const PricingCalculator: React.FC = () => {
                         <div>
                             <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider block mb-2">Canal de Venda</label>
                             <select
-                                className="input-standard w-full p-4 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium"
+                                className="input-standard w-full p-4 bg-gray-50 rounded-md outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium"
                                 value={selectedChannel}
                                 onChange={e => setSelectedChannel(e.target.value)}
                             >
@@ -164,7 +164,7 @@ const PricingCalculator: React.FC = () => {
                             <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider block mb-2">Tamanho do Lote (Qtd)</label>
                             <input
                                 type="number"
-                                className="input-standard w-full p-4 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium"
+                                className="input-standard w-full p-4 bg-gray-50 rounded-md outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium"
                                 value={quantity}
                                 onChange={e => setQuantity(Number(e.target.value))}
                             />
@@ -187,7 +187,7 @@ const PricingCalculator: React.FC = () => {
                         <button
                             onClick={handleCalculate}
                             disabled={loading || !selectedProduct || !selectedChannel}
-                            className="w-full py-4 bg-indigo-600 text-white rounded-2xl font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed mt-4"
+                            className="w-full py-4 bg-indigo-600 text-white rounded-lg font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed mt-4"
                         >
                             {loading ? 'Calculando...' : 'Calcular Preço'}
                         </button>
@@ -208,11 +208,11 @@ const PricingCalculator: React.FC = () => {
                                     </div>
 
                                     <div className="flex flex-wrap gap-4">
-                                        <div className="bg-white/10 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/10">
+                                        <div className="bg-white/10 backdrop-blur-md px-6 py-3 rounded-lg border border-white/10">
                                             <span className="block text-xs text-gray-400 uppercase tracking-wider">Custos Variáveis</span>
                                             <span className="font-bold text-xl">R$ {result.variableCosts.toFixed(2)}</span>
                                         </div>
-                                        <div className="bg-white/10 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/10">
+                                        <div className="bg-white/10 backdrop-blur-md px-6 py-3 rounded-lg border border-white/10">
                                             <span className="block text-xs text-gray-400 uppercase tracking-wider">Lucro Líquido</span>
                                             <span className="font-bold text-xl text-emerald-400">R$ {(result.suggestedPrice * result.desiredMargin).toFixed(2)}</span>
                                         </div>
@@ -243,15 +243,15 @@ const PricingCalculator: React.FC = () => {
                                 <div className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm space-y-4">
                                     <h4 className="font-bold text-gray-900 mb-6">Detalhamento de Custos</h4>
 
-                                    <div className="flex justify-between items-center p-3 bg-blue-50/50 rounded-xl">
+                                    <div className="flex justify-between items-center p-3 bg-blue-50/50 rounded-md">
                                         <span className="text-sm font-medium text-gray-600">Materiais & Embalagem</span>
                                         <span className="font-bold text-gray-900">R$ {(result.materialCost + result.packagingCost).toFixed(2)}</span>
                                     </div>
-                                    <div className="flex justify-between items-center p-3 bg-purple-50/50 rounded-xl">
+                                    <div className="flex justify-between items-center p-3 bg-purple-50/50 rounded-md">
                                         <span className="text-sm font-medium text-gray-600">Rateio Custos Fixos</span>
                                         <span className="font-bold text-gray-900">R$ {result.fixedCostsAllocated.toFixed(2)}</span>
                                     </div>
-                                    <div className="flex justify-between items-center p-3 bg-amber-50/50 rounded-xl">
+                                    <div className="flex justify-between items-center p-3 bg-amber-50/50 rounded-md">
                                         <span className="text-sm font-medium text-gray-600">Taxas Marketplace</span>
                                         <span className="font-bold text-gray-900">R$ {((result.suggestedPrice * result.channelPercentFee) + result.channelFixedFee).toFixed(2)}</span>
                                     </div>
