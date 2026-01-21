@@ -10,22 +10,34 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [isSignUp, setIsSignUp] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
-        const { error } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-        });
 
-        if (error) {
-            alert('Erro ao fazer login: ' + error.message);
-        } else {
-            // parent auth state listener will handle the redirect/state update
-            if (onLogin) onLogin();
+        try {
+            if (isSignUp) {
+                const { error } = await supabase.auth.signUp({
+                    email,
+                    password,
+                });
+                if (error) throw error;
+                alert('Conta criada com sucesso! Verifique seu email para confirmar.');
+                setIsSignUp(false); // Switch back to login or stay? Usually wait for confirmation.
+            } else {
+                const { error } = await supabase.auth.signInWithPassword({
+                    email,
+                    password,
+                });
+                if (error) throw error;
+                if (onLogin) onLogin();
+            }
+        } catch (error: any) {
+            alert(isSignUp ? 'Erro ao criar conta: ' + error.message : 'Erro ao fazer login: ' + error.message);
+        } finally {
+            setIsLoading(false);
         }
-        setIsLoading(false);
     };
 
     return (
@@ -95,8 +107,12 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
             <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-gray-50">
                 <div className="w-full max-w-md bg-white p-10 rounded-[2.5rem] shadow-xl shadow-gray-100 border border-gray-100/50">
                     <div className="text-center mb-10">
-                        <h2 className="text-3xl font-bold text-gray-900 mb-3">Bem-vindo de volta!</h2>
-                        <p className="text-gray-500 font-medium">Acesse sua conta para continuar.</p>
+                        <h2 className="text-3xl font-bold text-gray-900 mb-3">
+                            {isSignUp ? 'Crie sua conta' : 'Bem-vindo de volta!'}
+                        </h2>
+                        <p className="text-gray-500 font-medium">
+                            {isSignUp ? 'Preencha os dados abaixo para começar.' : 'Acesse sua conta para continuar.'}
+                        </p>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-6">
@@ -109,6 +125,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                                     placeholder="seu@email.com"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
+                                    required
                                 />
                                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
                                     <Mail className="w-5 h-5" />
@@ -119,7 +136,9 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                         <div className="space-y-2">
                             <div className="flex justify-between items-center ml-1">
                                 <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Senha</label>
-                                <a href="#" className="text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors">Esqueceu a senha?</a>
+                                {!isSignUp && (
+                                    <a href="#" className="text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors">Esqueceu a senha?</a>
+                                )}
                             </div>
                             <div className="relative">
                                 <input
@@ -128,6 +147,8 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                                     placeholder="••••••••"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                    minLength={6}
                                 />
                                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
                                     <Lock className="w-5 h-5" />
@@ -144,7 +165,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                                 <span className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
                             ) : (
                                 <>
-                                    Entrar no Sistema
+                                    {isSignUp ? 'Criar Conta' : 'Entrar no Sistema'}
                                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                 </>
                             )}
@@ -153,10 +174,13 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
                     <div className="mt-8 text-center">
                         <p className="text-gray-500 font-medium text-sm">
-                            Não tem uma conta?{' '}
-                            <a href="#" className="text-blue-600 font-bold hover:underline">
-                                Criar conta grátis
-                            </a>
+                            {isSignUp ? 'Já tem uma conta? ' : 'Não tem uma conta? '}
+                            <button
+                                onClick={() => setIsSignUp(!isSignUp)}
+                                className="text-blue-600 font-bold hover:underline"
+                            >
+                                {isSignUp ? 'Fazer Login' : 'Criar conta grátis'}
+                            </button>
                         </p>
                     </div>
                 </div>
