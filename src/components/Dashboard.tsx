@@ -18,7 +18,9 @@ import {
   ShoppingCart,
   Sparkles,
   ArrowRight,
-  Receipt
+  Receipt,
+  Box,
+  Layers
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { api, Produto, Insumo } from '../api/client';
@@ -167,6 +169,36 @@ const Dashboard: React.FC = () => {
           <h2 className="text-4xl font-bold text-gray-900 tracking-tight">Painel de Controle</h2>
           <p className="text-gray-500 mt-2 font-medium">Bom dia, Mariana! Aqui está o resumo do seu ateliê hoje.</p>
         </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Link to="/materials" className="bg-white p-6 rounded-lg border border-gray-100 shadow-sm flex items-center justify-center gap-4 hover:shadow-xl transition-all group">
+          <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 group-hover:scale-110 transition-transform">
+            <Box className="w-6 h-6" />
+          </div>
+          <div className="text-center md:text-left">
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Cadastro de</p>
+            <h3 className="text-xl font-bold text-gray-900">Materiais</h3>
+          </div>
+        </Link>
+        <Link to="/products" className="bg-white p-6 rounded-lg border border-gray-100 shadow-sm flex items-center justify-center gap-4 hover:shadow-xl transition-all group">
+          <div className="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center text-green-600 group-hover:scale-110 transition-transform">
+            <Layers className="w-6 h-6" />
+          </div>
+          <div className="text-center md:text-left">
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Precificação de</p>
+            <h3 className="text-xl font-bold text-gray-900">Produtos</h3>
+          </div>
+        </Link>
+        <Link to="/fixed-costs" className="bg-white p-6 rounded-lg border border-gray-100 shadow-sm flex items-center justify-center gap-4 hover:shadow-xl transition-all group">
+          <div className="w-12 h-12 bg-amber-50 rounded-lg flex items-center justify-center text-amber-600 group-hover:scale-110 transition-transform">
+            <DollarSign className="w-6 h-6" />
+          </div>
+          <div className="text-center md:text-left">
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Cadastro de</p>
+            <h3 className="text-xl font-bold text-gray-900">Custos Fixos</h3>
+          </div>
+        </Link>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">

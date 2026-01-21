@@ -58,6 +58,17 @@ const Materials: React.FC = () => {
     const onSubmit = async (data: FormData) => {
         console.log('Submitting Material Data:', data);
         try {
+            // Check for duplicate material name
+            const isDuplicate = materials.some(m =>
+                m.name.toLowerCase() === data.name.toLowerCase() &&
+                m.id !== (editingId || '')
+            );
+
+            if (isDuplicate) {
+                alert("Já existe um material cadastrado com este nome!");
+                return;
+            }
+
             if (editingId) {
                 await updateMaterial({ id: editingId, ...data } as Material);
             } else {

@@ -127,6 +127,17 @@ const Products: React.FC = () => {
 
     const onSubmit = async (data: FormData) => {
         try {
+            // Check for duplicate product name
+            const isDuplicate = products.some(p =>
+                (p.name || '').toLowerCase() === data.name.toLowerCase() &&
+                p.id !== (editingId || '')
+            );
+
+            if (isDuplicate) {
+                alert("Já existe um produto cadastrado com este nome!");
+                return;
+            }
+
             const payload = {
                 name: data.name,
                 category: data.category,
