@@ -65,7 +65,19 @@ export interface Contact {
   type: ContactType;
   phone: string;
   email: string;
-  address?: string;
+  address?: string; // Legacy field (kept for compatibility)
+
+  // Extended Fields
+  document?: string;
+  document_type?: 'CPF' | 'CNPJ' | 'OTHER';
+  cep?: string;
+  street?: string;
+  number?: string;
+  neighborhood?: string;
+  city?: string;
+  state?: string;
+  complement?: string;
+
   observations?: string;
 }
 

@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import {
   Users,
@@ -12,9 +11,14 @@ import {
   Mail,
   MapPin,
   ExternalLink,
-  User
+  User,
+  Building2,
+  Map,
+  Loader2
 } from 'lucide-react';
 import { Contact, ContactType } from '../types';
+import { masks } from '../utils/masks';
+import { brasilApi } from '../services/brasilApi';
 
 interface ContactsProps {
   contacts: Contact[];
@@ -28,19 +32,33 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
   const [search, setSearch] = useState('');
   const [filterType, setFilterType] = useState<'Todos' | ContactType>('Todos');
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
+  const [isLoadingCnpj, setIsLoadingCnpj] = useState(false);
+  const [isLoadingCep, setIsLoadingCep] = useState(false);
 
   const [formState, setFormState] = useState<Partial<Contact>>({
     name: '',
     type: 'Cliente',
+    document_type: 'CPF',
+    document: '',
     phone: '',
     email: '',
-    address: '',
+    cep: '',
+    street: '',
+    number: '',
+    neighborhood: '',
+    city: '',
+    state: '',
+    complement: '',
     observations: ''
   });
 
   const filteredContacts = useMemo(() => {
     return contacts.filter(c => {
-      const matchesSearch = c.name.toLowerCase().includes(search.toLowerCase()) || c.email.toLowerCase().includes(search.toLowerCase());
+      const normalizedSearch = search.toLowerCase();
+      const matchesSearch =
+        c.name.toLowerCase().includes(normalizedSearch) ||
+        c.email.toLowerCase().includes(normalizedSearch) ||
+        (c.document && c.document.includes(normalizedSearch));
       const matchesType = filterType === 'Todos' || c.type === filterType;
       return matchesSearch && matchesType;
     });
@@ -52,15 +70,38 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
       setFormState(contact);
     } else {
       setEditingContact(null);
-      setFormState({ name: '', type: 'Cliente', phone: '', email: '', address: '', observations: '' });
+      setFormState({
+        name: '',
+        type: 'Cliente',
+        document_type: 'CPF',
+        document: '',
+        phone: '',
+        email: '',
+        cep: '',
+        street: '',
+        number: '',
+        neighborhood: '',
+        city: '',
+        state: '',
+        complement: '',
+        observations: ''
+      });
     }
     setIsModalOpen(true);
   };
 
   const handleSave = () => {
-    if (!formState.name) return;
+    if (!formState.name) {
+      alert("O nome é obrigatório!");
+      return;
+    }
+
+    // Combine address for legacy display compatibility if needed
+    const fullAddress = formState.street ? `${formState.street}, ${formState.number} - ${formState.neighborhood}, ${formState.city}/${formState.state}` : formState.address;
+
     const data = {
       ...formState,
+      address: fullAddress, // Update legacy field just in case
       id: editingContact ? editingContact.id : Math.random().toString(36).substr(2, 9),
     } as Contact;
 
@@ -69,12 +110,58 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
     setIsModalOpen(false);
   };
 
+  // --- AUTO FILL LOGIC ---
+  const handleCnpjBlur = async () => {
+    if (formState.document_type === 'CNPJ' && formState.document && formState.document.length >= 14) {
+      setIsLoadingCnpj(true);
+      const data = await brasilApi.fetchCnpj(formState.document);
+      setIsLoadingCnpj(false);
+
+      if (data) {
+        setFormState(prev => ({
+          ...prev,
+          name: data.nome_fantasia || data.razao_social,
+          phone: prev.phone || masks.phone(data.ddd_telefone_1),
+          cep: masks.cep(data.cep),
+          street: data.logradouro,
+          number: data.numero,
+          neighborhood: data.bairro,
+          city: data.municipio,
+          state: data.uf,
+          complement: data.complemento,
+          observations: prev.observations || `Razão Social: ${data.razao_social}`
+        }));
+      } else {
+        alert('CNPJ não encontrado ou inválido.');
+      }
+    }
+  };
+
+  const handleCepBlur = async () => {
+    if (formState.cep && formState.cep.length >= 8) {
+      setIsLoadingCep(true);
+      const data = await brasilApi.fetchCep(formState.cep);
+      setIsLoadingCep(false);
+
+      if (data) {
+        setFormState(prev => ({
+          ...prev,
+          street: data.street,
+          neighborhood: data.neighborhood,
+          city: data.city,
+          state: data.state
+        }));
+        // Focus number field via ID if possible, or just user flows naturally
+      }
+    }
+  };
+
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div>
           <h2 className="text-4xl font-bold text-gray-900 tracking-tight">Contatos</h2>
-          <p className="text-gray-500 mt-2 font-medium">Clientes e fornecedores em um só lugar.</p>
+          <p className="text-gray-500 mt-2 font-medium">Clientes e fornecedores com cadastro completo.</p>
         </div>
         <button
           onClick={() => openModal()}
@@ -85,12 +172,13 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
         </button>
       </div>
 
+      {/* Filter Bar */}
       <div className="bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col md:flex-row gap-4 items-center">
         <div className="relative flex-1 w-full">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
           <input
             type="text"
-            placeholder="Buscar por nome ou e-mail..."
+            placeholder="Buscar por nome, documento ou e-mail..."
             className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-transparent rounded-2xl outline-none focus:bg-white focus:border-indigo-500 transition-all font-medium"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -109,6 +197,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
         </div>
       </div>
 
+      {/* List Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredContacts.map(contact => (
           <div key={contact.id} className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all group">
@@ -121,16 +210,21 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
               </span>
             </div>
 
-            <h3 className="text-xl font-bold text-gray-900 mb-4">{contact.name}</h3>
+            <h3 className="text-xl font-bold text-gray-900 mb-2 truncate">{contact.name}</h3>
+            {contact.document && (
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">
+                {contact.document_type}: {contact.document}
+              </p>
+            )}
 
             <div className="space-y-3 mb-8">
               <div className="flex items-center gap-3 text-sm text-gray-500">
                 <Phone className="w-4 h-4" />
-                {contact.phone || 'N/A'}
+                {contact.phone || 'Sem telefone'}
               </div>
               <div className="flex items-center gap-3 text-sm text-gray-500">
-                <Mail className="w-4 h-4" />
-                {contact.email || 'N/A'}
+                <MapPin className="w-4 h-4" />
+                <span className="truncate">{contact.city && contact.state ? `${contact.city}/${contact.state}` : (contact.address || 'Sem endereço')}</span>
               </div>
             </div>
 
@@ -147,7 +241,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
                 <a
                   href={`https://wa.me/${contact.phone.replace(/\D/g, '')}`}
                   target="_blank"
-                  className="flex items-center gap-2 text-green-600 font-bold text-xs bg-green-50 px-4 py-2 rounded-xl"
+                  className="flex items-center gap-2 text-green-600 font-bold text-xs bg-green-50 px-4 py-2 rounded-xl hover:bg-green-100 transition-all"
                 >
                   WhatsApp <ExternalLink className="w-3.5 h-3.5" />
                 </a>
@@ -159,12 +253,15 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
 
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
-          <div className="bg-white w-full max-w-xl rounded-[3rem] shadow-2xl overflow-hidden">
+          <div className="bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="px-10 py-8 bg-gray-50/50 flex items-center justify-between border-b">
               <h3 className="text-2xl font-bold text-gray-900">{editingContact ? 'Editar Contato' : 'Novo Contato'}</h3>
               <button onClick={() => setIsModalOpen(false)}><X className="w-6 h-6 text-gray-400" /></button>
             </div>
-            <div className="p-10 space-y-6 max-h-[70vh] overflow-y-auto">
+
+            <div className="p-10 space-y-8 max-h-[75vh] overflow-y-auto custom-scrollbar">
+
+              {/* Type Selection */}
               <div className="grid grid-cols-2 gap-4">
                 <button
                   onClick={() => setFormState({ ...formState, type: 'Cliente' })}
@@ -179,68 +276,197 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
                   Fornecedor
                 </button>
               </div>
-              <div className="space-y-2">
-                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block">Nome Completo</label>
+
+              {/* Document Section */}
+              <div className="bg-indigo-50/50 p-6 rounded-3xl border border-indigo-100 space-y-4">
+                <div className="flex items-center gap-4 mb-2">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="docType"
+                      checked={formState.document_type === 'CPF'}
+                      onChange={() => setFormState({ ...formState, document_type: 'CPF', document: '' })}
+                      className="w-4 h-4 text-indigo-600"
+                    />
+                    <span className="text-sm font-bold text-gray-600">Pessoa Física (CPF)</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="docType"
+                      checked={formState.document_type === 'CNPJ'}
+                      onChange={() => setFormState({ ...formState, document_type: 'CNPJ', document: '' })}
+                      className="w-4 h-4 text-indigo-600"
+                    />
+                    <span className="text-sm font-bold text-gray-600">Pessoa Jurídica (CNPJ)</span>
+                  </label>
+                </div>
+
                 <div className="relative">
                   <input
                     type="text"
-                    className="w-full text-sm font-medium text-gray-700 pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-sm"
-                    value={formState.name}
-                    onChange={(e) => setFormState({ ...formState, name: e.target.value })}
+                    className="w-full text-lg font-bold text-gray-900 pl-4 pr-12 py-3 bg-white border border-indigo-100 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500/20 shadow-sm"
+                    placeholder={formState.document_type === 'CPF' ? '000.000.000-00' : '00.000.000/0000-00'}
+                    value={formState.document}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setFormState({
+                        ...formState,
+                        document: formState.document_type === 'CPF' ? masks.cpf(val) : masks.cnpj(val)
+                      });
+                    }}
+                    onBlur={handleCnpjBlur}
                   />
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                    <User className="w-4 h-4" />
-                  </div>
+                  {isLoadingCnpj && (
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                      <Loader2 className="w-5 h-5 text-indigo-600 animate-spin" />
+                    </div>
+                  )}
+                  {!isLoadingCnpj && formState.document_type === 'CNPJ' && (
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-indigo-400 bg-indigo-50 px-2 py-1 rounded-md pointer-events-none">
+                      AUTO
+                    </div>
+                  )}
                 </div>
+                {formState.document_type === 'CNPJ' && (
+                  <p className="text-xs text-indigo-500 font-medium ml-1">
+                    * Digite o CNPJ para buscar os dados automaticamente.
+                  </p>
+                )}
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block">Telefone / WhatsApp</label>
+
+              {/* Personal Info */}
+              <div className="space-y-4">
+                <div>
+                  <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1 block mb-1">Nome Completo / Razão Social</label>
                   <div className="relative">
                     <input
                       type="text"
-                      className="w-full text-sm font-medium text-gray-700 pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-sm"
-                      value={formState.phone}
-                      onChange={(e) => setFormState({ ...formState, phone: e.target.value })}
+                      className="w-full font-bold text-gray-700 pl-10 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-indigo-500 transition-all"
+                      value={formState.name}
+                      onChange={(e) => setFormState({ ...formState, name: e.target.value })}
                     />
-                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                      <Phone className="w-4 h-4" />
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1 block mb-1">Telefone</label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        className="w-full font-medium text-gray-700 pl-10 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-indigo-500 transition-all"
+                        value={formState.phone}
+                        onChange={(e) => setFormState({ ...formState, phone: masks.phone(e.target.value) })}
+                      />
+                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1 block mb-1">E-mail</label>
+                    <div className="relative">
+                      <input
+                        type="email"
+                        className="w-full font-medium text-gray-700 pl-10 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-indigo-500 transition-all"
+                        value={formState.email}
+                        onChange={(e) => setFormState({ ...formState, email: e.target.value })}
+                      />
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     </div>
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block">E-mail</label>
-                  <div className="relative">
+              </div>
+
+              {/* Address Section */}
+              <div className="pt-4 border-t border-gray-100">
+                <h4 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <MapPin className="w-5 h-5 text-indigo-500" />
+                  Endereço
+                </h4>
+
+                <div className="grid grid-cols-3 gap-4 mb-4">
+                  <div className="col-span-1">
+                    <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1 block mb-1">CEP</label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        className="w-full font-bold text-gray-700 pl-3 pr-8 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-indigo-500 transition-all"
+                        placeholder="00000-000"
+                        value={formState.cep}
+                        onChange={(e) => setFormState({ ...formState, cep: masks.cep(e.target.value) })}
+                        onBlur={handleCepBlur}
+                      />
+                      {isLoadingCep && (
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                          <Loader2 className="w-4 h-4 text-indigo-600 animate-spin" />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="col-span-2">
+                    <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1 block mb-1">Rua / Logradouro</label>
                     <input
-                      type="email"
-                      className="w-full text-sm font-medium text-gray-700 pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-sm"
-                      value={formState.email}
-                      onChange={(e) => setFormState({ ...formState, email: e.target.value })}
+                      type="text"
+                      className="w-full font-medium text-gray-700 px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-indigo-500 transition-all"
+                      value={formState.street}
+                      onChange={(e) => setFormState({ ...formState, street: e.target.value })}
                     />
-                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                      <Mail className="w-4 h-4" />
-                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-4 mb-4">
+                  <div className="col-span-1">
+                    <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1 block mb-1">Número</label>
+                    <input
+                      type="text"
+                      className="w-full font-medium text-gray-700 px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-indigo-500 transition-all"
+                      value={formState.number}
+                      onChange={(e) => setFormState({ ...formState, number: e.target.value })}
+                    />
+                  </div>
+                  <div className="col-span-2">
+                    <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1 block mb-1">Bairro</label>
+                    <input
+                      type="text"
+                      className="w-full font-medium text-gray-700 px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-indigo-500 transition-all"
+                      value={formState.neighborhood}
+                      onChange={(e) => setFormState({ ...formState, neighborhood: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1 block mb-1">Cidade</label>
+                    <input
+                      type="text"
+                      className="w-full font-medium text-gray-700 px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-indigo-500 transition-all"
+                      value={formState.city}
+                      onChange={(e) => setFormState({ ...formState, city: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1 block mb-1">Estado (UF)</label>
+                    <input
+                      type="text"
+                      className="w-full font-medium text-gray-700 px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-indigo-500 transition-all"
+                      value={formState.state}
+                      maxLength={2}
+                      onChange={(e) => setFormState({ ...formState, state: e.target.value.toUpperCase() })}
+                    />
                   </div>
                 </div>
               </div>
-              <div className="space-y-2">
-                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1 block">Endereço (Opcional)</label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    className="w-full text-sm font-medium text-gray-700 pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-sm"
-                    value={formState.address}
-                    onChange={(e) => setFormState({ ...formState, address: e.target.value })}
-                  />
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                    <MapPin className="w-4 h-4" />
-                  </div>
-                </div>
-              </div>
+
             </div>
+
             <div className="p-10 bg-gray-50/50 border-t flex justify-end gap-4">
-              <button onClick={() => setIsModalOpen(false)} className="px-8 py-4 bg-white border-2 rounded-2xl font-bold text-gray-500">Cancelar</button>
-              <button onClick={handleSave} className="px-10 py-4 bg-indigo-600 text-white rounded-2xl font-bold shadow-xl shadow-indigo-100 flex items-center gap-2">
+              <button onClick={() => setIsModalOpen(false)} className="px-8 py-4 bg-white border-2 border-gray-200 rounded-2xl font-bold text-gray-500 hover:bg-gray-50 hover:border-gray-300 transition-all">Cancelar</button>
+              <button
+                onClick={handleSave}
+                className="px-10 py-4 bg-indigo-600 text-white rounded-2xl font-bold shadow-xl shadow-indigo-100 flex items-center gap-2 hover:bg-indigo-700 active:scale-95 transition-all"
+              >
                 <Save className="w-5 h-5" /> Salvar Contato
               </button>
             </div>
