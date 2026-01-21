@@ -265,13 +265,13 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
               <div className="grid grid-cols-2 gap-4">
                 <button
                   onClick={() => setFormState({ ...formState, type: 'Cliente' })}
-                  className={`py-3 rounded-md font-bold border-2 transition-all ${formState.type === 'Cliente' ? 'border-rose-500 bg-rose-50 text-rose-600' : 'border-gray-200 text-gray-400'}`}
+                  className={`py-2 rounded-md font-bold border-2 transition-all ${formState.type === 'Cliente' ? 'border-rose-500 bg-rose-50 text-rose-600' : 'border-gray-200 text-gray-400'}`}
                 >
                   Cliente
                 </button>
                 <button
                   onClick={() => setFormState({ ...formState, type: 'Fornecedor' })}
-                  className={`py-3 rounded-md font-bold border-2 transition-all ${formState.type === 'Fornecedor' ? 'border-blue-500 bg-blue-50 text-blue-600' : 'border-gray-200 text-gray-400'}`}
+                  className={`py-2 rounded-md font-bold border-2 transition-all ${formState.type === 'Fornecedor' ? 'border-blue-500 bg-blue-50 text-blue-600' : 'border-gray-200 text-gray-400'}`}
                 >
                   Fornecedor
                 </button>
@@ -305,7 +305,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
                 <div className="relative">
                   <input
                     type="text"
-                    className="w-full text-lg font-bold text-gray-900 pl-4 pr-12 py-3 bg-white border border-indigo-100 rounded-md outline-none focus:ring-2 focus:ring-indigo-500/20 shadow-sm"
+                    className="w-full text-lg font-bold text-gray-900 pl-4 pr-12 py-2 bg-white border border-indigo-100 rounded-md outline-none focus:ring-2 focus:ring-indigo-500/20 shadow-sm"
                     placeholder={formState.document_type === 'CPF' ? '000.000.000-00' : '00.000.000/0000-00'}
                     value={formState.document}
                     onChange={(e) => {
@@ -342,7 +342,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
                   <div className="relative">
                     <input
                       type="text"
-                      className="w-full font-bold text-gray-700 pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-indigo-500 transition-all"
+                      className="w-full font-bold text-gray-700 pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-indigo-500 transition-all"
                       value={formState.name}
                       onChange={(e) => setFormState({ ...formState, name: e.target.value })}
                     />
@@ -356,7 +356,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
                     <div className="relative">
                       <input
                         type="text"
-                        className="w-full font-medium text-gray-700 pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-indigo-500 transition-all"
+                        className="w-full font-medium text-gray-700 pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-indigo-500 transition-all"
                         value={formState.phone}
                         onChange={(e) => setFormState({ ...formState, phone: masks.phone(e.target.value) })}
                       />
@@ -368,7 +368,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
                     <div className="relative">
                       <input
                         type="email"
-                        className="w-full font-medium text-gray-700 pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-indigo-500 transition-all"
+                        className="w-full font-medium text-gray-700 pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-indigo-500 transition-all"
                         value={formState.email}
                         onChange={(e) => setFormState({ ...formState, email: e.target.value })}
                       />
@@ -391,7 +391,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
                     <div className="relative">
                       <input
                         type="text"
-                        className="w-full font-bold text-gray-700 pl-3 pr-8 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-indigo-500 transition-all"
+                        className="w-full font-bold text-gray-700 pl-3 pr-8 py-2 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-indigo-500 transition-all"
                         placeholder="00000-000"
                         value={formState.cep}
                         onChange={(e) => setFormState({ ...formState, cep: masks.cep(e.target.value) })}
@@ -408,7 +408,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
                     <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1 block mb-1">Rua / Logradouro</label>
                     <input
                       type="text"
-                      className="w-full font-medium text-gray-700 px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-indigo-500 transition-all"
+                      className="w-full font-medium text-gray-700 px-4 py-2 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-indigo-500 transition-all"
                       value={formState.street}
                       onChange={(e) => setFormState({ ...formState, street: e.target.value })}
                     />
@@ -420,28 +420,37 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
                     <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1 block mb-1">Número</label>
                     <input
                       type="text"
-                      className="w-full font-medium text-gray-700 px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-indigo-500 transition-all"
+                      className="w-full font-medium text-gray-700 px-4 py-2 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-indigo-500 transition-all"
                       value={formState.number}
                       onChange={(e) => setFormState({ ...formState, number: e.target.value })}
                     />
                   </div>
                   <div className="col-span-2">
-                    <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1 block mb-1">Bairro</label>
+                    <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1 block mb-1">Complemento</label>
                     <input
                       type="text"
-                      className="w-full font-medium text-gray-700 px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-indigo-500 transition-all"
-                      value={formState.neighborhood}
-                      onChange={(e) => setFormState({ ...formState, neighborhood: e.target.value })}
+                      className="w-full font-medium text-gray-700 px-4 py-2 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-indigo-500 transition-all"
+                      value={formState.complement}
+                      onChange={(e) => setFormState({ ...formState, complement: e.target.value })}
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-3 gap-4">
+                  <div>
+                    <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1 block mb-1">Bairro</label>
+                    <input
+                      type="text"
+                      className="w-full font-medium text-gray-700 px-4 py-2 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-indigo-500 transition-all"
+                      value={formState.neighborhood}
+                      onChange={(e) => setFormState({ ...formState, neighborhood: e.target.value })}
+                    />
+                  </div>
                   <div>
                     <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1 block mb-1">Cidade</label>
                     <input
                       type="text"
-                      className="w-full font-medium text-gray-700 px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-indigo-500 transition-all"
+                      className="w-full font-medium text-gray-700 px-4 py-2 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-indigo-500 transition-all"
                       value={formState.city}
                       onChange={(e) => setFormState({ ...formState, city: e.target.value })}
                     />
@@ -450,7 +459,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
                     <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1 block mb-1">Estado (UF)</label>
                     <input
                       type="text"
-                      className="w-full font-medium text-gray-700 px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-indigo-500 transition-all"
+                      className="w-full font-medium text-gray-700 px-4 py-2 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-indigo-500 transition-all"
                       value={formState.state}
                       maxLength={2}
                       onChange={(e) => setFormState({ ...formState, state: e.target.value.toUpperCase() })}
@@ -461,16 +470,16 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
 
             </div>
 
-            <div className="px-8 py-6 bg-gray-50/50 border-t flex justify-end gap-3">
+            <div className="px-8 py-4 bg-gray-50/50 border-t flex justify-end gap-3">
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="px-6 py-3 bg-white border border-gray-300 rounded-md font-bold text-gray-600 hover:bg-gray-50 transition-all"
+                className="px-6 py-2.5 bg-white border border-gray-300 rounded-md font-bold text-gray-600 hover:bg-gray-50 transition-all"
               >
                 Cancelar
               </button>
               <button
                 onClick={handleSave}
-                className="px-8 py-3 bg-indigo-600 text-white rounded-md font-bold shadow-lg shadow-indigo-100 flex items-center gap-2 hover:bg-indigo-700 active:scale-95 transition-all"
+                className="px-8 py-2.5 bg-indigo-600 text-white rounded-md font-bold shadow-lg shadow-indigo-100 flex items-center gap-2 hover:bg-indigo-700 active:scale-95 transition-all"
               >
                 <Save className="w-5 h-5" /> Salvar Contato
               </button>
