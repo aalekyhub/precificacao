@@ -73,7 +73,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div>
-          <h2 className="text-4xl font-bold text-gray-900 tracking-tight">Agenda de Contatos</h2>
+          <h2 className="text-4xl font-bold text-gray-900 tracking-tight">Contatos</h2>
           <p className="text-gray-500 mt-2 font-medium">Clientes e fornecedores em um só lugar.</p>
         </div>
         <button
