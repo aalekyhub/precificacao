@@ -96,6 +96,19 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
       return;
     }
 
+    // Check for duplicate document
+    if (formState.document) {
+      const isDuplicate = contacts.some(c =>
+        c.document === formState.document &&
+        c.id !== (editingContact ? editingContact.id : '')
+      );
+
+      if (isDuplicate) {
+        alert(`Já existe um contato cadastrado com este ${formState.document_type}: ${formState.document}`);
+        return;
+      }
+    }
+
     // Combine address for legacy display compatibility if needed
     const fullAddress = formState.street ? `${formState.street}, ${formState.number} - ${formState.neighborhood}, ${formState.city}/${formState.state}` : formState.address;
 
