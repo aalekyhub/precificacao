@@ -244,7 +244,7 @@ export const useStoreData = () => {
             // If ID is random string from frontend, we pass it. 
             // But usually we prefer backend UUIDs. 
             // Let's rely on api client logic: if ID is present, use it.
-            await api.post('/quotes', q);
+            await api.post('/quotes', rest);
             reloadQuotes();
         } catch (e) {
             console.error(e);
