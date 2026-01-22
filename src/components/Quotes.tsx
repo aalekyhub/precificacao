@@ -85,7 +85,7 @@ const Quotes: React.FC = () => {
     const quote: Quote = {
       id: '',
       created_at: new Date().toISOString(),
-      date: new Date().toISOString(),
+      // date: new Date().toISOString(), // Removed to avoid DB error
       items: newQuote.items || [],
       customer_id: newQuote.customer_id || '',
       clientId: newQuote.customer_id || '',

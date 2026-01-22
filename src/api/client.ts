@@ -88,7 +88,7 @@ export const api = {
 
         // Handle deep writes for Order (Quotes)
         if (table === 'Order') {
-            const { items, clientId, customer_name, extraCosts, discountValue, ...orderData } = bodyWithId;
+            const { items, clientId, customer_name, extraCosts, discountValue, date, ...orderData } = bodyWithId;
             // Clean up legacy/frontend-only fields that might not exist in DB
             // Assuming extra_costs, discount, notes EXIST in DB based on User usage. 
             // If they don't, this might still error, but 'items' was the main blocker.
