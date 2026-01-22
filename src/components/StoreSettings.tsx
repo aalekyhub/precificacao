@@ -76,91 +76,7 @@ const StoreSettings: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-        {/* Left Column: Financial Parameters */}
-        <div className="space-y-6">
-          <div className="bg-white p-8 rounded-lg border border-gray-100 shadow-sm space-y-8">
-            <div className="flex items-center gap-4 border-b border-gray-50 pb-6">
-              <div className="bg-indigo-50 p-3 rounded-md text-indigo-600">
-                <Wallet className="w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="font-bold text-gray-900 text-lg">Parâmetros Financeiros</h3>
-                <p className="text-sm text-gray-500">Definição de salário e jornada</p>
-              </div>
-            </div>
-
-            <div className="space-y-6">
-              <div>
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block mb-2">Pro-labore Mensal</label>
-                <div className="relative group">
-                  <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
-                  <input
-                    type="number"
-                    placeholder="0,00"
-                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-bold text-gray-900 text-lg"
-                    value={formData.pro_labore}
-                    onChange={e => setFormData({ ...formData, pro_labore: e.target.value })}
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block mb-2">Dias / Mês</label>
-                  <div className="relative group">
-                    <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
-                    <input
-                      type="number"
-                      className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-bold text-gray-900"
-                      value={formData.work_days_per_month}
-                      onChange={e => setFormData({ ...formData, work_days_per_month: e.target.value })}
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block mb-2">Horas / Dia</label>
-                  <div className="relative group">
-                    <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
-                    <input
-                      type="number"
-                      className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-bold text-gray-900"
-                      value={formData.work_hours_per_day}
-                      onChange={e => setFormData({ ...formData, work_hours_per_day: e.target.value })}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="p-6 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-lg border border-emerald-100/50 flex items-center justify-between">
-                <div>
-                  <p className="text-xs text-emerald-600 font-bold uppercase tracking-widest mb-1">Valor da sua Hora</p>
-                  <p className="text-sm text-emerald-600/70 font-medium">Baseado em {totalHoursMonth}h mensais</p>
-                </div>
-                <p className="text-4xl font-black text-emerald-600 tracking-tight">
-                  R$ {hourlyRate.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Manual Card (Moved to left column bottom) */}
-          <div className="bg-gradient-to-br from-indigo-600 to-purple-700 p-8 rounded-lg text-white shadow-xl shadow-indigo-200 relative overflow-hidden group">
-            <FileText className="absolute -right-6 -bottom-6 w-40 h-40 text-white/10 group-hover:scale-110 transition-transform duration-500" />
-            <div className="relative z-10">
-              <h3 className="text-2xl font-bold mb-2">Manual do Sistema</h3>
-              <p className="text-indigo-100 mb-6 max-w-xs text-sm leading-relaxed">Baixe o tutorial completo em PDF explicando como cadastrar materiais, precificar e gerar orçamentos.</p>
-              <button
-                onClick={generateManual}
-                className="bg-white text-indigo-700 px-6 py-3 rounded-md font-bold shadow-lg flex items-center gap-2 hover:bg-indigo-50 transition-all active:scale-[0.98]"
-              >
-                <Download className="w-4 h-4" />
-                Baixar PDF
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Column: Company Data */}
+        {/* Left Column: Company Data (Swapped) */}
         <div className="bg-white p-8 rounded-lg border border-gray-100 shadow-sm space-y-8 h-fit">
           <div className="flex items-center gap-4 border-b border-gray-50 pb-6">
             <div className="bg-blue-50 p-3 rounded-md text-blue-600">
@@ -255,6 +171,90 @@ const StoreSettings: React.FC = () => {
                 )}
               </button>
               <p className="text-center text-xs text-gray-400 mt-3">Todas as informações serão usadas na geração de orçamentos.</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column: Financial Parameters (Swapped) */}
+        <div className="space-y-6">
+          <div className="bg-white p-8 rounded-lg border border-gray-100 shadow-sm space-y-8">
+            <div className="flex items-center gap-4 border-b border-gray-50 pb-6">
+              <div className="bg-indigo-50 p-3 rounded-md text-indigo-600">
+                <Wallet className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-bold text-gray-900 text-lg">Parâmetros Financeiros</h3>
+                <p className="text-sm text-gray-500">Definição de salário e jornada</p>
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              <div>
+                <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block mb-2">Pro-labore Mensal</label>
+                <div className="relative group">
+                  <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
+                  <input
+                    type="number"
+                    placeholder="0,00"
+                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-bold text-gray-900 text-lg"
+                    value={formData.pro_labore}
+                    onChange={e => setFormData({ ...formData, pro_labore: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block mb-2">Dias / Mês</label>
+                  <div className="relative group">
+                    <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
+                    <input
+                      type="number"
+                      className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-bold text-gray-900"
+                      value={formData.work_days_per_month}
+                      onChange={e => setFormData({ ...formData, work_days_per_month: e.target.value })}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block mb-2">Horas / Dia</label>
+                  <div className="relative group">
+                    <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
+                    <input
+                      type="number"
+                      className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-bold text-gray-900"
+                      value={formData.work_hours_per_day}
+                      onChange={e => setFormData({ ...formData, work_hours_per_day: e.target.value })}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-6 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-lg border border-emerald-100/50 flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-emerald-600 font-bold uppercase tracking-widest mb-1">Valor da sua Hora</p>
+                  <p className="text-sm text-emerald-600/70 font-medium">Baseado em {totalHoursMonth}h mensais</p>
+                </div>
+                <p className="text-4xl font-black text-emerald-600 tracking-tight">
+                  R$ {hourlyRate.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Manual Card (Moved to left column bottom) */}
+          <div className="bg-gradient-to-br from-indigo-600 to-purple-700 p-8 rounded-lg text-white shadow-xl shadow-indigo-200 relative overflow-hidden group">
+            <FileText className="absolute -right-6 -bottom-6 w-40 h-40 text-white/10 group-hover:scale-110 transition-transform duration-500" />
+            <div className="relative z-10">
+              <h3 className="text-2xl font-bold mb-2">Manual do Sistema</h3>
+              <p className="text-indigo-100 mb-6 max-w-xs text-sm leading-relaxed">Baixe o tutorial completo em PDF explicando como cadastrar materiais, precificar e gerar orçamentos.</p>
+              <button
+                onClick={generateManual}
+                className="bg-white text-indigo-700 px-6 py-3 rounded-md font-bold shadow-lg flex items-center gap-2 hover:bg-indigo-50 transition-all active:scale-[0.98]"
+              >
+                <Download className="w-4 h-4" />
+                Baixar PDF
+              </button>
             </div>
           </div>
         </div>
