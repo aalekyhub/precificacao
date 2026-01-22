@@ -246,9 +246,9 @@ export const useStoreData = () => {
             // Let's rely on api client logic: if ID is present, use it.
             await api.post('/quotes', rest);
             reloadQuotes();
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
-            alert('Erro ao salvar orçamento');
+            alert(`Erro ao salvar orçamento: ${e.message || JSON.stringify(e)}`);
         }
     };
 
