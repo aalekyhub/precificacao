@@ -11,7 +11,10 @@ import {
     Trash2,
     X,
     Save,
-    AlertTriangle
+    AlertTriangle,
+    Pencil,
+    LayoutGrid,
+    List
 } from 'lucide-react';
 
 const schema = z.object({
@@ -56,9 +59,7 @@ const Materials: React.FC = () => {
     }, [purchasePrice, packQuantity, setValue]);
 
     const onSubmit = async (data: FormData) => {
-        console.log('Submitting Material Data:', data);
         try {
-            // Check for duplicate material name
             const isDuplicate = materials.some(m =>
                 m.name.toLowerCase() === data.name.toLowerCase() &&
                 m.id !== (editingId || '')
@@ -72,7 +73,6 @@ const Materials: React.FC = () => {
             if (editingId) {
                 await updateMaterial({ id: editingId, ...data } as Material);
             } else {
-                // Pass empty ID for new creation, it will be stripped/ignored or handled
                 await addMaterial({ id: '', ...data } as Material);
             }
             handleCloseModal();
@@ -87,7 +87,6 @@ const Materials: React.FC = () => {
     };
 
     const handleEdit = (item: Material) => {
-        console.log('Editing Material Item:', item);
         setEditingId(item.id);
         setValue('name', item.name);
         setValue('unit', item.unit);
@@ -132,67 +131,96 @@ const Materials: React.FC = () => {
                     <input
                         type="text"
                         placeholder="Buscar material..."
-                        className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-transparent rounded-lg outline-none focus:bg-white focus:border-blue-500 transition-all font-medium"
+                        className="w-full pl-12 pr-4 py-3 bg-gray-50 border-2 border-transparent rounded-lg outline-none focus:bg-white focus:border-blue-500 transition-all font-medium h-12"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filtered.map(item => (
-                    <div key={item.id} className="bg-white p-8 rounded-lg border border-gray-100 shadow-sm hover:shadow-xl transition-all group relative overflow-hidden">
-
-                        {Number(item.stock) <= Number(item.min_stock) && (
-                            <div className="absolute top-0 right-0 bg-amber-100 text-amber-600 px-4 py-2 rounded-bl-2xl text-[10px] font-bold uppercase tracking-widest flex items-center gap-1">
-                                <AlertTriangle className="w-3 h-3" />
-                                Baixo Estoque
-                            </div>
-                        )}
-
-                        <div className="flex justify-between items-start mb-6 mt-2">
-                            <div className="w-14 h-14 bg-blue-50 rounded-lg flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform">
-                                <Package className="w-7 h-7" />
-                            </div>
-                            <div className="flex gap-2">
-                                <button onClick={() => handleEdit(item)} className="p-2 text-gray-300 hover:text-blue-600 transition-colors">
-                                    <span className="sr-only">Editar</span>
-                                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                                </button>
-                                <button onClick={() => handleDelete(item.id)} className="p-2 text-gray-300 hover:text-rose-500 transition-colors">
-                                    <Trash2 className="w-5 h-5" />
-                                </button>
-                            </div>
-                        </div>
-
-                        <h3 className="text-xl font-bold text-gray-900 mb-1">{item.name}</h3>
-                        <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-4">{item.unit}</p>
-
-                        <div className="flex justify-between items-end border-t pt-4 border-gray-50">
-                            <div>
-                                <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Preço Pago</p>
-                                <p className="text-2xl font-black text-gray-900 mt-1">R$ {Number(item.price).toFixed(2)}</p>
-                            </div>
-                            <div className="text-right">
-                                <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Em Estoque</p>
-                                <p className={`text-xl font-bold mt-1 ${item.stock <= item.min_stock ? 'text-amber-500' : 'text-gray-700'}`}>
-                                    {item.stock}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                ))}
+            {/* Table Layout */}
+            <div className="bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden">
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left">
+                        <thead>
+                            <tr className="bg-gray-50/50 border-b border-gray-100">
+                                <th className="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Material / Item</th>
+                                <th className="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Unid.</th>
+                                <th className="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Custo Unit.</th>
+                                <th className="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">Estoque</th>
+                                <th className="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-right">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-50">
+                            {filtered.length === 0 ? (
+                                <tr>
+                                    <td colSpan={5} className="py-24 text-center text-gray-400 font-medium">
+                                        Nenhum material encontrado.
+                                    </td>
+                                </tr>
+                            ) : (
+                                filtered.map(item => (
+                                    <tr key={item.id} className="hover:bg-gray-50/50 transition-colors group">
+                                        <td className="px-8 py-5">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500 font-bold">
+                                                    <Package className="w-5 h-5" />
+                                                </div>
+                                                <div>
+                                                    <span className="font-bold text-gray-900 block text-sm">{item.name}</span>
+                                                    {item.observations && <span className="text-xs text-gray-400 line-clamp-1">{item.observations}</span>}
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-8 py-5">
+                                            <span className="text-xs font-bold text-gray-500 bg-gray-100 px-2 py-1 rounded-md">{item.unit}</span>
+                                        </td>
+                                        <td className="px-8 py-5">
+                                            <span className="font-black text-gray-900 text-sm">R$ {Number(item.price).toFixed(4)}</span>
+                                        </td>
+                                        <td className="px-8 py-5 text-center">
+                                            <div className="flex flex-col items-center">
+                                                <span className={`font-bold text-sm ${item.stock <= item.min_stock ? 'text-amber-500' : 'text-gray-700'}`}>
+                                                    {item.stock}
+                                                </span>
+                                                {item.stock <= item.min_stock && (
+                                                    <span className="text-[9px] font-bold text-amber-600 uppercase tracking-wide bg-amber-50 px-1.5 py-0.5 rounded mt-0.5">Baixo</span>
+                                                )}
+                                            </div>
+                                        </td>
+                                        <td className="px-8 py-5 text-right">
+                                            <div className="flex items-center justify-end gap-2">
+                                                <button onClick={() => handleEdit(item)} className="p-2 text-gray-300 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all" title="Editar">
+                                                    <Pencil className="w-4 h-4" />
+                                                </button>
+                                                <button onClick={() => handleDelete(item.id)} className="p-2 text-gray-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all" title="Excluir">
+                                                    <Trash2 className="w-4 h-4" />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
+            {/* Modal */}
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
-                    <div className="bg-white w-full max-w-2xl rounded-lg shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[85vh]">
+                    <div className="bg-white w-full max-w-2xl rounded-xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[85vh]">
                         <div className="px-8 py-6 bg-white border-b border-gray-100 flex items-center justify-between sticky top-0 z-10">
-                            <div>
-                                <h3 className="text-2xl font-bold text-gray-900">
-                                    {editingId ? 'Editar Material' : 'Novo Material'}
-                                </h3>
-                                <p className="text-sm text-gray-500 mt-1">Preencha os detalhes do insumo.</p>
+                            <div className="flex items-center gap-3">
+                                <div className="bg-blue-50 p-2.5 rounded-lg text-blue-600">
+                                    <Package className="w-6 h-6" />
+                                </div>
+                                <div>
+                                    <h3 className="text-xl font-bold text-gray-900 tracking-tight">
+                                        {editingId ? 'Editar Material' : 'Novo Material'}
+                                    </h3>
+                                    <p className="text-sm text-gray-500 font-medium">Preencha os dados do insumo</p>
+                                </div>
                             </div>
                             <button onClick={handleCloseModal} className="p-2 hover:bg-gray-100 rounded-full transition-colors"><X className="w-5 h-5 text-gray-400" /></button>
                         </div>
@@ -202,12 +230,12 @@ const Materials: React.FC = () => {
                                 {/* Basic Info Section */}
                                 <div className="space-y-4">
                                     <div>
-                                        <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block mb-2">Identificação</label>
+                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block mb-1.5 ml-1">Identificação</label>
                                         <div className="grid grid-cols-3 gap-4">
                                             <div className="col-span-2">
                                                 <input
                                                     {...register('name')}
-                                                    className="w-full text-sm font-medium text-gray-700 px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
+                                                    className="w-full h-11 px-4 bg-white border border-gray-300 rounded-lg outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-900 text-sm shadow-sm"
                                                     placeholder="Nome do Material (ex: Papel Offset)"
                                                 />
                                                 {errors.name && <p className="text-rose-500 text-xs mt-1 ml-1">{errors.name.message}</p>}
@@ -215,7 +243,7 @@ const Materials: React.FC = () => {
                                             <div>
                                                 <input
                                                     {...register('unit')}
-                                                    className="w-full text-sm font-medium text-gray-700 px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
+                                                    className="w-full h-11 px-4 bg-white border border-gray-300 rounded-lg outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-900 text-sm shadow-sm"
                                                     placeholder="Unidade"
                                                     list="units"
                                                 />
@@ -233,42 +261,42 @@ const Materials: React.FC = () => {
                                 </div>
 
                                 {/* Pricing Section */}
-                                <div className="bg-blue-50/50 p-6 rounded-lg border border-blue-100 space-y-4">
-                                    <h4 className="text-[11px] font-bold text-blue-500 uppercase tracking-wider flex items-center gap-2">
+                                <div className="bg-blue-50/50 p-6 rounded-xl border border-blue-100 space-y-4">
+                                    <h4 className="text-xs font-bold text-blue-600 uppercase tracking-widest flex items-center gap-2">
                                         <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
                                         Precificação e Custos
                                     </h4>
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
-                                            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider block mb-1.5">Preço Pago (Total)</label>
+                                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest block mb-1.5 ml-1">Preço Pago (Total)</label>
                                             <div className="relative">
                                                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold">R$</span>
                                                 <input
                                                     type="number" step="0.01"
                                                     {...register('purchase_price', { valueAsNumber: true })}
-                                                    className="w-full text-sm font-bold text-gray-900 pl-8 pr-4 py-2.5 bg-white border border-blue-200 rounded-md outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                                                    className="w-full h-10 pl-8 pr-4 bg-white border border-blue-200 rounded-lg outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all font-bold text-gray-900 text-sm"
                                                     placeholder="0.00"
                                                 />
                                             </div>
                                         </div>
                                         <div>
-                                            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider block mb-1.5">Qtd na Embalagem</label>
+                                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest block mb-1.5 ml-1">Qtd na Embalagem</label>
                                             <input
                                                 type="number" step="0.01"
                                                 {...register('pack_quantity', { valueAsNumber: true })}
-                                                className="w-full text-sm font-bold text-gray-900 px-4 py-2.5 bg-white border border-blue-200 rounded-md outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                                                className="w-full h-10 px-4 bg-white border border-blue-200 rounded-lg outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all font-bold text-gray-900 text-sm"
                                                 placeholder="1"
                                             />
                                         </div>
                                     </div>
 
-                                    <div className="pt-2 border-t border-blue-100 mt-2">
+                                    <div className="pt-3 border-t border-blue-100 mt-2">
                                         <div className="flex justify-between items-center">
                                             <label className="text-[10px] font-bold text-blue-400 uppercase tracking-wider">Custo Unitário Final</label>
                                             <div className="flex items-center gap-2">
                                                 <span className="text-xs text-blue-300 font-medium">Auto-calculado</span>
-                                                <div className="bg-white px-4 py-1.5 rounded-lg border border-blue-200 shadow-sm">
-                                                    <span className="text-sm font-black text-blue-600">
+                                                <div className="bg-white px-4 py-2 rounded-lg border border-blue-200 shadow-sm min-w-[100px] text-center">
+                                                    <span className="text-lg font-black text-blue-600">
                                                         R$ {watch('price')?.toFixed(4) || '0.0000'}
                                                     </span>
                                                     {/* Hidden input to ensure value is registered */}
@@ -282,32 +310,31 @@ const Materials: React.FC = () => {
                                 {/* Stock & Details */}
                                 <div className="grid grid-cols-2 gap-6">
                                     <div className="space-y-4">
-                                        <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Controle de Estoque</label>
+                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block ml-1">Estoque</label>
                                         <div className="grid grid-cols-2 gap-3">
                                             <div>
-                                                <label className="text-[10px] text-gray-400 block mb-1">Atual</label>
+                                                <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block mb-1">Atual</label>
                                                 <input
                                                     type="number" step="0.01"
                                                     {...register('stock', { valueAsNumber: true })}
-                                                    className="w-full text-sm font-bold text-gray-700 px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-blue-500 transition-all"
+                                                    className="w-full h-10 px-3 bg-white border border-gray-300 rounded-lg outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 transition-all font-bold text-gray-700 text-sm"
                                                 />
-                                                {errors.stock && <p className="text-rose-500 text-[10px] mt-1">{errors.stock.message}</p>}
                                             </div>
                                             <div>
-                                                <label className="text-[10px] text-gray-400 block mb-1">Mínimo</label>
+                                                <label className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block mb-1">Mínimo</label>
                                                 <input
                                                     type="number" step="0.01"
                                                     {...register('min_stock', { valueAsNumber: true })}
-                                                    className="w-full text-sm font-bold text-amber-600 px-3 py-2.5 bg-amber-50 border border-amber-200 rounded-md outline-none focus:bg-white focus:border-amber-500 transition-all"
+                                                    className="w-full h-10 px-3 bg-white border border-gray-300 rounded-lg outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 transition-all font-bold text-amber-600 text-sm"
                                                 />
                                             </div>
                                         </div>
                                     </div>
                                     <div>
-                                        <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block mb-2">Observações</label>
+                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block mb-1.5 ml-1">Observações</label>
                                         <textarea
                                             {...register('observations')}
-                                            className="w-full text-sm text-gray-600 px-4 py-3 bg-gray-50 border border-gray-200 rounded-md outline-none focus:bg-white focus:border-blue-500 transition-all resize-none h-[88px]"
+                                            className="w-full h-[72px] px-4 py-3 bg-white border border-gray-300 rounded-lg outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-600 text-sm resize-none shadow-sm"
                                             placeholder="..."
                                         />
                                     </div>
@@ -315,15 +342,15 @@ const Materials: React.FC = () => {
                             </div>
 
                             <div className="px-8 py-6 bg-gray-50 border-t border-gray-100 flex justify-end gap-3 sticky bottom-0">
-                                <button type="button" onClick={handleCloseModal} className="px-6 py-3 bg-white border border-gray-200 rounded-md font-bold text-gray-500 hover:bg-gray-50 hover:text-gray-700 transition-all text-sm">
+                                <button type="button" onClick={handleCloseModal} className="px-6 py-3 bg-white border border-gray-200 rounded-lg font-bold text-gray-500 hover:bg-gray-50 hover:text-gray-700 transition-all text-sm">
                                     Cancelar
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="px-8 py-3 bg-blue-600 text-white rounded-md font-bold shadow-lg shadow-blue-200 flex items-center gap-2 hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-200/50 transition-all disabled:opacity-70 disabled:shadow-none text-sm active:scale-95 transform"
+                                    className="px-8 py-3 bg-blue-600 text-white rounded-lg font-bold shadow-lg shadow-blue-200 flex items-center gap-2 hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-200/50 transition-all disabled:opacity-70 disabled:shadow-none text-sm active:scale-95 transform"
                                 >
-                                    <Save className="w-4 h-4" />
+                                    <Save className="w-5 h-5" />
                                     {isSubmitting ? 'Salvando...' : 'Salvar Material'}
                                 </button>
                             </div>

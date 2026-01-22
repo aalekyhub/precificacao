@@ -1,42 +1,51 @@
 import React, { useState, useEffect } from 'react';
-import { Settings, Wallet, Clock, Calendar, Save, FileText, Download, DollarSign, Building2 } from 'lucide-react';
 import { useStoreData } from '../hooks/useStoreData';
 import { generateManual } from '../utils/generateManual';
+import {
+  Save,
+  Download,
+  Clock,
+  DollarSign,
+  Calendar,
+  Building2,
+  Wallet,
+  Link as LinkIcon
+} from 'lucide-react';
 
-// Replaced props with useStoreData hook for consistency and independence
-const StoreSettings: React.FC = () => {
+const Settings: React.FC = () => {
   const { storeConfig, setStoreConfig } = useStoreData();
   const [isSaving, setIsSaving] = useState(false);
 
-  // Use local state for form inputs
+  // Form state
   const [formData, setFormData] = useState({
-    pro_labore: String(storeConfig.pro_labore || ''),
-    work_days_per_month: String(storeConfig.work_days_per_month || ''),
-    work_hours_per_day: String(storeConfig.work_hours_per_day || ''),
-    company_name: storeConfig.company_name || '',
-    company_email: storeConfig.company_email || '',
-    company_phone: storeConfig.company_phone || '',
-    company_address: storeConfig.company_address || '',
-    company_cnpj: storeConfig.company_cnpj || '',
-    company_website: storeConfig.company_website || '',
-    printing_cost: String(storeConfig.printing_cost || '')
+    pro_labore: '',
+    work_days_per_month: '',
+    work_hours_per_day: '',
+    company_name: '',
+    company_email: '',
+    company_phone: '',
+    company_address: '',
+    company_cnpj: '',
+    company_website: '',
+    printing_cost: ''
   });
 
-  // Sync with storeConfig updates
+  // Sync with storeConfig on load
   useEffect(() => {
-    setFormData({
-      pro_labore: String(storeConfig.pro_labore || ''),
-      work_days_per_month: String(storeConfig.work_days_per_month || ''),
-      work_hours_per_day: String(storeConfig.work_hours_per_day || ''),
-      company_name: storeConfig.company_name || '',
-      company_email: storeConfig.company_email || '',
-      company_phone: storeConfig.company_phone || '',
-      company_address: storeConfig.company_address || '',
-      company_cnpj: storeConfig.company_cnpj || '',
-
-      company_website: storeConfig.company_website || '',
-      printing_cost: String(storeConfig.printing_cost || '')
-    });
+    if (storeConfig) {
+      setFormData({
+        pro_labore: String(storeConfig.pro_labore || ''),
+        work_days_per_month: String(storeConfig.work_days_per_month || ''),
+        work_hours_per_day: String(storeConfig.work_hours_per_day || ''),
+        company_name: storeConfig.company_name || '',
+        company_email: storeConfig.company_email || '',
+        company_phone: storeConfig.company_phone || '',
+        company_address: storeConfig.company_address || '',
+        company_cnpj: storeConfig.company_cnpj || '',
+        company_website: storeConfig.company_website || '',
+        printing_cost: String(storeConfig.printing_cost || '')
+      });
+    }
   }, [storeConfig]);
 
   const handleSave = async () => {
@@ -52,182 +61,190 @@ const StoreSettings: React.FC = () => {
         company_phone: formData.company_phone,
         company_address: formData.company_address,
         company_cnpj: formData.company_cnpj,
-
         company_website: formData.company_website,
         printing_cost: parseFloat(formData.printing_cost) || 0
       });
       alert('Configurações salvas com sucesso!');
     } catch (error) {
-      console.error('Failed to save settings:', error);
-      alert('Erro ao salvar configurações.');
+      console.error(error);
+      alert('Erro ao salvar');
     } finally {
       setIsSaving(false);
     }
   };
 
-  // Derived for display
-  const days = parseFloat(formData.work_days_per_month) || 0;
-  const hours = parseFloat(formData.work_hours_per_day) || 0;
-  const salary = parseFloat(formData.pro_labore) || 0;
-  const totalHoursMonth = days * hours;
-  const hourlyRate = totalHoursMonth > 0 ? salary / totalHoursMonth : 0;
+  // Calculations
+  const proLaboreNum = parseFloat(formData.pro_labore) || 0;
+  const daysNum = parseFloat(formData.work_days_per_month) || 0;
+  const hoursNum = parseFloat(formData.work_hours_per_day) || 0;
+  const totalHours = daysNum * hoursNum;
+  const hourlyRate = totalHours > 0 ? proLaboreNum / totalHours : 0;
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
-      <div>
-        <h2 className="text-3xl font-bold text-gray-900">Configurações do Negócio</h2>
-        <p className="text-gray-500 mt-1">Gerencie seus parâmetros de precificação e dados da empresa.</p>
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-7xl mx-auto">
+
+      <div className="flex items-center justify-between pb-2">
+        <div>
+          <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Configurações do Negócio</h2>
+          <p className="text-gray-500 mt-1 font-medium">Gerencie seus parâmetros de precificação.</p>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
 
-        {/* Left Column: Company Data (Swapped) */}
-        <div className="bg-white p-8 rounded-lg border border-gray-100 shadow-sm space-y-8 h-fit">
-          <div className="flex items-center gap-4 border-b border-gray-50 pb-6">
-            <div className="bg-blue-50 p-3 rounded-md text-blue-600">
-              <Building2 className="w-6 h-6" />
+        {/* Left Column: Company Data */}
+        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col h-full relative">
+          {/* Header */}
+          <div className="flex items-center gap-3 border-b border-gray-100 pb-4 mb-4">
+            <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+              <Building2 className="w-5 h-5" />
             </div>
-            <div>
-              <h3 className="font-bold text-gray-900 text-lg">Dados da Empresa</h3>
-              <p className="text-sm text-gray-500">Informações para orçamentos e relatórios</p>
-            </div>
+            <h3 className="text-lg font-bold text-gray-800">Dados da Empresa</h3>
           </div>
 
-          <div className="space-y-5">
-            <div>
-              <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block mb-2">Nome da Empresa / Ateliê</label>
-              <input
-                type="text"
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-900"
-                placeholder="Ex: Doce Encanto Ateliê"
-                value={formData.company_name}
-                onChange={e => setFormData({ ...formData, company_name: e.target.value })}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block mb-2">CNPJ / CPF</label>
+          {/* Inputs */}
+          <div className="space-y-4 flex-1">
+            <div className="grid grid-cols-3 gap-4">
+              <div className="col-span-2 space-y-1.5">
+                <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block ml-1">Nome da Empresa</label>
                 <input
                   type="text"
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-900"
-                  placeholder="00.000.000/0001-00"
+                  className="w-full px-4 h-11 bg-white border border-gray-300 rounded-lg outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-900 shadow-sm"
+                  value={formData.company_name}
+                  placeholder="Ex: Meu Ateliê"
+                  onChange={e => setFormData({ ...formData, company_name: e.target.value })}
+                />
+              </div>
+              <div className="col-span-1 space-y-1.5">
+                <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block ml-1">CNPJ / CPF</label>
+                <input
+                  type="text"
+                  className="w-full px-4 h-11 bg-white border border-gray-300 rounded-lg outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-900 shadow-sm"
                   value={formData.company_cnpj}
                   onChange={e => setFormData({ ...formData, company_cnpj: e.target.value })}
                 />
               </div>
-              <div>
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block mb-2">Telefone</label>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block ml-1">Email</label>
+                <input
+                  type="email"
+                  className="w-full px-4 h-11 bg-white border border-gray-300 rounded-lg outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-900 shadow-sm"
+                  value={formData.company_email}
+                  onChange={e => setFormData({ ...formData, company_email: e.target.value })}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block ml-1">Telefone</label>
                 <input
                   type="text"
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-900"
-                  placeholder="(00) 00000-0000"
+                  className="w-full px-4 h-11 bg-white border border-gray-300 rounded-lg outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-900 shadow-sm"
                   value={formData.company_phone}
                   onChange={e => setFormData({ ...formData, company_phone: e.target.value })}
                 />
               </div>
             </div>
 
-            <div>
-              <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block mb-2">Email de Contato</label>
-              <input
-                type="email"
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-900"
-                placeholder="contato@empresa.com"
-                value={formData.company_email}
-                onChange={e => setFormData({ ...formData, company_email: e.target.value })}
-              />
-            </div>
-
-            <div>
-              <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block mb-2">Endereço Completo</label>
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block ml-1">Endereço</label>
               <textarea
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-900 resize-none h-24"
-                placeholder="Rua das Flores, 123 - Centro&#10;São Paulo - SP&#10;CEP: 01234-567"
+                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-900 shadow-sm min-h-[80px] resize-none"
                 value={formData.company_address}
+                rows={2}
                 onChange={e => setFormData({ ...formData, company_address: e.target.value })}
               />
             </div>
 
-            <div>
-              <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block mb-2">Site / Instagram</label>
-              <input
-                type="text"
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-900"
-                placeholder="@seu.instagram"
-                value={formData.company_website}
-                onChange={e => setFormData({ ...formData, company_website: e.target.value })}
-              />
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block ml-1">Site / Instagram</label>
+              <div className="relative">
+                <LinkIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  type="text"
+                  className="w-full pl-10 pr-4 h-11 bg-white border border-gray-300 rounded-lg outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-900 shadow-sm"
+                  placeholder="@seu.instagram"
+                  value={formData.company_website}
+                  onChange={e => setFormData({ ...formData, company_website: e.target.value })}
+                />
+              </div>
             </div>
+          </div>
 
-            <div className="pt-4">
-              <button
-                onClick={handleSave}
-                disabled={isSaving}
-                className="w-full py-4 bg-gray-900 text-white rounded-md font-bold text-lg hover:bg-black transition-all shadow-lg shadow-gray-200 active:scale-[0.98] flex items-center justify-center gap-3"
-              >
-                {isSaving ? (
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                ) : (
-                  <>
-                    <Save className="w-5 h-5" />
-                    Salvar Alterações
-                  </>
-                )}
-              </button>
-              <p className="text-center text-xs text-gray-400 mt-3">Todas as informações serão usadas na geração de orçamentos.</p>
-            </div>
+          <div className="pt-6 mt-2 border-t border-gray-100">
+            <button
+              onClick={handleSave}
+              disabled={isSaving}
+              className="w-full py-3 bg-gray-900 text-white rounded-lg font-bold hover:bg-black transition-all shadow-lg shadow-gray-200 active:scale-95 flex items-center justify-center gap-2"
+            >
+              <Save className="w-5 h-5" />
+              {isSaving ? 'Salvando...' : 'Salvar Dados da Empresa'}
+            </button>
           </div>
         </div>
 
-        {/* Right Column: Financial Parameters (Swapped) */}
-        <div className="space-y-6">
-          <div className="bg-white p-8 rounded-lg border border-gray-100 shadow-sm space-y-8">
-            <div className="flex items-center gap-4 border-b border-gray-50 pb-6">
-              <div className="bg-indigo-50 p-3 rounded-md text-indigo-600">
-                <Wallet className="w-6 h-6" />
+        {/* Right Column: Financial & Other */}
+        <div className="flex flex-col gap-4 h-full">
+
+          {/* Financial Parameters */}
+          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex-1 flex flex-col">
+            <div className="flex items-center gap-3 border-b border-gray-100 pb-4 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+                <Wallet className="w-5 h-5" />
               </div>
-              <div>
-                <h3 className="font-bold text-gray-900 text-lg">Parâmetros Financeiros</h3>
-                <p className="text-sm text-gray-500">Definição de salário e jornada</p>
-              </div>
+              <h3 className="text-lg font-bold text-gray-800">Parâmetros Financeiros</h3>
             </div>
 
-            <div className="space-y-6">
-              <div>
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block mb-2">Pro-labore Mensal</label>
-                <div className="relative group">
-                  <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
-                  <input
-                    type="number"
-                    placeholder="0,00"
-                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-bold text-gray-900 text-lg"
-                    value={formData.pro_labore}
-                    onChange={e => setFormData({ ...formData, pro_labore: e.target.value })}
-                  />
+            <div className="space-y-4 flex-1">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block ml-1">Pro-Labore</label>
+                  <div className="relative">
+                    <DollarSign className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <input
+                      type="number"
+                      className="w-full pl-10 pr-4 h-11 bg-white border border-gray-300 rounded-lg outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-bold text-gray-900 shadow-sm"
+                      value={formData.pro_labore}
+                      onChange={e => setFormData({ ...formData, pro_labore: e.target.value })}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block ml-1">Custo Impressão</label>
+                  <div className="relative">
+                    <DollarSign className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <input
+                      type="number"
+                      step="0.01"
+                      className="w-full pl-10 pr-4 h-11 bg-white border border-gray-300 rounded-lg outline-none focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10 transition-all font-bold text-gray-900 shadow-sm"
+                      value={formData.printing_cost}
+                      onChange={e => setFormData({ ...formData, printing_cost: e.target.value })}
+                    />
+                  </div>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block mb-2">Dias / Mês</label>
-                  <div className="relative group">
-                    <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block ml-1">Dias / Mês</label>
+                  <div className="relative">
+                    <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <input
                       type="number"
-                      className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-bold text-gray-900"
+                      className="w-full pl-10 pr-4 h-11 bg-white border border-gray-300 rounded-lg outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-bold text-gray-900 shadow-sm"
                       value={formData.work_days_per_month}
                       onChange={e => setFormData({ ...formData, work_days_per_month: e.target.value })}
                     />
                   </div>
                 </div>
-                <div>
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block mb-2">Horas / Dia</label>
-                  <div className="relative group">
-                    <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block ml-1">Horas / Dia</label>
+                  <div className="relative">
+                    <Clock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <input
                       type="number"
-                      className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-bold text-gray-900"
+                      className="w-full pl-10 pr-4 h-11 bg-white border border-gray-300 rounded-lg outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-bold text-gray-900 shadow-sm"
                       value={formData.work_hours_per_day}
                       onChange={e => setFormData({ ...formData, work_hours_per_day: e.target.value })}
                     />
@@ -235,66 +252,30 @@ const StoreSettings: React.FC = () => {
                 </div>
               </div>
 
-              <div className="p-6 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-lg border border-emerald-100/50 flex items-center justify-between">
+              {/* Green Box */}
+              <div className="bg-emerald-50 rounded-lg border border-emerald-100 p-4 flex items-center justify-between mt-auto">
                 <div>
-                  <p className="text-xs text-emerald-600 font-bold uppercase tracking-widest mb-1">Valor da sua Hora</p>
-                  <p className="text-sm text-emerald-600/70 font-medium">Baseado em {totalHoursMonth}h mensais</p>
+                  <p className="text-xs font-bold text-emerald-700 uppercase tracking-widest">Valor da sua Hora</p>
+                  <p className="text-xs text-emerald-600/70">{totalHours || 0}h mensais</p>
                 </div>
-                <p className="text-4xl font-black text-emerald-600 tracking-tight">
-                  R$ {hourlyRate.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </p>
+                <div className="text-2xl font-black text-emerald-600 tracking-tight">
+                  R$ {hourlyRate.toFixed(2)}
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-white p-8 rounded-lg border border-gray-100 shadow-sm space-y-8">
-            <div className="flex items-center gap-4 border-b border-gray-50 pb-6">
-              <div className="bg-purple-50 p-3 rounded-md text-purple-600">
-                <DollarSign className="w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="font-bold text-gray-900 text-lg">Custos Variáveis Padrão</h3>
-                <p className="text-sm text-gray-500">Custos aplicados na formação do preço</p>
-              </div>
-            </div>
-
-            <div>
-              <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block mb-2">Custo de Impressão (por folha/unidade)</label>
-              <div className="relative group">
-                <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-purple-500 transition-colors" />
-                <input
-                  type="number"
-                  step="0.01"
-                  placeholder="0.00"
-                  className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10 transition-all font-bold text-gray-900 text-lg"
-                  value={formData.printing_cost}
-                  onChange={e => setFormData({ ...formData, printing_cost: e.target.value })}
-                />
-              </div>
-              <p className="text-xs text-gray-400 mt-2">Este valor será sugerido automaticamente ao criar novos produtos.</p>
-            </div>
-          </div>
-
-          {/* Manual Card (Moved to left column bottom) */}
-          <div className="bg-gradient-to-br from-indigo-600 to-purple-700 p-8 rounded-lg text-white shadow-xl shadow-indigo-200 relative overflow-hidden group">
-            <FileText className="absolute -right-6 -bottom-6 w-40 h-40 text-white/10 group-hover:scale-110 transition-transform duration-500" />
-            <div className="relative z-10">
-              <h3 className="text-2xl font-bold mb-2">Manual do Sistema</h3>
-              <p className="text-indigo-100 mb-6 max-w-xs text-sm leading-relaxed">Baixe o tutorial completo em PDF explicando como cadastrar materiais, precificar e gerar orçamentos.</p>
-              <button
-                onClick={generateManual}
-                className="bg-white text-indigo-700 px-6 py-3 rounded-md font-bold shadow-lg flex items-center gap-2 hover:bg-indigo-50 transition-all active:scale-[0.98]"
-              >
-                <Download className="w-4 h-4" />
-                Baixar PDF
-              </button>
-            </div>
-          </div>
+          <button
+            onClick={generateManual}
+            className="w-full py-4 bg-indigo-50 text-indigo-700 rounded-xl font-bold hover:bg-indigo-100 transition-all border border-indigo-100 flex items-center justify-center gap-2 group"
+          >
+            <Download className="w-5 h-5 group-hover:scale-110 transition-transform" />
+            BAIXAR MANUAL DO SISTEMA (PDF)
+          </button>
         </div>
-
       </div>
     </div>
   );
 };
 
-export default StoreSettings;
+export default Settings;
