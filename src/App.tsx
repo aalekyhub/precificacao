@@ -175,7 +175,7 @@ function App() {
                     {currentPage === 'financial' && <FinancialControl />}
                     {currentPage === 'equipments' && <Equipments />}
                     {currentPage === 'fixed-costs' && <FixedCosts />}
-                    {currentPage === 'settings' && <StoreSettings />}
+                    {currentPage === 'settings' && <Settings />}
                     {currentPage === 'calculator' && <PricingCalculator />}
                 </div>
             </main>
