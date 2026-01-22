@@ -19,7 +19,10 @@ const Settings: React.FC = () => {
     const [formData, setFormData] = useState({
         pro_labore: String(storeConfig.pro_labore || ''),
         work_days_per_month: String(storeConfig.work_days_per_month || ''),
-        work_hours_per_day: String(storeConfig.work_hours_per_day || '')
+        work_hours_per_day: String(storeConfig.work_hours_per_day || ''),
+        company_name: storeConfig.company_name || '',
+        company_email: storeConfig.company_email || '',
+        company_phone: storeConfig.company_phone || ''
     });
 
     // Sync when storeConfig loads initial data
@@ -27,7 +30,10 @@ const Settings: React.FC = () => {
         setFormData({
             pro_labore: String(storeConfig.pro_labore || ''),
             work_days_per_month: String(storeConfig.work_days_per_month || ''),
-            work_hours_per_day: String(storeConfig.work_hours_per_day || '')
+            work_hours_per_day: String(storeConfig.work_hours_per_day || ''),
+            company_name: storeConfig.company_name || '',
+            company_email: storeConfig.company_email || '',
+            company_phone: storeConfig.company_phone || ''
         });
     }, [storeConfig]);
 
@@ -38,7 +44,10 @@ const Settings: React.FC = () => {
                 id: storeConfig.id,
                 pro_labore: parseFloat(formData.pro_labore) || 0,
                 work_days_per_month: parseFloat(formData.work_days_per_month) || 0,
-                work_hours_per_day: parseFloat(formData.work_hours_per_day) || 0
+                work_hours_per_day: parseFloat(formData.work_hours_per_day) || 0,
+                company_name: formData.company_name,
+                company_email: formData.company_email,
+                company_phone: formData.company_phone
             });
             alert('Configurações salvas com sucesso!');
         } catch (error) {
@@ -67,63 +76,106 @@ const Settings: React.FC = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Configuration Card */}
-                <div className="bg-white p-8 rounded-lg border border-gray-100 shadow-sm md:col-span-1">
-                    <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                        <SettingsIcon className="w-5 h-5 text-indigo-600" />
-                        Parâmetros de Produção
-                    </h3>
+                <div className="bg-white p-8 rounded-lg border border-gray-100 shadow-sm md:col-span-1 space-y-8">
+                    {/* Parâmetros de Produção */}
+                    <div>
+                        <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                            <SettingsIcon className="w-5 h-5 text-indigo-600" />
+                            Parâmetros de Produção
+                        </h3>
 
-                    <div className="space-y-6">
-                        <div className="bg-indigo-50/50 p-6 rounded-lg border border-indigo-50">
-                            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Pro-Labore Mensal (Salário)</label>
-                            <div className="relative">
-                                <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-indigo-400" />
+                        <div className="space-y-6">
+                            <div className="bg-indigo-50/50 p-6 rounded-lg border border-indigo-50">
+                                <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Pro-Labore Mensal (Salário)</label>
+                                <div className="relative">
+                                    <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-indigo-400" />
+                                    <input
+                                        type="number"
+                                        className="w-full pl-12 pr-4 py-3 bg-white border border-indigo-100 rounded-md outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-gray-900 text-lg"
+                                        value={formData.pro_labore}
+                                        onChange={e => setFormData({ ...formData, pro_labore: e.target.value })}
+                                    />
+                                </div>
+                                <p className="text-xs text-indigo-400 mt-2 font-medium">Define o valor base da sua hora de trabalho.</p>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Dias / Mês</label>
+                                    <div className="relative">
+                                        <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                        <input
+                                            type="number"
+                                            className="w-full pl-9 pr-3 py-3 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-indigo-500 font-bold text-gray-900"
+                                            value={formData.work_days_per_month}
+                                            onChange={e => setFormData({ ...formData, work_days_per_month: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Horas / Dia</label>
+                                    <div className="relative">
+                                        <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                        <input
+                                            type="number"
+                                            className="w-full pl-9 pr-3 py-3 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-indigo-500 font-bold text-gray-900"
+                                            value={formData.work_hours_per_day}
+                                            onChange={e => setFormData({ ...formData, work_hours_per_day: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Dados da Empresa */}
+                    <div className="pt-8 border-t border-gray-100">
+                        <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                            <FileText className="w-5 h-5 text-indigo-600" />
+                            Dados da Empresa (Para Impressão)
+                        </h3>
+                        <div className="space-y-4">
+                            <div>
+                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Nome do Ateliê / Empresa</label>
                                 <input
-                                    type="number"
-                                    className="w-full pl-12 pr-4 py-3 bg-white border border-indigo-100 rounded-md outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-gray-900 text-lg"
-                                    value={formData.pro_labore}
-                                    onChange={e => setFormData({ ...formData, pro_labore: e.target.value })}
+                                    type="text"
+                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-indigo-500 font-medium text-gray-900"
+                                    value={formData.company_name}
+                                    placeholder="Ex: Doce Ateliê"
+                                    onChange={e => setFormData({ ...formData, company_name: e.target.value })}
                                 />
                             </div>
-                            <p className="text-xs text-indigo-400 mt-2 font-medium">Define o valor base da sua hora de trabalho.</p>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Dias / Mês</label>
-                                <div className="relative">
-                                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                                    <input
-                                        type="number"
-                                        className="w-full pl-9 pr-3 py-3 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-indigo-500 font-bold text-gray-900"
-                                        value={formData.work_days_per_month}
-                                        onChange={e => setFormData({ ...formData, work_days_per_month: e.target.value })}
-                                    />
-                                </div>
+                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Email de Contato</label>
+                                <input
+                                    type="email"
+                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-indigo-500 font-medium text-gray-900"
+                                    value={formData.company_email}
+                                    placeholder="contato@atelie.com"
+                                    onChange={e => setFormData({ ...formData, company_email: e.target.value })}
+                                />
                             </div>
                             <div>
-                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Horas / Dia</label>
-                                <div className="relative">
-                                    <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                                    <input
-                                        type="number"
-                                        className="w-full pl-9 pr-3 py-3 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-indigo-500 font-bold text-gray-900"
-                                        value={formData.work_hours_per_day}
-                                        onChange={e => setFormData({ ...formData, work_hours_per_day: e.target.value })}
-                                    />
-                                </div>
+                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Telefone / WhatsApp</label>
+                                <input
+                                    type="text"
+                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-indigo-500 font-medium text-gray-900"
+                                    value={formData.company_phone}
+                                    placeholder="(00) 00000-0000"
+                                    onChange={e => setFormData({ ...formData, company_phone: e.target.value })}
+                                />
                             </div>
                         </div>
-
-                        <button
-                            onClick={handleSave}
-                            disabled={isSaving}
-                            className="w-full py-4 bg-gray-900 text-white rounded-md font-bold hover:bg-black transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
-                        >
-                            <Save className="w-5 h-5" />
-                            {isSaving ? 'Salvando...' : 'Salvar Alterações'}
-                        </button>
                     </div>
+
+                    <button
+                        onClick={handleSave}
+                        disabled={isSaving}
+                        className="w-full py-4 bg-gray-900 text-white rounded-md font-bold hover:bg-black transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
+                    >
+                        <Save className="w-5 h-5" />
+                        {isSaving ? 'Salvando...' : 'Salvar Alterações'}
+                    </button>
                 </div>
 
                 {/* Documentation Card */}

@@ -5,6 +5,11 @@ export interface Settings {
   pro_labore: number;
   work_days_per_month: number;
   work_hours_per_day: number;
+  company_name?: string;
+  company_email?: string;
+  company_phone?: string;
+  company_address?: string;
+  company_website?: string;
 }
 
 export interface FixedCost {

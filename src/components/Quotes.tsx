@@ -331,8 +331,9 @@ const Quotes: React.FC = () => {
                 <p className="text-sm font-bold text-gray-400 mt-2 uppercase tracking-widest">#{(printQuote.id || '').split('-')[0].toUpperCase()}</p>
               </div>
               <div className="text-right">
-                <h3 className="text-xl font-bold text-gray-900">Seu Ateliê</h3>
-                <p className="text-sm text-gray-500 mt-1">Produtos Personalizados</p>
+                <h3 className="text-xl font-bold text-gray-900">{storeConfig.company_name || 'Seu Ateliê'}</h3>
+                <p className="text-sm text-gray-500 mt-1">{storeConfig.company_email}</p>
+                <p className="text-sm text-gray-500">{storeConfig.company_phone}</p>
                 <p className="text-sm text-gray-500">{new Date(printQuote.date || printQuote.created_at).toLocaleDateString()}</p>
               </div>
             </div>
