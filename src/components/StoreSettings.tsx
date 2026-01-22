@@ -78,9 +78,9 @@ const StoreSettings: React.FC = () => {
 
         {/* Left Column: Financial Parameters */}
         <div className="space-y-6">
-          <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm space-y-8">
+          <div className="bg-white p-8 rounded-lg border border-gray-100 shadow-sm space-y-8">
             <div className="flex items-center gap-4 border-b border-gray-50 pb-6">
-              <div className="bg-indigo-50 p-3 rounded-xl text-indigo-600">
+              <div className="bg-indigo-50 p-3 rounded-md text-indigo-600">
                 <Wallet className="w-6 h-6" />
               </div>
               <div>
@@ -97,7 +97,7 @@ const StoreSettings: React.FC = () => {
                   <input
                     type="number"
                     placeholder="0,00"
-                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-bold text-gray-900 text-lg"
+                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-bold text-gray-900 text-lg"
                     value={formData.pro_labore}
                     onChange={e => setFormData({ ...formData, pro_labore: e.target.value })}
                   />
@@ -111,7 +111,7 @@ const StoreSettings: React.FC = () => {
                     <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
                     <input
                       type="number"
-                      className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-bold text-gray-900"
+                      className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-bold text-gray-900"
                       value={formData.work_days_per_month}
                       onChange={e => setFormData({ ...formData, work_days_per_month: e.target.value })}
                     />
@@ -123,7 +123,7 @@ const StoreSettings: React.FC = () => {
                     <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
                     <input
                       type="number"
-                      className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-bold text-gray-900"
+                      className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-bold text-gray-900"
                       value={formData.work_hours_per_day}
                       onChange={e => setFormData({ ...formData, work_hours_per_day: e.target.value })}
                     />
@@ -131,7 +131,7 @@ const StoreSettings: React.FC = () => {
                 </div>
               </div>
 
-              <div className="p-6 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border border-emerald-100/50 flex items-center justify-between">
+              <div className="p-6 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-lg border border-emerald-100/50 flex items-center justify-between">
                 <div>
                   <p className="text-xs text-emerald-600 font-bold uppercase tracking-widest mb-1">Valor da sua Hora</p>
                   <p className="text-sm text-emerald-600/70 font-medium">Baseado em {totalHoursMonth}h mensais</p>
@@ -144,14 +144,14 @@ const StoreSettings: React.FC = () => {
           </div>
 
           {/* Manual Card (Moved to left column bottom) */}
-          <div className="bg-gradient-to-br from-indigo-600 to-purple-700 p-8 rounded-2xl text-white shadow-xl shadow-indigo-200 relative overflow-hidden group">
+          <div className="bg-gradient-to-br from-indigo-600 to-purple-700 p-8 rounded-lg text-white shadow-xl shadow-indigo-200 relative overflow-hidden group">
             <FileText className="absolute -right-6 -bottom-6 w-40 h-40 text-white/10 group-hover:scale-110 transition-transform duration-500" />
             <div className="relative z-10">
               <h3 className="text-2xl font-bold mb-2">Manual do Sistema</h3>
               <p className="text-indigo-100 mb-6 max-w-xs text-sm leading-relaxed">Baixe o tutorial completo em PDF explicando como cadastrar materiais, precificar e gerar orçamentos.</p>
               <button
                 onClick={generateManual}
-                className="bg-white text-indigo-700 px-6 py-3 rounded-lg font-bold shadow-lg flex items-center gap-2 hover:bg-indigo-50 transition-all active:scale-[0.98]"
+                className="bg-white text-indigo-700 px-6 py-3 rounded-md font-bold shadow-lg flex items-center gap-2 hover:bg-indigo-50 transition-all active:scale-[0.98]"
               >
                 <Download className="w-4 h-4" />
                 Baixar PDF
@@ -161,9 +161,9 @@ const StoreSettings: React.FC = () => {
         </div>
 
         {/* Right Column: Company Data */}
-        <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm space-y-8 h-fit">
+        <div className="bg-white p-8 rounded-lg border border-gray-100 shadow-sm space-y-8 h-fit">
           <div className="flex items-center gap-4 border-b border-gray-50 pb-6">
-            <div className="bg-blue-50 p-3 rounded-xl text-blue-600">
+            <div className="bg-blue-50 p-3 rounded-md text-blue-600">
               <Building2 className="w-6 h-6" />
             </div>
             <div>
@@ -177,7 +177,7 @@ const StoreSettings: React.FC = () => {
               <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block mb-2">Nome da Empresa / Ateliê</label>
               <input
                 type="text"
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-900"
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-900"
                 placeholder="Ex: Doce Encanto Ateliê"
                 value={formData.company_name}
                 onChange={e => setFormData({ ...formData, company_name: e.target.value })}
@@ -189,7 +189,7 @@ const StoreSettings: React.FC = () => {
                 <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block mb-2">CNPJ / CPF</label>
                 <input
                   type="text"
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-900"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-900"
                   placeholder="00.000.000/0001-00"
                   value={formData.company_cnpj}
                   onChange={e => setFormData({ ...formData, company_cnpj: e.target.value })}
@@ -199,7 +199,7 @@ const StoreSettings: React.FC = () => {
                 <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block mb-2">Telefone</label>
                 <input
                   type="text"
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-900"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-900"
                   placeholder="(00) 00000-0000"
                   value={formData.company_phone}
                   onChange={e => setFormData({ ...formData, company_phone: e.target.value })}
@@ -211,7 +211,7 @@ const StoreSettings: React.FC = () => {
               <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block mb-2">Email de Contato</label>
               <input
                 type="email"
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-900"
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-900"
                 placeholder="contato@empresa.com"
                 value={formData.company_email}
                 onChange={e => setFormData({ ...formData, company_email: e.target.value })}
@@ -221,7 +221,7 @@ const StoreSettings: React.FC = () => {
             <div>
               <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block mb-2">Endereço Completo</label>
               <textarea
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-900 resize-none h-24"
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-900 resize-none h-24"
                 placeholder="Rua das Flores, 123 - Centro&#10;São Paulo - SP&#10;CEP: 01234-567"
                 value={formData.company_address}
                 onChange={e => setFormData({ ...formData, company_address: e.target.value })}
@@ -232,7 +232,7 @@ const StoreSettings: React.FC = () => {
               <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block mb-2">Site / Instagram</label>
               <input
                 type="text"
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-900"
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-900"
                 placeholder="@seu.instagram"
                 value={formData.company_website}
                 onChange={e => setFormData({ ...formData, company_website: e.target.value })}
@@ -243,7 +243,7 @@ const StoreSettings: React.FC = () => {
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="w-full py-4 bg-gray-900 text-white rounded-xl font-bold text-lg hover:bg-black transition-all shadow-lg shadow-gray-200 active:scale-[0.98] flex items-center justify-center gap-3"
+                className="w-full py-4 bg-gray-900 text-white rounded-md font-bold text-lg hover:bg-black transition-all shadow-lg shadow-gray-200 active:scale-[0.98] flex items-center justify-center gap-3"
               >
                 {isSaving ? (
                   <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
