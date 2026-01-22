@@ -9,6 +9,7 @@ export interface Settings {
   company_email?: string;
   company_phone?: string;
   company_address?: string;
+  company_cnpj?: string;
   company_website?: string;
 }
 

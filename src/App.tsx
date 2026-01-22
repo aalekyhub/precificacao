@@ -21,6 +21,7 @@ import FixedCosts from './components/FixedCosts';
 import PricingCalculator from './components/PricingCalculator';
 import Quotes from './components/Quotes';
 import Settings from './components/Settings';
+import StoreSettings from './components/StoreSettings';
 import FinancialControl from './components/FinancialControl';
 import Equipments from './components/Equipments';
 
@@ -174,7 +175,7 @@ function App() {
                     {currentPage === 'financial' && <FinancialControl />}
                     {currentPage === 'equipments' && <Equipments />}
                     {currentPage === 'fixed-costs' && <FixedCosts />}
-                    {currentPage === 'settings' && <Settings />}
+                    {currentPage === 'settings' && <StoreSettings />}
                     {currentPage === 'calculator' && <PricingCalculator />}
                 </div>
             </main>

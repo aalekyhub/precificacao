@@ -1,39 +1,54 @@
-
-import React from 'react';
-import { Settings, Wallet, Clock, Calendar, Save, FileText, Download } from 'lucide-react';
-import { Settings as SettingsType } from '../types';
+import React, { useState, useEffect } from 'react';
+import { Settings, Wallet, Clock, Calendar, Save, FileText, Download, DollarSign } from 'lucide-react';
+import { useStoreData } from '../hooks/useStoreData';
 import { generateManual } from '../utils/generateManual';
 
-interface StoreSettingsProps {
-  config: SettingsType;
-  onUpdate: (c: SettingsType) => void;
-}
+// Replaced props with useStoreData hook for consistency and independence
+const StoreSettings: React.FC = () => {
+  const { storeConfig, setStoreConfig } = useStoreData();
+  const [isSaving, setIsSaving] = useState(false);
 
-const StoreSettings: React.FC<StoreSettingsProps> = ({ config, onUpdate }) => {
-  // Use local state for form inputs to allow typing freely (strings)
-  const [formData, setFormData] = React.useState({
-    pro_labore: String(config.pro_labore || ''),
-    work_days_per_month: String(config.work_days_per_month || ''),
-    work_hours_per_day: String(config.work_hours_per_day || '')
+  // Use local state for form inputs
+  const [formData, setFormData] = useState({
+    pro_labore: String(storeConfig.pro_labore || ''),
+    work_days_per_month: String(storeConfig.work_days_per_month || ''),
+    work_hours_per_day: String(storeConfig.work_hours_per_day || ''),
+    company_name: storeConfig.company_name || '',
+    company_email: storeConfig.company_email || '',
+    company_phone: storeConfig.company_phone || ''
   });
 
-  // Sync with prop updates (initial load)
-  React.useEffect(() => {
+  // Sync with storeConfig updates
+  useEffect(() => {
     setFormData({
-      pro_labore: String(config.pro_labore || ''),
-      work_days_per_month: String(config.work_days_per_month || ''),
-      work_hours_per_day: String(config.work_hours_per_day || '')
+      pro_labore: String(storeConfig.pro_labore || ''),
+      work_days_per_month: String(storeConfig.work_days_per_month || ''),
+      work_hours_per_day: String(storeConfig.work_hours_per_day || ''),
+      company_name: storeConfig.company_name || '',
+      company_email: storeConfig.company_email || '',
+      company_phone: storeConfig.company_phone || ''
     });
-  }, [config]);
+  }, [storeConfig]);
 
-  const handleSave = () => {
-    onUpdate({
-      ...config,
-      pro_labore: parseFloat(formData.pro_labore) || 0,
-      work_days_per_month: parseFloat(formData.work_days_per_month) || 0,
-      work_hours_per_day: parseFloat(formData.work_hours_per_day) || 0
-    });
-    alert('Configurações salvas!');
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      await setStoreConfig({
+        id: storeConfig.id,
+        pro_labore: parseFloat(formData.pro_labore) || 0,
+        work_days_per_month: parseFloat(formData.work_days_per_month) || 0,
+        work_hours_per_day: parseFloat(formData.work_hours_per_day) || 0,
+        company_name: formData.company_name,
+        company_email: formData.company_email,
+        company_phone: formData.company_phone
+      });
+      alert('Configurações salvas com sucesso!');
+    } catch (error) {
+      console.error('Failed to save settings:', error);
+      alert('Erro ao salvar configurações.');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   // Derived for display
@@ -51,73 +66,125 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({ config, onUpdate }) => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-white p-8 rounded-lg border border-gray-100 shadow-sm space-y-8 h-fit">
-          <div className="flex items-center gap-3">
-            <div className="bg-rose-500 p-3 rounded-lg text-white shadow-lg shadow-rose-100">
-              <Wallet className="w-6 h-6" />
+        <div className="bg-white p-8 rounded-lg border border-gray-100 shadow-sm md:col-span-1 space-y-8">
+          {/* Parâmetros de Produção */}
+          <div>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 bg-indigo-50 rounded-lg">
+                <Settings className="w-6 h-6 text-indigo-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900">Parâmetros de Produção</h3>
             </div>
-            <div>
-              <h3 className="font-bold text-gray-900 text-lg">Pro-labore e Jornada</h3>
-              <p className="text-xs text-gray-400 uppercase font-bold tracking-widest">Definição de Salário</p>
+
+            <div className="space-y-6">
+              <div>
+                <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Salário Desejado (Pro-labore) R$</label>
+                <div className="relative">
+                  <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="number"
+                    className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-indigo-500 font-bold text-gray-900 text-lg"
+                    value={formData.pro_labore}
+                    onChange={e => setFormData({ ...formData, pro_labore: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Dias / Mês</label>
+                  <div className="relative">
+                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <input
+                      type="number"
+                      className="w-full pl-9 pr-3 py-3 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-indigo-500 font-bold text-gray-900"
+                      value={formData.work_days_per_month}
+                      onChange={e => setFormData({ ...formData, work_days_per_month: e.target.value })}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Horas / Dia</label>
+                  <div className="relative">
+                    <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <input
+                      type="number"
+                      className="w-full pl-9 pr-3 py-3 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-indigo-500 font-bold text-gray-900"
+                      value={formData.work_hours_per_day}
+                      onChange={e => setFormData({ ...formData, work_hours_per_day: e.target.value })}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-6 bg-emerald-50 rounded-lg border border-emerald-100 flex items-center justify-between mt-6">
+                <div>
+                  <p className="text-[10px] text-emerald-500 font-bold uppercase tracking-widest mb-1">Valor da sua Hora</p>
+                  <p className="text-xs text-emerald-600/70">Baseado em {totalHoursMonth} horas mensais</p>
+                </div>
+                <p className="text-4xl font-black text-emerald-600">
+                  R$ {hourlyRate.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </p>
+              </div>
             </div>
           </div>
 
-          <div className="space-y-6">
-            <div>
-              <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Salário Desejado (Pro-labore) R$</label>
-              <input
-                type="number"
-                className="w-full bg-gray-50 border-2 border-transparent rounded-lg px-6 py-4 focus:bg-white focus:border-rose-500 outline-none transition-all font-bold text-lg"
-                value={formData.pro_labore}
-                onChange={(e) => setFormData({ ...formData, pro_labore: e.target.value })}
-              />
+          {/* Dados da Empresa */}
+          <div className="pt-8 border-t border-gray-100">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 bg-indigo-50 rounded-lg">
+                <FileText className="w-6 h-6 text-indigo-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900">Dados da Empresa</h3>
             </div>
-
-            <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-4">
               <div>
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Dias Trabalhados/Mês</label>
-                <div className="relative">
-                  <input
-                    type="number"
-                    className="w-full bg-gray-50 border-2 border-transparent rounded-lg px-6 py-4 focus:bg-white focus:border-rose-500 outline-none transition-all font-bold"
-                    value={formData.work_days_per_month}
-                    onChange={(e) => setFormData({ ...formData, work_days_per_month: e.target.value })}
-                  />
-                  <Calendar className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-                </div>
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Nome do Ateliê / Empresa</label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-indigo-500 font-medium text-gray-900"
+                  value={formData.company_name}
+                  placeholder="Ex: Doce Ateliê"
+                  onChange={e => setFormData({ ...formData, company_name: e.target.value })}
+                />
               </div>
               <div>
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Horas Trabalhadas/Dia</label>
-                <div className="relative">
-                  <input
-                    type="number"
-                    className="w-full bg-gray-50 border-2 border-transparent rounded-lg px-6 py-4 focus:bg-white focus:border-rose-500 outline-none transition-all font-bold"
-                    value={formData.work_hours_per_day}
-                    onChange={(e) => setFormData({ ...formData, work_hours_per_day: e.target.value })}
-                  />
-                  <Clock className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-                </div>
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Email de Contato</label>
+                <input
+                  type="email"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-indigo-500 font-medium text-gray-900"
+                  value={formData.company_email}
+                  placeholder="contato@atelie.com"
+                  onChange={e => setFormData({ ...formData, company_email: e.target.value })}
+                />
               </div>
-            </div>
-
-            <div className="p-6 bg-emerald-50 rounded-lg border border-emerald-100 flex items-center justify-between">
               <div>
-                <p className="text-[10px] text-emerald-500 font-bold uppercase tracking-widest mb-1">Valor da sua Hora</p>
-                <p className="text-xs text-emerald-600/70">Baseado em {totalHoursMonth} horas mensais</p>
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Telefone / WhatsApp</label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-indigo-500 font-medium text-gray-900"
+                  value={formData.company_phone}
+                  placeholder="(00) 00000-0000"
+                  onChange={e => setFormData({ ...formData, company_phone: e.target.value })}
+                />
               </div>
-              <p className="text-4xl font-black text-emerald-600">
-                R$ {hourlyRate.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              </p>
             </div>
-
-            <button
-              onClick={handleSave}
-              className="w-full py-4 bg-gray-900 text-white rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-gray-800 transition-all shadow-lg shadow-gray-200"
-            >
-              <Save className="w-5 h-5" />
-              Salvar Configurações
-            </button>
           </div>
+
+          <button
+            onClick={handleSave}
+            disabled={isSaving}
+            className="w-full py-4 bg-gray-900 text-white rounded-md font-bold text-lg hover:bg-black transition-all shadow-lg shadow-gray-200 active:scale-[0.98] flex items-center justify-center gap-3"
+          >
+            {isSaving ? (
+              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            ) : (
+              <>
+                <Save className="w-5 h-5" />
+                Salvar Configurações
+              </>
+            )}
+          </button>
         </div>
 
         {/* Manual Card */}
