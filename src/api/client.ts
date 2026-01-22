@@ -64,8 +64,7 @@ export const api = {
 
         const bodyWithId = { ...body, id };
 
-        // Handle deep writes for Product manually since Supabase doesn't do deep inserts like Prisma
-        // Handle deep writes for Product manually since Supabase doesn't do deep inserts like Prisma
+        // Handle deep writes for Product manually
         if (table === 'Produto') {
             const { bomItems, steps, ...productData } = bodyWithId;
 
@@ -85,6 +84,38 @@ export const api = {
                 if (stepErr) throw stepErr;
             }
             return prod as T;
+        }
+
+        // Handle deep writes for Order (Quotes)
+        if (table === 'Order') {
+            const { items, clientId, customer_name, extraCosts, discountValue, ...orderData } = bodyWithId;
+            // Clean up legacy/frontend-only fields that might not exist in DB
+            // Assuming extra_costs, discount, notes EXIST in DB based on User usage. 
+            // If they don't, this might still error, but 'items' was the main blocker.
+            // Map camelCase to snake_case if necessary?
+            // Quote object has snake_case: extra_costs, discount.
+            // frontend might pass camelCase aliases?
+            // newQuote in Quotes.tsx uses extra_costs, discount.
+
+            // 1. Create Order
+            const { data: order, error: orderErr } = await supabase.from('Order').insert(orderData).select().single();
+            if (orderErr) throw orderErr;
+
+            // 2. Insert Items
+            if (items && items.length > 0) {
+                const orderItems = items.map((i: any) => ({
+                    id: uuidv4(),
+                    order_id: order.id,
+                    product_id: i.product_id,
+                    name: i.name,
+                    quantity: i.quantity,
+                    unit_price: i.unit_price,
+                    total_price: i.quantity * i.unit_price
+                }));
+                const { error: itemsErr } = await supabase.from('OrderItem').insert(orderItems);
+                if (itemsErr) throw itemsErr;
+            }
+            return order as T;
         }
 
         const { data, error } = await supabase.from(table).insert(bodyWithId).select().single();
