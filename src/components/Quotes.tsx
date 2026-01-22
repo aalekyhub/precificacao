@@ -298,8 +298,8 @@ const Quotes: React.FC = () => {
                       <input
                         type="number"
                         className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 bg-white border border-gray-200 rounded-md outline-none focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 transition-all shadow-sm"
-                        value={newQuote.extraCosts}
-                        onChange={(e) => setNewQuote({ ...newQuote, extraCosts: parseFloat(e.target.value) || 0 })}
+                        value={newQuote.extra_costs}
+                        onChange={(e) => setNewQuote({ ...newQuote, extra_costs: parseFloat(e.target.value) || 0 })}
                       />
                     </div>
                     <div className="space-y-2">
@@ -326,12 +326,12 @@ const Quotes: React.FC = () => {
           <div className="flex justify-between items-center mb-12 border-b-2 border-gray-100 pb-8">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">ORÇAMENTO</h1>
-              <p className="text-sm text-gray-500 mt-1">Ref: #{printQuote.id.split('-')[0].toUpperCase()}</p>
-              <p className="text-sm text-gray-500">Data: {new Date(printQuote.date).toLocaleDateString()}</p>
+              <p className="text-sm text-gray-500 mt-1">Ref: #{(printQuote.id || '').split('-')[0].toUpperCase()}</p>
+              <p className="text-sm text-gray-500">Data: {new Date(printQuote.date || printQuote.created_at).toLocaleDateString()}</p>
             </div>
             <div className="text-right">
-              <p className="font-bold text-xl text-gray-900">Sua Empresa</p>
-              <p className="text-sm text-gray-500">contato@empresa.com</p>
+              <p className="font-bold text-xl text-gray-900">Seu Ateliê</p>
+              {/* <p className="text-sm text-gray-500">contato@empresa.com</p> */}
             </div>
           </div>
 
