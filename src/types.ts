@@ -109,6 +109,7 @@ export interface Order {
   extra_costs?: number;
   discount?: number;
   notes?: string;
+  display_id?: number;
 }
 
 // Re-export aliases for compatibility if needed during migration

@@ -7,7 +7,8 @@ import {
   User,
   Package,
   CheckCircle2,
-  Printer
+  Printer,
+  Pencil
 } from 'lucide-react';
 import { Quote, QuoteStatus } from '../types';
 import { useStoreData } from '../hooks/useStoreData';
@@ -25,6 +26,7 @@ const Quotes: React.FC = () => {
   });
   const [printQuote, setPrintQuote] = useState<Quote | null>(null);
 
+  // ... (keep cost logic unchanged) ...
   const inkCostPerPage = storeConfig.inkKitCost / storeConfig.inkYieldPages;
   const totalFixedMonthly = useMemo(() => {
     return fixedCosts.reduce((acc, fc) => {
@@ -36,23 +38,16 @@ const Quotes: React.FC = () => {
   }, [fixedCosts]);
   const fixedCostPerHour = totalFixedMonthly / ((storeConfig.work_days_per_month * storeConfig.work_hours_per_day) || 160);
 
-  // Helper to estimate cost if product doesn't have a fixed price
   const calculateEstimatedPrice = (prod: any) => {
-    // If product has a defined selling price, use it
     if (prod.sellingPrice && prod.sellingPrice > 0) return prod.sellingPrice;
-
-    // Fallback to on-the-fly calculation
     const matCost = (prod.bomItems || []).reduce((acc: number, pm: any) => {
       const m = materials.find((mat: any) => mat.id === pm.insumoId);
       if (!m) return acc;
       return acc + (m.price * pm.qtyPerUnit);
     }, 0);
-
-    // Labor
     const laborMinutes = (prod.steps || []).reduce((acc: number, s: any) => acc + s.setupMinutes + s.unitMinutes, 0);
     const hourlyRate = storeConfig.pro_labore / ((storeConfig.work_days_per_month * storeConfig.work_hours_per_day) || 160);
     const laborCost = (laborMinutes / 60) * hourlyRate;
-
     const totalCost = matCost + laborCost;
     const margin = (prod.profitMargin || 50) / 100;
     return margin >= 1 ? totalCost * 2 : totalCost / (1 - margin);
@@ -80,12 +75,20 @@ const Quotes: React.FC = () => {
     });
   };
 
+  const handleEdit = (quote: Quote) => {
+    setNewQuote({
+      ...quote,
+      items: quote.items.map(item => ({ ...item })) // Deep copy items to avoid ref issues
+    });
+    setIsModalOpen(true);
+  };
+
   const handleSave = async () => {
     if (!newQuote.customer_id || (newQuote.items || []).length === 0) return;
-    const quote: Quote = {
-      id: '',
-      created_at: new Date().toISOString(),
-      // date: new Date().toISOString(), // Removed to avoid DB error
+
+    const quotePayload: Quote = {
+      id: newQuote.id || '', // If ID exists, we are updating
+      created_at: newQuote.created_at || new Date().toISOString(),
       items: newQuote.items || [],
       customer_id: newQuote.customer_id || '',
       clientId: newQuote.customer_id || '',
@@ -93,24 +96,22 @@ const Quotes: React.FC = () => {
       total_value: quoteTotal,
       extra_costs: newQuote.extra_costs || 0,
       discount: newQuote.discount || 0,
-      notes: newQuote.notes || ''
+      notes: newQuote.notes || '',
+      display_id: newQuote.display_id
     };
-    await addQuote(quote as Quote);
+
+    if (quotePayload.id) {
+      await updateQuote(quotePayload);
+    } else {
+      await addQuote(quotePayload);
+    }
+
     setIsModalOpen(false);
     setNewQuote({ customer_id: '', items: [], extra_costs: 0, discount: 0, status: 'draft', notes: '' });
   };
 
-  const handleDataUpdate = async () => {
-    // Implement update logic if needed
-    // validated if there is an ID
-    if (newQuote.id) {
-      // await updateQuote(newQuote as Quote);
-    }
-  }
-
   const handlePrint = (quote: Quote) => {
     setPrintQuote(quote);
-    // Submit a small timeout to allow state to update and render the print view
     setTimeout(() => {
       window.print();
     }, 100);
@@ -134,13 +135,17 @@ const Quotes: React.FC = () => {
   return (
     <>
       <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 print:hidden">
+        {/* ... Header ... */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           <div>
             <h2 className="text-4xl font-bold text-gray-900 tracking-tight">Orçamentos</h2>
             <p className="text-gray-500 mt-2 font-medium">Transforme cotações em vendas de sucesso.</p>
           </div>
           <button
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => {
+              setNewQuote({ customer_id: '', items: [], extra_costs: 0, discount: 0, status: 'draft', notes: '' });
+              setIsModalOpen(true);
+            }}
             className="bg-rose-500 text-white px-8 py-4 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-rose-600 transition-all shadow-xl shadow-rose-100 active:scale-95"
           >
             <Plus className="w-5 h-5" />
@@ -172,7 +177,9 @@ const Quotes: React.FC = () => {
                       <tr key={quote.id} className="hover:bg-gray-50/50 transition-all group">
                         <td className="px-8 py-6">
                           <span className="font-bold text-gray-800 block">{new Date(quote.created_at || quote.date || '').toLocaleDateString('pt-BR')}</span>
-                          <span className="text-[10px] text-gray-400 font-black uppercase tracking-tighter">ID: {(quote.id || '').split('-')[0].toUpperCase()}</span>
+                          <span className="text-[10px] text-gray-400 font-black uppercase tracking-tighter">
+                            ID: {quote.display_id ? String(quote.display_id).padStart(4, '0') : (quote.id || '').split('-')[0].toUpperCase()}
+                          </span>
                         </td>
                         <td className="px-8 py-6">
                           <span className="font-bold text-gray-700">{client?.name || 'Cliente Removido'}</span>
@@ -187,8 +194,9 @@ const Quotes: React.FC = () => {
                         </td>
                         <td className="px-8 py-6 text-right">
                           <div className="flex items-center justify-end gap-3">
-                            <button onClick={() => deleteQuote(quote.id)} className="p-3 text-gray-300 hover:text-rose-500 transition-all"><Trash2 className="w-5 h-5" /></button>
-                            <button onClick={() => handlePrint(quote)} className="p-3 text-gray-300 hover:text-indigo-600 transition-all" title="Imprimir / PDF"><Printer className="w-5 h-5" /></button>
+                            <button onClick={() => deleteQuote(quote.id)} className="p-2 text-gray-300 hover:text-rose-500 transition-all" title="Excluir"><Trash2 className="w-5 h-5" /></button>
+                            <button onClick={() => handleEdit(quote)} className="p-2 text-gray-300 hover:text-indigo-600 transition-all" title="Editar"><Pencil className="w-5 h-5" /></button>
+                            <button onClick={() => handlePrint(quote)} className="p-2 text-gray-300 hover:text-indigo-600 transition-all" title="Imprimir / PDF"><Printer className="w-5 h-5" /></button>
                           </div>
                         </td>
                       </tr>
@@ -322,7 +330,7 @@ const Quotes: React.FC = () => {
       {/* --- PRINT LAYOUT --- */}
       {printQuote && (
         <div className="hidden print:block fixed inset-0 bg-white z-[9999] p-8 overflow-y-auto" id="print-area">
-          <div className="max-w-4xl mx-auto border border-gray-200 rounded-none shadow-none text-gray-900 font-sans h-full">
+          <div className="max-w-4xl mx-auto border-none shadow-none text-gray-900 font-sans h-full">
             {/* Header / Brand */}
             <div className="flex justify-between items-end mb-12 pb-6 border-b-2 border-gray-900">
               <div className="flex items-center gap-4">
@@ -331,7 +339,9 @@ const Quotes: React.FC = () => {
                 </div>
                 <div>
                   <h1 className="text-4xl font-black text-gray-900 tracking-tight uppercase">Orçamento</h1>
-                  <p className="text-sm font-bold text-gray-400 mt-0.5 uppercase tracking-widest">#{printQuote.id ? printQuote.id.split('-')[0].toUpperCase() : '0000'}</p>
+                  <p className="text-sm font-bold text-gray-400 mt-0.5 uppercase tracking-widest">
+                    #{printQuote.display_id ? String(printQuote.display_id).padStart(4, '0') : (printQuote.id ? printQuote.id.split('-')[0].toUpperCase() : '0000')}
+                  </p>
                 </div>
               </div>
               <div className="text-right">
@@ -345,7 +355,7 @@ const Quotes: React.FC = () => {
 
               {/* FROM (Company) */}
               <div>
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4 border-b border-gray-100 pb-2">Prestador de Serviços</p>
+                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4 border-b border-gray-100 pb-2">Empresa</p>
                 <h3 className="text-lg font-bold text-gray-900 mb-1">{storeConfig.company_name || 'Nome da Empresa'}</h3>
                 {storeConfig.company_cnpj && <p className="text-xs text-gray-500 font-medium mb-2">CNPJ: {storeConfig.company_cnpj}</p>}
 
@@ -398,75 +408,76 @@ const Quotes: React.FC = () => {
 
             {/* Table Header Adjustment */}
             <div className="mb-2">
-              <table className="w-full mb-12">
-                <thead>
-                  <tr className="border-b-2 border-gray-900">
-                    <th className="text-left py-4 text-xs font-black uppercase tracking-widest text-gray-900">Descrição do Item</th>
-                    <th className="text-center py-4 text-xs font-black uppercase tracking-widest text-gray-900 w-24">Qtd.</th>
-                    <th className="text-right py-4 text-xs font-black uppercase tracking-widest text-gray-900 w-32">Preço Unit.</th>
-                    <th className="text-right py-4 text-xs font-black uppercase tracking-widest text-gray-900 w-32">Total</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {printQuote.items.map((item, idx) => {
-                    const product = products.find(p => p.id === item.product_id);
-                    return (
-                      <tr key={idx}>
-                        <td className="py-5 text-sm font-bold text-gray-800">{product?.name || item.name}</td>
-                        <td className="py-5 text-center text-sm font-medium text-gray-600">{item.quantity}</td>
-                        <td className="py-5 text-right text-sm font-medium text-gray-600">R$ {item.unit_price.toFixed(2)}</td>
-                        <td className="py-5 text-right text-sm font-black text-gray-900">R$ {(item.quantity * item.unit_price).toFixed(2)}</td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
-
-              {/* Summary */}
-              <div className="flex justify-end mb-20">
-                <div className="w-72">
-                  <div className="flex justify-between py-2 text-sm font-medium text-gray-500 border-b border-gray-100">
-                    <span>Subtotal</span>
-                    <span>R$ {((printQuote.items || []).reduce((acc, i) => acc + (i.unit_price * i.quantity), 0)).toFixed(2)}</span>
-                  </div>
-                  {/* Fix boolean check to avoid rendering '0' */}
-                  {Number(printQuote.extra_costs) > 0 && (
-                    <div className="flex justify-between py-2 text-sm font-medium text-gray-500 border-b border-gray-100">
-                      <span>Custos Extras</span>
-                      <span>+ R$ {Number(printQuote.extra_costs).toFixed(2)}</span>
-                    </div>
-                  )}
-                  {Number(printQuote.discount) > 0 && (
-                    <div className="flex justify-between py-2 text-sm font-medium text-green-600 border-b border-gray-100">
-                      <span>Desconto</span>
-                      <span>- R$ {Number(printQuote.discount).toFixed(2)}</span>
-                    </div>
-                  )}
-                  <div className="flex justify-between py-4 text-2xl font-black text-gray-900 mt-2">
-                    <span>Total</span>
-                    <span>R$ {printQuote.total_value.toFixed(2)}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Notes if any */}
-              {printQuote.notes && (
-                <div className="mb-12 p-6 bg-yellow-50 rounded-sm border border-yellow-100 text-sm text-yellow-800">
-                  <p className="font-bold uppercase text-xs mb-1">Observações:</p>
-                  {printQuote.notes}
-                </div>
-              )}
-
-              {/* Footer */}
-              <div className="border-t border-gray-200 pt-8 text-center">
-                <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Obrigado pela preferência!</p>
-              </div>
-
             </div>
+            <table className="w-full mb-12">
+              <thead>
+                <tr className="border-b-2 border-gray-900">
+                  <th className="text-left py-4 text-xs font-black uppercase tracking-widest text-gray-900">Descrição do Item</th>
+                  <th className="text-center py-4 text-xs font-black uppercase tracking-widest text-gray-900 w-24">Qtd.</th>
+                  <th className="text-right py-4 text-xs font-black uppercase tracking-widest text-gray-900 w-32">Preço Unit.</th>
+                  <th className="text-right py-4 text-xs font-black uppercase tracking-widest text-gray-900 w-32">Total</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {printQuote.items.map((item, idx) => {
+                  const product = products.find(p => p.id === item.product_id);
+                  return (
+                    <tr key={idx}>
+                      <td className="py-5 text-sm font-bold text-gray-800">{product?.name || item.name}</td>
+                      <td className="py-5 text-center text-sm font-medium text-gray-600">{item.quantity}</td>
+                      <td className="py-5 text-right text-sm font-medium text-gray-600">R$ {item.unit_price.toFixed(2)}</td>
+                      <td className="py-5 text-right text-sm font-black text-gray-900">R$ {(item.quantity * item.unit_price).toFixed(2)}</td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+
+            {/* Summary */}
+            <div className="flex justify-end mb-20">
+              <div className="w-72">
+                <div className="flex justify-between py-2 text-sm font-medium text-gray-500 border-b border-gray-100">
+                  <span>Subtotal</span>
+                  <span>R$ {((printQuote.items || []).reduce((acc, i) => acc + (i.unit_price * i.quantity), 0)).toFixed(2)}</span>
+                </div>
+                {/* Fix boolean check to avoid rendering '0' */}
+                {Number(printQuote.extra_costs) > 0 && (
+                  <div className="flex justify-between py-2 text-sm font-medium text-gray-500 border-b border-gray-100">
+                    <span>Custos Extras</span>
+                    <span>+ R$ {Number(printQuote.extra_costs).toFixed(2)}</span>
+                  </div>
+                )}
+                {Number(printQuote.discount) > 0 && (
+                  <div className="flex justify-between py-2 text-sm font-medium text-green-600 border-b border-gray-100">
+                    <span>Desconto</span>
+                    <span>- R$ {Number(printQuote.discount).toFixed(2)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between py-4 text-2xl font-black text-gray-900 mt-2">
+                  <span>Total</span>
+                  <span>R$ {printQuote.total_value.toFixed(2)}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Notes if any */}
+            {printQuote.notes && (
+              <div className="mb-12 p-6 bg-yellow-50 rounded-sm border border-yellow-100 text-sm text-yellow-800">
+                <p className="font-bold uppercase text-xs mb-1">Observações:</p>
+                {printQuote.notes}
+              </div>
+            )}
+
+            {/* Footer */}
+            <div className="border-t border-gray-200 pt-8 text-center">
+              <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Obrigado pela preferência!</p>
+            </div>
+
           </div>
+        </div>
       )}
-        </>
-      );
+    </>
+  );
 };
 
-      export default Quotes;
+export default Quotes;

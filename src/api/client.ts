@@ -152,6 +152,34 @@ export const api = {
             return prod as T;
         }
 
+        // Handle deep updates for Order (Quotes)
+        if (table === 'Order') {
+            const { items, clientId, customer_name, extraCosts, discountValue, date, ...orderData } = body;
+
+            // 1. Update Order
+            const { data: order, error: orderErr } = await supabase.from('Order').update(orderData).eq('id', id).select().single();
+            if (orderErr) throw orderErr;
+
+            // 2. Replace Items (Delete all then insert)
+            if (items) {
+                await supabase.from('OrderItem').delete().eq('order_id', id);
+                if (items.length > 0) {
+                    const orderItems = items.map((i: any) => ({
+                        id: uuidv4(),
+                        order_id: id,
+                        product_id: i.product_id,
+                        name: i.name,
+                        quantity: i.quantity,
+                        unit_price: i.unit_price,
+                        total_price: i.quantity * i.unit_price
+                    }));
+                    const { error: itemsErr } = await supabase.from('OrderItem').insert(orderItems);
+                    if (itemsErr) throw itemsErr;
+                }
+            }
+            return order as T;
+        }
+
         const { data, error } = await supabase.from(table).update(body).eq('id', id).select().single();
         if (error) throw error;
         return data as T;
