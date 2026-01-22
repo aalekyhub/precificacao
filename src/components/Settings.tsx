@@ -3,15 +3,13 @@ import { useStoreData } from '../hooks/useStoreData';
 import { generateManual } from '../utils/generateManual';
 import {
     Save,
-    FileText,
     Download,
     Clock,
     DollarSign,
     Calendar,
     Building2,
     Wallet,
-    Link as LinkIcon,
-    Printer
+    Link as LinkIcon
 } from 'lucide-react';
 
 const Settings: React.FC = () => {
@@ -83,98 +81,97 @@ const Settings: React.FC = () => {
     const hourlyRate = totalHours > 0 ? proLaboreNum / totalHours : 0;
 
     return (
-        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-6xl mx-auto">
+        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-6xl mx-auto">
 
             {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1">
                 <div>
-                    <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Configurações do Negócio</h2>
-                    <p className="text-sm text-gray-500 font-medium">Gerencie seus parâmetros de precificação e dados da empresa.</p>
+                    <h2 className="text-xl font-bold text-gray-900 tracking-tight">Configurações do Negócio</h2>
+                    <p className="text-xs text-gray-500 font-medium">Gerencie seus parâmetros de precificação.</p>
                 </div>
                 <button
                     onClick={generateManual}
-                    className="flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-lg text-xs font-bold hover:bg-indigo-100 transition-colors"
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 text-indigo-700 rounded-md text-[10px] font-bold hover:bg-indigo-100 transition-colors uppercase tracking-wide"
                 >
-                    <Download className="w-4 h-4" />
+                    <Download className="w-3 h-3" />
                     Baixar Manual PDF
                 </button>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
 
                 {/* Left Column: Company Data */}
-                <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm space-y-5 h-full">
+                <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm space-y-3 h-full">
                     {/* Header */}
-                    <div className="flex items-center gap-3 border-b border-gray-50 pb-3">
-                        <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
-                            <Building2 className="w-5 h-5" />
+                    <div className="flex items-center gap-2 border-b border-gray-100 pb-2">
+                        <div className="w-6 h-6 rounded bg-blue-50 flex items-center justify-center text-blue-600">
+                            <Building2 className="w-3.5 h-3.5" />
                         </div>
-                        <div>
-                            <h3 className="text-base font-bold text-gray-900 leading-tight">Dados da Empresa</h3>
-                            <p className="text-[11px] text-gray-500">Informações para orçamentos e relatórios</p>
-                        </div>
+                        <h3 className="text-sm font-bold text-gray-800">Dados da Empresa</h3>
                     </div>
 
                     {/* Inputs */}
-                    <div className="space-y-4">
-                        <div className="space-y-1">
-                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">Nome da Empresa / Ateliê</label>
-                            <input
-                                type="text"
-                                className="w-full px-3 h-9 bg-gray-50 border border-gray-100 rounded-lg outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-900 text-xs"
-                                value={formData.company_name}
-                                onChange={e => setFormData({ ...formData, company_name: e.target.value })}
-                            />
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-3">
-                            <div className="space-y-1">
-                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">CNPJ / CPF</label>
+                    <div className="space-y-2">
+                        <div className="grid grid-cols-3 gap-2">
+                            <div className="col-span-2 space-y-0.5">
+                                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest block ml-0.5">Nome da Empresa</label>
                                 <input
                                     type="text"
-                                    className="w-full px-3 h-9 bg-gray-50 border border-gray-100 rounded-lg outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-900 text-xs"
+                                    className="w-full px-2 h-7 bg-white border border-gray-300 rounded outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-gray-900 text-xs"
+                                    value={formData.company_name}
+                                    placeholder="Ex: Meu Ateliê"
+                                    onChange={e => setFormData({ ...formData, company_name: e.target.value })}
+                                />
+                            </div>
+                            <div className="col-span-1 space-y-0.5">
+                                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest block ml-0.5">CNPJ / CPF</label>
+                                <input
+                                    type="text"
+                                    className="w-full px-2 h-7 bg-white border border-gray-300 rounded outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-gray-900 text-xs"
                                     value={formData.company_cnpj}
                                     onChange={e => setFormData({ ...formData, company_cnpj: e.target.value })}
                                 />
                             </div>
-                            <div className="space-y-1">
-                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">Telefone</label>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-2">
+                            <div className="space-y-0.5">
+                                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest block ml-0.5">Email</label>
+                                <input
+                                    type="email"
+                                    className="w-full px-2 h-7 bg-white border border-gray-300 rounded outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-gray-900 text-xs"
+                                    value={formData.company_email}
+                                    onChange={e => setFormData({ ...formData, company_email: e.target.value })}
+                                />
+                            </div>
+                            <div className="space-y-0.5">
+                                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest block ml-0.5">Telefone</label>
                                 <input
                                     type="text"
-                                    className="w-full px-3 h-9 bg-gray-50 border border-gray-100 rounded-lg outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-900 text-xs"
+                                    className="w-full px-2 h-7 bg-white border border-gray-300 rounded outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-gray-900 text-xs"
                                     value={formData.company_phone}
                                     onChange={e => setFormData({ ...formData, company_phone: e.target.value })}
                                 />
                             </div>
                         </div>
 
-                        <div className="space-y-1">
-                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">Email de Contato</label>
-                            <input
-                                type="email"
-                                className="w-full px-3 h-9 bg-gray-50 border border-gray-100 rounded-lg outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-900 text-xs"
-                                value={formData.company_email}
-                                onChange={e => setFormData({ ...formData, company_email: e.target.value })}
-                            />
-                        </div>
-
-                        <div className="space-y-1">
-                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">Endereço Completo</label>
+                        <div className="space-y-0.5">
+                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest block ml-0.5">Endereço</label>
                             <textarea
-                                className="w-full px-3 py-2 bg-gray-50 border border-gray-100 rounded-lg outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-900 text-xs min-h-[60px] resize-none"
+                                className="w-full px-2 py-1.5 bg-white border border-gray-300 rounded outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-gray-900 text-xs min-h-[40px] resize-none"
                                 value={formData.company_address}
-                                rows={3}
+                                rows={2}
                                 onChange={e => setFormData({ ...formData, company_address: e.target.value })}
                             />
                         </div>
 
-                        <div className="space-y-1">
-                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">Site / Instagram</label>
+                        <div className="space-y-0.5">
+                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest block ml-0.5">Site / Instagram</label>
                             <div className="relative">
-                                <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+                                <LinkIcon className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400" />
                                 <input
                                     type="text"
-                                    className="w-full pl-9 pr-3 h-9 bg-gray-50 border border-gray-100 rounded-lg outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-900 text-xs"
+                                    className="w-full pl-7 pr-2 h-7 bg-white border border-gray-300 rounded outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-medium text-gray-900 text-xs"
                                     placeholder="@seu.instagram"
                                     value={formData.company_website}
                                     onChange={e => setFormData({ ...formData, company_website: e.target.value })}
@@ -186,10 +183,10 @@ const Settings: React.FC = () => {
                             <button
                                 onClick={handleSave}
                                 disabled={isSaving}
-                                className="w-full py-3 bg-gray-900 text-white rounded-lg font-bold hover:bg-black transition-all shadow-lg shadow-gray-200 active:scale-95 flex items-center justify-center gap-2 group text-sm"
+                                className="w-full py-2 bg-gray-900 text-white rounded-md font-bold hover:bg-black transition-all shadow-md active:scale-95 flex items-center justify-center gap-1.5 text-xs"
                             >
-                                <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                                {isSaving ? 'Salvando...' : 'Salvar Alterações'}
+                                <Save className="w-3.5 h-3.5" />
+                                {isSaving ? 'Salvando...' : 'Salvar Dados'}
                             </button>
                         </div>
                     </div>
@@ -199,51 +196,63 @@ const Settings: React.FC = () => {
                 <div className="space-y-4">
 
                     {/* Financial Parameters */}
-                    <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm space-y-5">
-                        <div className="flex items-center gap-3 border-b border-gray-50 pb-3">
-                            <div className="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
-                                <Wallet className="w-5 h-5" />
+                    <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm space-y-3">
+                        <div className="flex items-center gap-2 border-b border-gray-100 pb-2">
+                            <div className="w-6 h-6 rounded bg-indigo-50 flex items-center justify-center text-indigo-600">
+                                <Wallet className="w-3.5 h-3.5" />
                             </div>
-                            <div>
-                                <h3 className="text-base font-bold text-gray-900 leading-tight">Parâmetros Financeiros</h3>
-                                <p className="text-[11px] text-gray-500">Definição de salário e jornada</p>
-                            </div>
+                            <h3 className="text-sm font-bold text-gray-800">Financeiro</h3>
                         </div>
 
-                        <div className="space-y-4">
-                            <div className="space-y-1">
-                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">Pro-Labore Mensal</label>
-                                <div className="relative">
-                                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                                    <input
-                                        type="number"
-                                        className="w-full pl-9 pr-3 h-10 bg-gray-50 border border-gray-100 rounded-lg outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-bold text-gray-900 text-sm"
-                                        value={formData.pro_labore}
-                                        onChange={e => setFormData({ ...formData, pro_labore: e.target.value })}
-                                    />
+                        <div className="space-y-2">
+                            <div className="grid grid-cols-2 gap-2">
+                                <div className="space-y-0.5">
+                                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest block ml-0.5">Pro-Labore</label>
+                                    <div className="relative">
+                                        <DollarSign className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400" />
+                                        <input
+                                            type="number"
+                                            className="w-full pl-7 pr-2 h-7 bg-white border border-gray-300 rounded outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-bold text-gray-900 text-xs"
+                                            value={formData.pro_labore}
+                                            onChange={e => setFormData({ ...formData, pro_labore: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="space-y-0.5">
+                                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest block ml-0.5">Custo Impressão</label>
+                                    <div className="relative">
+                                        <DollarSign className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400" />
+                                        <input
+                                            type="number"
+                                            step="0.01"
+                                            className="w-full pl-7 pr-2 h-7 bg-white border border-gray-300 rounded outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all font-bold text-gray-900 text-xs"
+                                            value={formData.printing_cost}
+                                            onChange={e => setFormData({ ...formData, printing_cost: e.target.value })}
+                                        />
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-3">
-                                <div className="space-y-1">
-                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">Dias / Mês</label>
+                            <div className="grid grid-cols-2 gap-2">
+                                <div className="space-y-0.5">
+                                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest block ml-0.5">Dias / Mês</label>
                                     <div className="relative">
-                                        <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                        <Calendar className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400" />
                                         <input
                                             type="number"
-                                            className="w-full pl-9 pr-3 h-10 bg-gray-50 border border-gray-100 rounded-lg outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-bold text-gray-900 text-sm"
+                                            className="w-full pl-7 pr-2 h-7 bg-white border border-gray-300 rounded outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-bold text-gray-900 text-xs"
                                             value={formData.work_days_per_month}
                                             onChange={e => setFormData({ ...formData, work_days_per_month: e.target.value })}
                                         />
                                     </div>
                                 </div>
-                                <div className="space-y-1">
-                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">Horas / Dia</label>
+                                <div className="space-y-0.5">
+                                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest block ml-0.5">Horas / Dia</label>
                                     <div className="relative">
-                                        <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                        <Clock className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400" />
                                         <input
                                             type="number"
-                                            className="w-full pl-9 pr-3 h-10 bg-gray-50 border border-gray-100 rounded-lg outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-bold text-gray-900 text-sm"
+                                            className="w-full pl-7 pr-2 h-7 bg-white border border-gray-300 rounded outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-bold text-gray-900 text-xs"
                                             value={formData.work_hours_per_day}
                                             onChange={e => setFormData({ ...formData, work_hours_per_day: e.target.value })}
                                         />
@@ -252,50 +261,21 @@ const Settings: React.FC = () => {
                             </div>
 
                             {/* Green Box */}
-                            <div className="bg-emerald-50 rounded-lg p-4 flex items-center justify-between border border-emerald-100">
+                            <div className="bg-emerald-50 rounded border border-emerald-100 p-2 flex items-center justify-between">
                                 <div>
-                                    <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mb-0.5">Valor da sua Hora</p>
-                                    <p className="text-[11px] text-emerald-600/70 font-medium">Baseado em {totalHours || 0}h mensais</p>
+                                    <p className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest">Valor da sua Hora</p>
+                                    <p className="text-[9px] text-emerald-600/70">{totalHours || 0}h mensais</p>
                                 </div>
-                                <div className="text-2xl font-black text-emerald-600 tracking-tight">
+                                <div className="text-lg font-black text-emerald-600 tracking-tight">
                                     R$ {hourlyRate.toFixed(2)}
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    {/* Standard COSTS (Printing) */}
-                    <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm space-y-5">
-                        <div className="flex items-center gap-3 border-b border-gray-50 pb-3">
-                            <div className="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center text-purple-600">
-                                <DollarSign className="w-5 h-5" />
-                            </div>
-                            <div>
-                                <h3 className="text-base font-bold text-gray-900 leading-tight">Custos Variáveis Padrão</h3>
-                                <p className="text-[11px] text-gray-500">Custos aplicados na formação do preço</p>
-                            </div>
-                        </div>
-
-                        <div className="space-y-3">
-                            <div className="space-y-1">
-                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">Custo de Impressão (Por folha/unidade)</label>
-                                <div className="relative">
-                                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                                    <input
-                                        type="number"
-                                        step="0.01"
-                                        className="w-full pl-9 pr-3 h-10 bg-gray-50 border border-gray-100 rounded-lg outline-none focus:bg-white focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10 transition-all font-bold text-gray-900 text-sm"
-                                        value={formData.printing_cost}
-                                        onChange={e => setFormData({ ...formData, printing_cost: e.target.value })}
-                                    />
-                                </div>
-                                <p className="text-[10px] text-gray-400 mt-1">Este valor será sugerido automaticamente ao criar novos produtos.</p>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </div>
     );
 };
+
+export default Settings;
