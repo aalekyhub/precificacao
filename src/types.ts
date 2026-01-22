@@ -11,6 +11,7 @@ export interface Settings {
   company_address?: string;
   company_cnpj?: string;
   company_website?: string;
+  printing_cost?: number; // Custo de impressão por folha/unidade
 }
 
 export interface FixedCost {
@@ -60,7 +61,9 @@ export interface Product {
   profit_margin?: number;
   tax_rate?: number;
   commission_rate?: number;
+  commission_rate?: number;
   marketplace_rate?: number;
+  printing_qty?: number;
 }
 
 export type ContactType = 'Cliente' | 'Fornecedor';

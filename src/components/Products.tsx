@@ -13,7 +13,8 @@ import {
     Save,
     Layers,
     Clock,
-    Box
+    Box,
+    Printer
 } from 'lucide-react';
 
 const schema = z.object({
@@ -36,6 +37,7 @@ const schema = z.object({
     taxRate: z.number().min(0).max(100).default(0),
     commissionRate: z.number().min(0).max(100).default(0),
     marketplaceRate: z.number().min(0).max(100).default(0),
+    printingQty: z.number().min(0).default(0),
     sellingPrice: z.number().optional()
 });
 
@@ -57,6 +59,7 @@ const Products: React.FC = () => {
             taxRate: 4, // Default Simple Nacional approx
             commissionRate: 0,
             marketplaceRate: 0,
+            printingQty: 0,
             sellingPrice: 0
         }
     });
@@ -100,7 +103,10 @@ const Products: React.FC = () => {
         const laborCost = (laborMinutes / 60) * hourlyLaborRate;
         const fixedCostShare = (laborMinutes / 60) * hourlyFixedRate;
 
-        const totalCost = matCost + laborCost + fixedCostShare;
+        // 3. Printing Cost
+        const printingCostTotal = (watch('printingQty') || 0) * (storeConfig.printing_cost || 0);
+
+        const totalCost = matCost + laborCost + fixedCostShare + printingCostTotal;
 
         // 3. Selling Price based on "Perfect Pricing" (Markup Multiplier approach for Target Net Profit)
         // Formula: Price = Cost / (1 - (Tax% + Fee% + NetProfit%))
@@ -149,7 +155,8 @@ const Products: React.FC = () => {
                 commission_rate: data.commissionRate,
                 marketplace_rate: data.marketplaceRate,
                 bomItems: data.bomItems,
-                steps: data.steps
+                steps: data.steps,
+                printing_qty: data.printingQty
             };
 
             if (editingId) {
@@ -178,6 +185,7 @@ const Products: React.FC = () => {
         setValue('taxRate', item.tax_rate || 0);
         setValue('commissionRate', item.commission_rate || 0);
         setValue('marketplaceRate', item.marketplace_rate || 0);
+        setValue('printingQty', item.printing_qty || 0);
 
         setValue('bomItems', (item.bomItems || []).map(b => ({
             insumoId: b.insumoId,
@@ -269,215 +277,214 @@ const Products: React.FC = () => {
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
                     <div className="bg-white w-full max-w-4xl rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200">
-                        <div className="px-10 py-6 bg-white border-b border-gray-100 flex justify-between items-center sticky top-0 z-10">
+                        <div className="px-6 py-4 bg-white border-b border-gray-100 flex justify-between items-center sticky top-0 z-10">
                             <div>
-                                <h3 className="text-2xl font-bold text-gray-900">{editingId ? 'Editar Produto' : 'Novo Produto'}</h3>
-                                <p className="text-sm text-gray-500 mt-1">Configure todos os detalhes em um só lugar.</p>
+                                <h3 className="text-xl font-bold text-gray-900">{editingId ? 'Editar Produto' : 'Novo Produto'}</h3>
                             </div>
-                            <button onClick={handleCloseModal} className="p-2 hover:bg-gray-100 rounded-full transition-colors"><X className="w-6 h-6 text-gray-400" /></button>
+                            <button onClick={handleCloseModal} className="p-1 hover:bg-gray-100 rounded-full transition-colors"><X className="w-5 h-5 text-gray-400" /></button>
                         </div>
 
                         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col flex-1 overflow-hidden">
                             <div className="flex-1 overflow-y-auto p-5 custom-scrollbar space-y-4">
 
                                 {/* SECTION: PRODUTO (INFO) */}
-                                <section className="bg-white p-4 rounded-lg border border-gray-100 shadow-sm relative overflow-hidden">
-                                    <div className="flex items-center gap-3 mb-4">
-                                        <div className="w-6 h-6 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-md">1</div>
-                                        <div>
-                                            <h4 className="text-sm font-bold text-gray-900">Informações Básicas</h4>
-                                        </div>
+                                <section className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+                                    <div className="flex items-center gap-3 mb-1.5 border-b border-gray-50 pb-1">
+                                        <div className="w-6 h-6 rounded-full bg-gradient-to-br from-indigo-500 to-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-sm">1</div>
+                                        <h4 className="text-sm font-bold text-gray-900">Informações Básicas</h4>
                                     </div>
 
-                                    <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
-                                        <div className="md:col-span-6">
-                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Nome do Produto</label>
-                                            <input {...register('name')} className="w-full px-3 h-8 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 transition-all font-medium text-gray-900 text-xs" placeholder="Ex: Caderno Personalizado A5" />
-                                            {errors.name && <p className="text-rose-500 text-[10px] mt-0.5 ml-1 font-bold">{errors.name.message}</p>}
+                                    <div className="grid grid-cols-1 md:grid-cols-12 gap-2">
+                                        <div className="md:col-span-6 space-y-0.5">
+                                            <label className="text-[10px] font-semibold text-gray-500 ml-1">Nome</label>
+                                            <input {...register('name')} className="w-full px-3 h-8 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:border-indigo-500 transition-all font-medium text-gray-900 text-xs shadow-sm" placeholder="Ex: Caderno" />
+                                            {errors.name && <p className="text-rose-500 text-[10px] mt-0.5 font-medium">{errors.name.message}</p>}
                                         </div>
-                                        <div className="md:col-span-4">
-                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Categoria</label>
-                                            <input {...register('category')} className="w-full px-3 h-8 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 transition-all font-medium text-gray-900 text-xs" placeholder="Ex: Papelaria" />
-                                            {errors.category && <p className="text-rose-500 text-[10px] mt-0.5 ml-1 font-bold">{errors.category.message}</p>}
+                                        <div className="md:col-span-4 space-y-0.5">
+                                            <label className="text-[10px] font-semibold text-gray-500 ml-1">Categoria</label>
+                                            <input {...register('category')} className="w-full px-3 h-8 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:border-indigo-500 transition-all font-medium text-gray-900 text-xs shadow-sm" placeholder="Ex: Papelaria" />
+                                            {errors.category && <p className="text-rose-500 text-[10px] mt-0.5 font-medium">{errors.category.message}</p>}
                                         </div>
-                                        <div className="md:col-span-2">
-                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Unidade</label>
-                                            <input {...register('unit')} className="w-full px-3 h-8 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 transition-all font-medium text-gray-900 text-xs text-center" placeholder="UN" />
+                                        <div className="md:col-span-2 space-y-0.5">
+                                            <label className="text-[10px] font-semibold text-gray-500 ml-1">Unidade</label>
+                                            <input {...register('unit')} className="w-full px-2 h-8 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:border-indigo-500 transition-all font-medium text-gray-900 text-xs text-center shadow-sm" placeholder="UN" />
                                         </div>
-                                        <div className="md:col-span-12">
-                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Descrição</label>
-                                            <input {...register('description')} className="w-full px-3 h-8 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 transition-all font-medium text-gray-900 text-xs" placeholder="Breve descrição do produto..." />
+                                        <div className="md:col-span-12 space-y-0.5">
+                                            <label className="text-[10px] font-semibold text-gray-500 ml-1">Descrição</label>
+                                            <input {...register('description')} className="w-full px-3 h-8 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:border-indigo-500 transition-all font-medium text-gray-900 text-xs shadow-sm" placeholder="Descrição opcional..." />
+                                        </div>
+                                    </div>
+                                </section>
+
+                                {/* SECTION: CUSTOS EXTRAS (IMPRESSÃO) */}
+                                <section className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+                                    <div className="flex items-center gap-3 mb-1.5 border-b border-gray-50 pb-1">
+                                        <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 text-white flex items-center justify-center font-bold text-xs shadow-sm">
+                                            <Printer className="w-3 h-3" />
+                                        </div>
+                                        <h4 className="text-sm font-bold text-gray-900">Custos de Impressão</h4>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                        <div className="space-y-0.5">
+                                            <label className="text-[10px] font-semibold text-gray-500 ml-1">Quantidade de Impressões</label>
+                                            <input type="number" step="1" {...register('printingQty', { valueAsNumber: true })} className="w-full px-3 h-8 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:border-purple-500 transition-all font-medium text-gray-900 text-xs shadow-sm" placeholder="0" />
+                                        </div>
+                                        <div className="space-y-0.5">
+                                            <label className="text-[10px] font-semibold text-gray-500 ml-1">Custo Unitário (Config)</label>
+                                            <div className="w-full px-3 h-8 bg-purple-50 border border-purple-100 rounded-lg flex items-center text-xs font-bold text-purple-700">
+                                                R$ {Number(storeConfig.printing_cost || 0).toFixed(2)}
+                                            </div>
                                         </div>
                                     </div>
                                 </section>
 
                                 {/* SECTION: MATERIAIS (RECEITA) */}
-                                <section className="bg-white p-4 rounded-lg border border-gray-100 shadow-sm relative overflow-hidden">
-                                    <div className="flex items-center justify-between mb-4">
+                                <section className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+                                    <div className="flex items-center justify-between mb-1.5 border-b border-gray-50 pb-1">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-6 h-6 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-md">2</div>
-                                            <div>
-                                                <h4 className="text-sm font-bold text-gray-900">Material de Produção</h4>
-                                            </div>
+                                            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-indigo-500 to-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-sm">2</div>
+                                            <h4 className="text-sm font-bold text-gray-900">Material de Produção</h4>
                                         </div>
-                                        <button type="button" onClick={() => appendBom({ insumoId: '', qtyPerUnit: 1, appliesTo: 'PRODUCT' })} className="text-[10px] font-bold text-white bg-indigo-600 px-3 py-1.5 rounded-lg hover:bg-indigo-700 transition-all shadow-sm flex items-center gap-1.5 active:scale-95">
-                                            <Plus className="w-3 h-3" /> Adicionar
+                                        <button type="button" onClick={() => appendBom({ insumoId: '', qtyPerUnit: 1, appliesTo: 'PRODUCT' })} className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg hover:bg-indigo-100 transition-all flex items-center gap-1.5 active:scale-95 border border-indigo-200/50">
+                                            <Plus className="w-3 h-3" /> Add
                                         </button>
                                     </div>
 
-                                    <div className="space-y-3">
+                                    <div className="space-y-1.5">
                                         {bomFields.map((field, index) => (
-                                            <div key={field.id} className="flex gap-2 items-start p-2 bg-gray-50 rounded-lg border border-gray-100 hover:border-indigo-200 hover:bg-white hover:shadow-sm transition-all group/item">
+                                            <div key={field.id} className="flex gap-2 items-center p-1.5 bg-gray-50/50 rounded-lg border border-gray-100 hover:border-indigo-200 hover:bg-white transition-all group/item">
                                                 <div className="flex-1">
-                                                    <label className="text-[9px] uppercase font-bold text-gray-400 mb-0.5 block">Material</label>
-                                                    <select {...register(`bomItems.${index}.insumoId`)} className="w-full bg-white h-7 px-2 rounded border border-gray-200 outline-none focus:border-indigo-500 font-medium text-xs">
+                                                    <select {...register(`bomItems.${index}.insumoId`)} className="w-full bg-white h-7 px-2 rounded border border-gray-200 outline-none focus:border-indigo-500 font-medium text-xs text-gray-700 shadow-sm">
                                                         <option value="">Selecione...</option>
                                                         {insumos.map(i => <option key={i.id} value={i.id}>{i.name}</option>)}
                                                     </select>
                                                 </div>
                                                 <div className="w-20">
-                                                    <label className="text-[9px] uppercase font-bold text-gray-400 mb-0.5 block">Qtd</label>
-                                                    <input type="number" step="0.001" {...register(`bomItems.${index}.qtyPerUnit`, { valueAsNumber: true })} className="w-full bg-white h-7 px-1 rounded border border-gray-200 outline-none focus:border-indigo-500 text-center font-bold text-xs" />
+                                                    <input type="number" step="0.001" {...register(`bomItems.${index}.qtyPerUnit`, { valueAsNumber: true })} className="w-full bg-white h-7 px-2 rounded border border-gray-200 outline-none focus:border-indigo-500 text-center font-bold text-xs text-gray-700 shadow-sm" placeholder="Qtd" />
                                                 </div>
-                                                <div className="w-28">
-                                                    <label className="text-[9px] uppercase font-bold text-gray-400 mb-0.5 block">Aplicar</label>
-                                                    <select {...register(`bomItems.${index}.appliesTo`)} className="w-full bg-white h-7 px-1 rounded border border-gray-200 outline-none focus:border-indigo-500 font-medium text-[10px]">
+                                                <div className="w-24">
+                                                    <select {...register(`bomItems.${index}.appliesTo`)} className="w-full bg-white h-7 px-1 rounded border border-gray-200 outline-none focus:border-indigo-500 font-medium text-[10px] text-gray-700 shadow-sm">
                                                         <option value="PRODUCT">Produto</option>
-                                                        <option value="PACKAGING">Embalagem</option>
+                                                        <option value="PACKAGING">Emb.</option>
                                                     </select>
                                                 </div>
-                                                <button type="button" onClick={() => removeBom(index)} className="mt-4 text-gray-300 hover:text-rose-500 p-1 rounded hover:bg-rose-50 transition-colors"><Trash2 className="w-4 h-4" /></button>
+                                                <button type="button" onClick={() => removeBom(index)} className="text-gray-300 hover:text-rose-500 p-1 rounded hover:bg-rose-50 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
                                             </div>
                                         ))}
                                         {bomFields.length === 0 && (
-                                            <div className="text-center py-2 border-2 border-dashed border-gray-200 rounded-lg bg-gray-50/50">
-                                                <Layers className="w-4 h-4 text-gray-300 mx-auto mb-0.5" />
-                                                <p className="text-[10px] font-bold text-gray-400">Nenhum material</p>
+                                            <div className="text-center py-1.5 border-dashed border border-gray-200 rounded-lg bg-gray-50/30">
+                                                <p className="text-[10px] font-medium text-gray-400">Nenhum material</p>
                                             </div>
                                         )}
                                     </div>
                                 </section>
 
                                 {/* SECTION: PROCESSO */}
-                                <section className="bg-white p-4 rounded-lg border border-gray-100 shadow-sm relative overflow-hidden">
-                                    <div className="flex items-center justify-between mb-4">
+                                <section className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+                                    <div className="flex items-center justify-between mb-1.5 border-b border-gray-50 pb-1">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-6 h-6 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-md">3</div>
-                                            <div>
-                                                <h4 className="text-sm font-bold text-gray-900">Processo de Produção</h4>
-                                            </div>
+                                            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-indigo-500 to-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-sm">3</div>
+                                            <h4 className="text-sm font-bold text-gray-900">Processo de Produção</h4>
                                         </div>
-                                        <button type="button" onClick={() => appendStep({ name: '', setupMinutes: 0, unitMinutes: 0 })} className="text-[10px] font-bold text-white bg-indigo-600 px-3 py-1.5 rounded-lg hover:bg-indigo-700 transition-all shadow-sm flex items-center gap-1.5 active:scale-95">
-                                            <Plus className="w-3 h-3" /> Adicionar
+                                        <button type="button" onClick={() => appendStep({ name: '', setupMinutes: 0, unitMinutes: 0 })} className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg hover:bg-indigo-100 transition-all flex items-center gap-1.5 active:scale-95 border border-indigo-200/50">
+                                            <Plus className="w-3 h-3" /> Add
                                         </button>
                                     </div>
 
-                                    <div className="space-y-3">
+                                    <div className="space-y-1.5">
                                         {stepFields.map((field, index) => (
-                                            <div key={field.id} className="flex gap-2 items-start p-2 bg-gray-50 rounded-lg border border-gray-100 hover:border-indigo-200 hover:bg-white hover:shadow-sm transition-all group/item">
+                                            <div key={field.id} className="flex gap-2 items-center p-1.5 bg-gray-50/50 rounded-lg border border-gray-100 hover:border-indigo-200 hover:bg-white transition-all group/item">
                                                 <div className="flex-1">
-                                                    <label className="text-[9px] uppercase font-bold text-gray-400 mb-0.5 block">Nome da Etapa</label>
-                                                    <input {...register(`steps.${index}.name`)} className="w-full bg-white h-7 px-2 rounded border border-gray-200 outline-none focus:border-indigo-500 font-medium text-xs" placeholder="Ex: Impressão" />
+                                                    <input {...register(`steps.${index}.name`)} className="w-full bg-white h-7 px-2 rounded border border-gray-200 outline-none focus:border-indigo-500 font-medium text-xs text-gray-700 shadow-sm" placeholder="Nome da Etapa" />
                                                 </div>
                                                 <div className="w-20">
-                                                    <label className="text-[9px] uppercase font-bold text-gray-400 mb-0.5 block">Minutos</label>
-                                                    <input type="number" {...register(`steps.${index}.setupMinutes`, { valueAsNumber: true })} className="w-full bg-white h-7 px-1 rounded border border-gray-200 outline-none focus:border-indigo-500 text-center font-bold text-xs" />
+                                                    <input type="number" {...register(`steps.${index}.setupMinutes`, { valueAsNumber: true })} className="w-full bg-white h-7 px-1 rounded border border-gray-200 outline-none focus:border-indigo-500 text-center font-bold text-xs text-gray-700 shadow-sm" placeholder="Setup" />
                                                 </div>
                                                 <div className="w-20">
-                                                    <label className="text-[9px] uppercase font-bold text-gray-400 mb-0.5 block">Unit</label>
-                                                    <input type="number" {...register(`steps.${index}.unitMinutes`, { valueAsNumber: true })} className="w-full bg-white h-7 px-1 rounded border border-gray-200 outline-none focus:border-indigo-500 text-center font-bold text-xs" />
+                                                    <input type="number" {...register(`steps.${index}.unitMinutes`, { valueAsNumber: true })} className="w-full bg-white h-7 px-1 rounded border border-gray-200 outline-none focus:border-indigo-500 text-center font-bold text-xs text-gray-700 shadow-sm" placeholder="Unit" />
                                                 </div>
-                                                <button type="button" onClick={() => removeStep(index)} className="mt-4 text-gray-300 hover:text-rose-500 p-1 rounded hover:bg-rose-50 transition-colors"><Trash2 className="w-4 h-4" /></button>
+                                                <button type="button" onClick={() => removeStep(index)} className="text-gray-300 hover:text-rose-500 p-1 rounded hover:bg-rose-50 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
                                             </div>
                                         ))}
                                         {stepFields.length === 0 && (
-                                            <div className="text-center py-2 border-2 border-dashed border-gray-200 rounded-lg bg-gray-50/50">
-                                                <Clock className="w-4 h-4 text-gray-300 mx-auto mb-0.5" />
-                                                <p className="text-[10px] font-bold text-gray-400">Nenhuma etapa</p>
+                                            <div className="text-center py-1.5 border-dashed border border-gray-200 rounded-lg bg-gray-50/30">
+                                                <p className="text-[10px] font-medium text-gray-400">Nenhuma etapa</p>
                                             </div>
                                         )}
                                     </div>
                                 </section>
 
-                                <section className=" rounded-md overflow-hidden shadow-sm border border-gray-100 bg-white">
-                                    <div className="px-3 py-1.5 bg-gradient-to-r from-gray-900 to-gray-800 text-white flex items-center justify-between">
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-4 h-4 rounded bg-indigo-500 text-white flex items-center justify-center font-bold text-[9px] shadow-sm">4</div>
-                                            <div>
-                                                <h4 className="text-[10px] font-bold">Precificação Final (Contábil)</h4>
-                                            </div>
-                                        </div>
+                                <section className="p-4 rounded-xl border border-gray-100 bg-white shadow-sm">
+                                    <div className="flex items-center gap-3 mb-1.5 border-b border-gray-50 pb-1">
+                                        <div className="w-6 h-6 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 text-white flex items-center justify-center font-bold text-xs shadow-sm">4</div>
+                                        <h4 className="text-sm font-bold text-gray-900">Precificação Final</h4>
                                     </div>
 
-                                    <div className="p-2">
-                                        <div className="grid grid-cols-3 gap-2 mb-2">
-                                            <div className="py-1 px-1 bg-indigo-50/50 rounded border border-indigo-50">
-                                                <p className="text-[7px] uppercase font-bold text-indigo-400 mb-0 tracking-wider truncate">Custo Direto</p>
-                                                <p className="text-xs font-bold text-gray-900">R$ {totalCost.toFixed(2)}</p>
+                                    <div className="flex flex-col lg:flex-row gap-2">
+                                        {/* Left Column: Cost Summary + Inputs */}
+                                        <div className="flex-1 space-y-3">
+                                            {/* Cost Summary Cards */}
+                                            <div className="grid grid-cols-3 gap-2">
+                                                <div className="p-2 bg-indigo-50/50 rounded-lg border border-indigo-100">
+                                                    <p className="text-[9px] uppercase font-bold text-indigo-400 mb-0.5 tracking-wider">Direto</p>
+                                                    <p className="text-sm font-bold text-indigo-900">R$ {totalCost.toFixed(2)}</p>
+                                                </div>
+                                                <div className="p-2 bg-rose-50/50 rounded-lg border border-rose-100">
+                                                    <p className="text-[9px] uppercase font-bold text-rose-400 mb-0.5 tracking-wider">Imp/Tax</p>
+                                                    <p className="text-sm font-bold text-rose-900">R$ {(taxValue + commValue + marketValue).toFixed(2)}</p>
+                                                </div>
+                                                <div className="p-2 bg-emerald-50/50 rounded-lg border border-emerald-100">
+                                                    <p className="text-[9px] uppercase font-bold text-emerald-500 mb-0.5 tracking-wider">Lucro</p>
+                                                    <p className="text-sm font-bold text-emerald-900">R$ {netProfitValue.toFixed(2)}</p>
+                                                </div>
                                             </div>
-                                            <div className="py-1 px-1 bg-rose-50 rounded border border-rose-100">
-                                                <p className="text-[7px] uppercase font-bold text-rose-400 mb-0 tracking-wider truncate">Taxas/Imp</p>
-                                                <p className="text-xs font-bold text-rose-600">R$ {(taxValue + commValue + marketValue).toFixed(2)}</p>
-                                            </div>
-                                            <div className="py-1 px-1 bg-emerald-50 rounded border border-emerald-100">
-                                                <p className="text-[7px] uppercase font-bold text-emerald-500 mb-0 tracking-wider truncate">Lucro Real</p>
-                                                <p className="text-xs font-bold text-emerald-700">R$ {netProfitValue.toFixed(2)}</p>
-                                            </div>
-                                        </div>
 
-                                        <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-2">
-                                            <div className="border border-gray-100 rounded p-1 bg-gray-50">
-                                                <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider block mb-0.5">Margem Líquida</span>
-                                                <div className="flex items-center gap-1">
-                                                    <input
-                                                        type="number"
-                                                        className="flex-1 min-w-0 bg-transparent text-sm font-black text-indigo-600 outline-none border-none p-0"
-                                                        {...register('profitMargin', { valueAsNumber: true })}
-                                                    />
-                                                    <span className="text-indigo-400 font-bold text-[10px]">%</span>
+                                            {/* Input Variables */}
+                                            <div className="grid grid-cols-4 gap-2">
+                                                <div className="border border-gray-200 rounded-lg p-2 hover:border-indigo-300 transition-colors bg-white">
+                                                    <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider block mb-0.5">Margem</span>
+                                                    <div className="flex items-center gap-0.5">
+                                                        <input type="number" className="w-full bg-transparent text-sm font-bold text-gray-900 outline-none p-0" {...register('profitMargin', { valueAsNumber: true })} />
+                                                        <span className="text-gray-400 font-bold text-[9px]">%</span>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div className="border border-gray-100 rounded p-1 bg-gray-50">
-                                                <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider block mb-0.5">Impostos (NF)</span>
-                                                <div className="flex items-center gap-1">
-                                                    <input
-                                                        type="number"
-                                                        className="flex-1 min-w-0 bg-transparent text-sm font-black text-gray-600 outline-none border-none p-0"
-                                                        {...register('taxRate', { valueAsNumber: true })}
-                                                    />
-                                                    <span className="text-gray-400 font-bold text-[10px]">%</span>
+                                                <div className="border border-gray-200 rounded-lg p-2 hover:border-indigo-300 transition-colors bg-white">
+                                                    <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider block mb-0.5">Imp.</span>
+                                                    <div className="flex items-center gap-0.5">
+                                                        <input type="number" className="w-full bg-transparent text-sm font-bold text-gray-900 outline-none p-0" {...register('taxRate', { valueAsNumber: true })} />
+                                                        <span className="text-gray-400 font-bold text-[9px]">%</span>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div className="border border-gray-100 rounded p-1 bg-gray-50">
-                                                <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider block mb-0.5">Taxas (Cartão)</span>
-                                                <div className="flex items-center gap-1">
-                                                    <input
-                                                        type="number"
-                                                        className="flex-1 min-w-0 bg-transparent text-sm font-black text-gray-600 outline-none border-none p-0"
-                                                        {...register('commissionRate', { valueAsNumber: true })}
-                                                    />
-                                                    <span className="text-gray-400 font-bold text-[10px]">%</span>
+                                                <div className="border border-gray-200 rounded-lg p-2 hover:border-indigo-300 transition-colors bg-white">
+                                                    <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider block mb-0.5">Com.</span>
+                                                    <div className="flex items-center gap-0.5">
+                                                        <input type="number" className="w-full bg-transparent text-sm font-bold text-gray-900 outline-none p-0" {...register('commissionRate', { valueAsNumber: true })} />
+                                                        <span className="text-gray-400 font-bold text-[9px]">%</span>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div className="border border-gray-100 rounded p-1 bg-gray-50">
-                                                <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider block mb-0.5">Marketplace</span>
-                                                <div className="flex items-center gap-1">
-                                                    <input
-                                                        type="number"
-                                                        className="flex-1 min-w-0 bg-transparent text-sm font-black text-gray-600 outline-none border-none p-0"
-                                                        {...register('marketplaceRate', { valueAsNumber: true })}
-                                                    />
-                                                    <span className="text-gray-400 font-bold text-[10px]">%</span>
+                                                <div className="border border-gray-200 rounded-lg p-2 hover:border-indigo-300 transition-colors bg-white">
+                                                    <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider block mb-0.5">Mkt</span>
+                                                    <div className="flex items-center gap-0.5">
+                                                        <input type="number" className="w-full bg-transparent text-sm font-bold text-gray-900 outline-none p-0" {...register('marketplaceRate', { valueAsNumber: true })} />
+                                                        <span className="text-gray-400 font-bold text-[9px]">%</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div className="mt-2 bg-indigo-600 p-2 rounded-lg shadow-sm shadow-indigo-200 text-center relative overflow-hidden flex flex-col items-center justify-center group cursor-default">
-                                            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
-                                            <p className="text-[8px] uppercase tracking-[0.2em] text-indigo-100 mb-0 font-bold relative z-10">Preço Sugerido</p>
-                                            <p className="text-xl font-black text-white tracking-tight relative z-10 group-hover:scale-105 transition-transform duration-300">
-                                                R$ {suggestedPrice.toFixed(2)}
-                                            </p>
+                                        {/* Right Column: Final Price Display */}
+                                        <div className="lg:w-1/3 relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-900 to-gray-800 p-4 flex flex-col items-center justify-center text-center shadow-lg group cursor-default min-h-[100px]">
+                                            <div className="absolute top-0 right-0 p-2 opacity-10">
+                                                <Package className="w-20 h-20 text-white" />
+                                            </div>
+                                            <p className="text-[9px] uppercase tracking-[0.2em] text-gray-400 font-bold mb-0.5 relative z-10">Preço Sugerido</p>
+                                            <div className="relative z-10 flex items-baseline gap-1">
+                                                <span className="text-base font-medium text-gray-400">R$</span>
+                                                <span className="text-3xl font-black text-white tracking-tight shadow-black drop-shadow-md">
+                                                    {suggestedPrice.toFixed(2)}
+                                                </span>
+                                            </div>
+                                            <p className="text-[9px] text-gray-500 mt-1 relative z-10 leading-tight">Margem: {(watchedMargin || 0)}%</p>
                                         </div>
                                     </div>
                                 </section>

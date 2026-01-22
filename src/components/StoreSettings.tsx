@@ -18,7 +18,8 @@ const StoreSettings: React.FC = () => {
     company_phone: storeConfig.company_phone || '',
     company_address: storeConfig.company_address || '',
     company_cnpj: storeConfig.company_cnpj || '',
-    company_website: storeConfig.company_website || ''
+    company_website: storeConfig.company_website || '',
+    printing_cost: String(storeConfig.printing_cost || '')
   });
 
   // Sync with storeConfig updates
@@ -32,7 +33,9 @@ const StoreSettings: React.FC = () => {
       company_phone: storeConfig.company_phone || '',
       company_address: storeConfig.company_address || '',
       company_cnpj: storeConfig.company_cnpj || '',
-      company_website: storeConfig.company_website || ''
+
+      company_website: storeConfig.company_website || '',
+      printing_cost: String(storeConfig.printing_cost || '')
     });
   }, [storeConfig]);
 
@@ -49,7 +52,9 @@ const StoreSettings: React.FC = () => {
         company_phone: formData.company_phone,
         company_address: formData.company_address,
         company_cnpj: formData.company_cnpj,
-        company_website: formData.company_website
+
+        company_website: formData.company_website,
+        printing_cost: parseFloat(formData.printing_cost) || 0
       });
       alert('Configurações salvas com sucesso!');
     } catch (error) {
@@ -239,6 +244,34 @@ const StoreSettings: React.FC = () => {
                   R$ {hourlyRate.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
               </div>
+            </div>
+          </div>
+
+          <div className="bg-white p-8 rounded-lg border border-gray-100 shadow-sm space-y-8">
+            <div className="flex items-center gap-4 border-b border-gray-50 pb-6">
+              <div className="bg-purple-50 p-3 rounded-md text-purple-600">
+                <DollarSign className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-bold text-gray-900 text-lg">Custos Variáveis Padrão</h3>
+                <p className="text-sm text-gray-500">Custos aplicados na formação do preço</p>
+              </div>
+            </div>
+
+            <div>
+              <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block mb-2">Custo de Impressão (por folha/unidade)</label>
+              <div className="relative group">
+                <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-purple-500 transition-colors" />
+                <input
+                  type="number"
+                  step="0.01"
+                  placeholder="0.00"
+                  className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-md outline-none focus:bg-white focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10 transition-all font-bold text-gray-900 text-lg"
+                  value={formData.printing_cost}
+                  onChange={e => setFormData({ ...formData, printing_cost: e.target.value })}
+                />
+              </div>
+              <p className="text-xs text-gray-400 mt-2">Este valor será sugerido automaticamente ao criar novos produtos.</p>
             </div>
           </div>
 
