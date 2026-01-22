@@ -324,116 +324,149 @@ const Quotes: React.FC = () => {
         <div className="hidden print:block fixed inset-0 bg-white z-[9999] p-8 overflow-y-auto" id="print-area">
           <div className="max-w-4xl mx-auto border border-gray-200 rounded-none shadow-none text-gray-900 font-sans h-full">
             {/* Header / Brand */}
-            <div className="flex justify-between items-start mb-16 pb-8 border-b-2 border-gray-900">
-              <div>
-                <div className="w-16 h-16 bg-gray-900 rounded-sm flex items-center justify-center text-white font-black text-2xl mb-4">P</div>
-                <h1 className="text-4xl font-extrabold tracking-tight text-gray-900">ORÇAMENTO</h1>
-                <p className="text-sm font-bold text-gray-400 mt-2 uppercase tracking-widest">#{(printQuote.id || '').split('-')[0].toUpperCase()}</p>
+            <div className="flex justify-between items-end mb-12 pb-6 border-b-2 border-gray-900">
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 bg-gray-900 text-white flex items-center justify-center font-black text-3xl rounded-lg">
+                  {storeConfig.company_name ? storeConfig.company_name.substring(0, 1).toUpperCase() : 'P'}
+                </div>
+                <div>
+                  <h1 className="text-4xl font-black text-gray-900 tracking-tight uppercase">Orçamento</h1>
+                  <p className="text-sm font-bold text-gray-400 mt-0.5 uppercase tracking-widest">#{printQuote.id ? printQuote.id.split('-')[0].toUpperCase() : '0000'}</p>
+                </div>
               </div>
               <div className="text-right">
-                <h3 className="text-xl font-bold text-gray-900">{storeConfig.company_name || 'Seu Ateliê'}</h3>
-                {storeConfig.company_cnpj && <p className="text-xs text-gray-500 font-bold mt-1">CNPJ: {storeConfig.company_cnpj}</p>}
-
-                <div className="text-xs text-gray-500 mt-2 space-y-0.5">
-                  {storeConfig.company_email && <p>{storeConfig.company_email}</p>}
-                  {storeConfig.company_phone && <p>{storeConfig.company_phone}</p>}
-                  {storeConfig.company_website && <p>{storeConfig.company_website}</p>}
-                </div>
-
-                {storeConfig.company_address && (
-                  <p className="text-xs text-gray-400 mt-3 max-w-[200px] ml-auto whitespace-pre-line leading-relaxed">
-                    {storeConfig.company_address}
-                  </p>
-                )}
-
-                <p className="text-xs font-bold text-gray-900 mt-4 pt-4 border-t border-gray-100">
-                  Data: {new Date(printQuote.date || printQuote.created_at).toLocaleDateString()}
-                </p>
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Data de Emissão</p>
+                <p className="text-xl font-bold text-gray-900">{new Date(printQuote.date || printQuote.created_at).toLocaleDateString('pt-BR')}</p>
               </div>
             </div>
 
-            {/* Client Infos */}
-            <div className="mb-16">
-              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Cliente</p>
-              <div className="bg-gray-50 p-6 rounded-none border-l-4 border-gray-900">
-                <h2 className="text-2xl font-bold text-gray-900 mb-1">{contacts.find(c => c.id === printQuote.customer_id || c.id === printQuote.clientId)?.name}</h2>
-                <div className="flex gap-6 mt-3 text-sm text-gray-600 font-medium">
-                  <span className="flex items-center gap-2">{contacts.find(c => c.id === printQuote.customer_id || c.id === printQuote.clientId)?.phone}</span>
-                  <span className="flex items-center gap-2">{contacts.find(c => c.id === printQuote.customer_id || c.id === printQuote.clientId)?.email}</span>
+            {/* Info Grid (From / To) */}
+            <div className="grid grid-cols-2 gap-12 mb-16">
+
+              {/* FROM (Company) */}
+              <div>
+                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4 border-b border-gray-100 pb-2">Prestador de Serviços</p>
+                <h3 className="text-lg font-bold text-gray-900 mb-1">{storeConfig.company_name || 'Nome da Empresa'}</h3>
+                {storeConfig.company_cnpj && <p className="text-xs text-gray-500 font-medium mb-2">CNPJ: {storeConfig.company_cnpj}</p>}
+
+                <div className="text-xs text-gray-500 space-y-1 leading-relaxed">
+                  {storeConfig.company_address && <p className="whitespace-pre-line">{storeConfig.company_address}</p>}
+                  <div className="mt-3 space-y-0.5 opacity-80">
+                    {storeConfig.company_email && <p>{storeConfig.company_email}</p>}
+                    {storeConfig.company_phone && <p>{storeConfig.company_phone}</p>}
+                    {storeConfig.company_website && <p>{storeConfig.company_website}</p>}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Table */}
-            <table className="w-full mb-12">
-              <thead>
-                <tr className="border-b-2 border-gray-900">
-                  <th className="text-left py-4 text-xs font-black uppercase tracking-widest text-gray-900">Descrição do Item</th>
-                  <th className="text-center py-4 text-xs font-black uppercase tracking-widest text-gray-900 w-24">Qtd.</th>
-                  <th className="text-right py-4 text-xs font-black uppercase tracking-widest text-gray-900 w-32">Preço Unit.</th>
-                  <th className="text-right py-4 text-xs font-black uppercase tracking-widest text-gray-900 w-32">Total</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {printQuote.items.map((item, idx) => {
-                  const product = products.find(p => p.id === item.product_id);
-                  return (
-                    <tr key={idx}>
-                      <td className="py-5 text-sm font-bold text-gray-800">{product?.name || item.name}</td>
-                      <td className="py-5 text-center text-sm font-medium text-gray-600">{item.quantity}</td>
-                      <td className="py-5 text-right text-sm font-medium text-gray-600">R$ {item.unit_price.toFixed(2)}</td>
-                      <td className="py-5 text-right text-sm font-black text-gray-900">R$ {(item.quantity * item.unit_price).toFixed(2)}</td>
-                    </tr>
+              {/* TO (Customer) */}
+              <div>
+                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4 border-b border-gray-100 pb-2">Cliente</p>
+                {(() => {
+                  const client = contacts.find(c => c.id === printQuote.customer_id || c.id === printQuote.clientId);
+                  return client ? (
+                    <>
+                      <h3 className="text-lg font-bold text-gray-900 mb-1">{client.name}</h3>
+                      {(client.document || client.phone) && (
+                        <div className="text-xs text-gray-500 font-medium mb-2 space-x-3">
+                          {client.document && <span>{client.document_type || 'DOC'}: {client.document}</span>}
+                          {client.phone && <span>Tel: {client.phone}</span>}
+                        </div>
+                      )}
+
+                      {(client.address || client.street) && (
+                        <div className="text-xs text-gray-500 leading-relaxed max-w-[280px]">
+                          {client.street ? (
+                            <>
+                              {client.street}, {client.number} {client.complement && `- ${client.complement}`}<br />
+                              {client.neighborhood} - {client.city}/{client.state}<br />
+                              {client.cep && `CEP: ${client.cep}`}
+                            </>
+                          ) : (
+                            client.address
+                          )}
+                        </div>
+                      )}
+                      {client.email && <p className="text-xs text-gray-500 mt-2">{client.email}</p>}
+                    </>
+                  ) : (
+                    <p className="text-sm text-gray-400 italic">Cliente não identificado</p>
                   )
-                })}
-              </tbody>
-            </table>
+                })()}
+              </div>
+            </div>
 
-            {/* Summary */}
-            <div className="flex justify-end mb-20">
-              <div className="w-72">
-                <div className="flex justify-between py-2 text-sm font-medium text-gray-500 border-b border-gray-100">
-                  <span>Subtotal</span>
-                  <span>R$ {((printQuote.items || []).reduce((acc, i) => acc + (i.unit_price * i.quantity), 0)).toFixed(2)}</span>
-                </div>
-                {/* Fix boolean check to avoid rendering '0' */}
-                {Number(printQuote.extra_costs) > 0 && (
+            {/* Table Header Adjustment */}
+            <div className="mb-2">
+              <table className="w-full mb-12">
+                <thead>
+                  <tr className="border-b-2 border-gray-900">
+                    <th className="text-left py-4 text-xs font-black uppercase tracking-widest text-gray-900">Descrição do Item</th>
+                    <th className="text-center py-4 text-xs font-black uppercase tracking-widest text-gray-900 w-24">Qtd.</th>
+                    <th className="text-right py-4 text-xs font-black uppercase tracking-widest text-gray-900 w-32">Preço Unit.</th>
+                    <th className="text-right py-4 text-xs font-black uppercase tracking-widest text-gray-900 w-32">Total</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {printQuote.items.map((item, idx) => {
+                    const product = products.find(p => p.id === item.product_id);
+                    return (
+                      <tr key={idx}>
+                        <td className="py-5 text-sm font-bold text-gray-800">{product?.name || item.name}</td>
+                        <td className="py-5 text-center text-sm font-medium text-gray-600">{item.quantity}</td>
+                        <td className="py-5 text-right text-sm font-medium text-gray-600">R$ {item.unit_price.toFixed(2)}</td>
+                        <td className="py-5 text-right text-sm font-black text-gray-900">R$ {(item.quantity * item.unit_price).toFixed(2)}</td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+
+              {/* Summary */}
+              <div className="flex justify-end mb-20">
+                <div className="w-72">
                   <div className="flex justify-between py-2 text-sm font-medium text-gray-500 border-b border-gray-100">
-                    <span>Custos Extras</span>
-                    <span>+ R$ {Number(printQuote.extra_costs).toFixed(2)}</span>
+                    <span>Subtotal</span>
+                    <span>R$ {((printQuote.items || []).reduce((acc, i) => acc + (i.unit_price * i.quantity), 0)).toFixed(2)}</span>
                   </div>
-                )}
-                {Number(printQuote.discount) > 0 && (
-                  <div className="flex justify-between py-2 text-sm font-medium text-green-600 border-b border-gray-100">
-                    <span>Desconto</span>
-                    <span>- R$ {Number(printQuote.discount).toFixed(2)}</span>
+                  {/* Fix boolean check to avoid rendering '0' */}
+                  {Number(printQuote.extra_costs) > 0 && (
+                    <div className="flex justify-between py-2 text-sm font-medium text-gray-500 border-b border-gray-100">
+                      <span>Custos Extras</span>
+                      <span>+ R$ {Number(printQuote.extra_costs).toFixed(2)}</span>
+                    </div>
+                  )}
+                  {Number(printQuote.discount) > 0 && (
+                    <div className="flex justify-between py-2 text-sm font-medium text-green-600 border-b border-gray-100">
+                      <span>Desconto</span>
+                      <span>- R$ {Number(printQuote.discount).toFixed(2)}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between py-4 text-2xl font-black text-gray-900 mt-2">
+                    <span>Total</span>
+                    <span>R$ {printQuote.total_value.toFixed(2)}</span>
                   </div>
-                )}
-                <div className="flex justify-between py-4 text-2xl font-black text-gray-900 mt-2">
-                  <span>Total</span>
-                  <span>R$ {printQuote.total_value.toFixed(2)}</span>
                 </div>
               </div>
-            </div>
 
-            {/* Notes if any */}
-            {printQuote.notes && (
-              <div className="mb-12 p-6 bg-yellow-50 rounded-sm border border-yellow-100 text-sm text-yellow-800">
-                <p className="font-bold uppercase text-xs mb-1">Observações:</p>
-                {printQuote.notes}
+              {/* Notes if any */}
+              {printQuote.notes && (
+                <div className="mb-12 p-6 bg-yellow-50 rounded-sm border border-yellow-100 text-sm text-yellow-800">
+                  <p className="font-bold uppercase text-xs mb-1">Observações:</p>
+                  {printQuote.notes}
+                </div>
+              )}
+
+              {/* Footer */}
+              <div className="border-t border-gray-200 pt-8 text-center">
+                <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Obrigado pela preferência!</p>
               </div>
-            )}
 
-            {/* Footer */}
-            <div className="border-t border-gray-200 pt-8 text-center">
-              <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Obrigado pela preferência!</p>
             </div>
-
           </div>
-        </div>
       )}
-    </>
-  );
+        </>
+      );
 };
 
-export default Quotes;
+      export default Quotes;
