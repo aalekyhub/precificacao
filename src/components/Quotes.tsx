@@ -321,82 +321,99 @@ const Quotes: React.FC = () => {
 
       {/* --- PRINT LAYOUT --- */}
       {printQuote && (
-        <div className="hidden print:block p-8 max-w-4xl mx-auto bg-white text-gray-900" id="print-area">
-          {/* Header */}
-          <div className="flex justify-between items-center mb-12 border-b-2 border-gray-100 pb-8">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">ORÇAMENTO</h1>
-              <p className="text-sm text-gray-500 mt-1">Ref: #{(printQuote.id || '').split('-')[0].toUpperCase()}</p>
-              <p className="text-sm text-gray-500">Data: {new Date(printQuote.date || printQuote.created_at).toLocaleDateString()}</p>
-            </div>
-            <div className="text-right">
-              <p className="font-bold text-xl text-gray-900">Seu Ateliê</p>
-              {/* <p className="text-sm text-gray-500">contato@empresa.com</p> */}
-            </div>
-          </div>
-
-          {/* Client Info */}
-          <div className="mb-12 bg-gray-50/50 p-6 rounded-lg border border-gray-100">
-            <p className="text-[10px] uppercase font-bold text-gray-400 mb-2">Cliente</p>
-            <p className="text-xl font-bold text-gray-800">{contacts.find(c => c.id === printQuote.customer_id || c.id === printQuote.clientId)?.name}</p>
-            <p className="text-sm text-gray-500">{contacts.find(c => c.id === printQuote.customer_id || c.id === printQuote.clientId)?.email}</p>
-            <p className="text-sm text-gray-500">{contacts.find(c => c.id === printQuote.customer_id || c.id === printQuote.clientId)?.phone}</p>
-          </div>
-
-          {/* Items Table */}
-          <table className="w-full mb-12">
-            <thead>
-              <tr className="border-b-2 border-gray-900">
-                <th className="text-left py-3 text-xs font-bold uppercase tracking-wider">Item</th>
-                <th className="text-center py-3 text-xs font-bold uppercase tracking-wider">Qtd</th>
-                <th className="text-right py-3 text-xs font-bold uppercase tracking-wider">Preço Unit.</th>
-                <th className="text-right py-3 text-xs font-bold uppercase tracking-wider">Total</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {printQuote.items.map((item, idx) => {
-                const product = products.find(p => p.id === item.product_id);
-                return (
-                  <tr key={idx}>
-                    <td className="py-4 text-sm font-medium">{product?.name || item.name || 'Item Removido'}</td>
-                    <td className="py-4 text-center text-sm">{item.quantity}</td>
-                    <td className="py-4 text-right text-sm">R$ {item.unit_price.toFixed(2)}</td>
-                    <td className="py-4 text-right text-sm font-bold">R$ {(item.quantity * item.unit_price).toFixed(2)}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-
-          {/* Totals */}
-          <div className="flex justify-end">
-            <div className="w-64 space-y-3">
-              <div className="flex justify-between text-sm text-gray-500">
-                <span>Subtotal</span>
-                <span>R$ {((printQuote.items || []).reduce((acc, i) => acc + (i.unit_price * i.quantity), 0)).toFixed(2)}</span>
+        <div className="hidden print:block fixed inset-0 bg-white z-[9999] p-8 overflow-y-auto" id="print-area">
+          <div className="max-w-4xl mx-auto border border-gray-200 rounded-none shadow-none text-gray-900 font-sans h-full">
+            {/* Header / Brand */}
+            <div className="flex justify-between items-start mb-16 pb-8 border-b-2 border-gray-900">
+              <div>
+                <div className="w-16 h-16 bg-gray-900 rounded-sm flex items-center justify-center text-white font-black text-2xl mb-4">P</div>
+                <h1 className="text-4xl font-extrabold tracking-tight text-gray-900">ORÇAMENTO</h1>
+                <p className="text-sm font-bold text-gray-400 mt-2 uppercase tracking-widest">#{(printQuote.id || '').split('-')[0].toUpperCase()}</p>
               </div>
-              {printQuote.extra_costs && printQuote.extra_costs > 0 && (
-                <div className="flex justify-between text-sm text-gray-500">
-                  <span>Custos Extras</span>
-                  <span>+ R$ {printQuote.extra_costs.toFixed(2)}</span>
-                </div>
-              )}
-              {printQuote.discount && printQuote.discount > 0 && (
-                <div className="flex justify-between text-sm text-green-600">
-                  <span>Desconto</span>
-                  <span>- R$ {printQuote.discount.toFixed(2)}</span>
-                </div>
-              )}
-              <div className="flex justify-between text-xl font-bold text-gray-900 border-t-2 border-gray-900 pt-3">
-                <span>Total</span>
-                <span>R$ {printQuote.total_value.toFixed(2)}</span>
+              <div className="text-right">
+                <h3 className="text-xl font-bold text-gray-900">Seu Ateliê</h3>
+                <p className="text-sm text-gray-500 mt-1">Produtos Personalizados</p>
+                <p className="text-sm text-gray-500">{new Date(printQuote.date || printQuote.created_at).toLocaleDateString()}</p>
               </div>
             </div>
-          </div>
 
-          {/* Footer */}
-          <div className="mt-20 pt-8 border-t border-gray-100 text-center text-xs text-gray-400">
-            <p>Este orçamento é válido por 15 dias. Obrigado pela preferência!</p>
+            {/* Client Infos */}
+            <div className="mb-16">
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Cliente</p>
+              <div className="bg-gray-50 p-6 rounded-none border-l-4 border-gray-900">
+                <h2 className="text-2xl font-bold text-gray-900 mb-1">{contacts.find(c => c.id === printQuote.customer_id || c.id === printQuote.clientId)?.name}</h2>
+                <div className="flex gap-6 mt-3 text-sm text-gray-600 font-medium">
+                  <span className="flex items-center gap-2">{contacts.find(c => c.id === printQuote.customer_id || c.id === printQuote.clientId)?.phone}</span>
+                  <span className="flex items-center gap-2">{contacts.find(c => c.id === printQuote.customer_id || c.id === printQuote.clientId)?.email}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Table */}
+            <table className="w-full mb-12">
+              <thead>
+                <tr className="border-b-2 border-gray-900">
+                  <th className="text-left py-4 text-xs font-black uppercase tracking-widest text-gray-900">Descrição do Item</th>
+                  <th className="text-center py-4 text-xs font-black uppercase tracking-widest text-gray-900 w-24">Qtd.</th>
+                  <th className="text-right py-4 text-xs font-black uppercase tracking-widest text-gray-900 w-32">Preço Unit.</th>
+                  <th className="text-right py-4 text-xs font-black uppercase tracking-widest text-gray-900 w-32">Total</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {printQuote.items.map((item, idx) => {
+                  const product = products.find(p => p.id === item.product_id);
+                  return (
+                    <tr key={idx}>
+                      <td className="py-5 text-sm font-bold text-gray-800">{product?.name || item.name}</td>
+                      <td className="py-5 text-center text-sm font-medium text-gray-600">{item.quantity}</td>
+                      <td className="py-5 text-right text-sm font-medium text-gray-600">R$ {item.unit_price.toFixed(2)}</td>
+                      <td className="py-5 text-right text-sm font-black text-gray-900">R$ {(item.quantity * item.unit_price).toFixed(2)}</td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+
+            {/* Summary */}
+            <div className="flex justify-end mb-20">
+              <div className="w-72">
+                <div className="flex justify-between py-2 text-sm font-medium text-gray-500 border-b border-gray-100">
+                  <span>Subtotal</span>
+                  <span>R$ {((printQuote.items || []).reduce((acc, i) => acc + (i.unit_price * i.quantity), 0)).toFixed(2)}</span>
+                </div>
+                {/* Fix boolean check to avoid rendering '0' */}
+                {Number(printQuote.extra_costs) > 0 && (
+                  <div className="flex justify-between py-2 text-sm font-medium text-gray-500 border-b border-gray-100">
+                    <span>Custos Extras</span>
+                    <span>+ R$ {Number(printQuote.extra_costs).toFixed(2)}</span>
+                  </div>
+                )}
+                {Number(printQuote.discount) > 0 && (
+                  <div className="flex justify-between py-2 text-sm font-medium text-green-600 border-b border-gray-100">
+                    <span>Desconto</span>
+                    <span>- R$ {Number(printQuote.discount).toFixed(2)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between py-4 text-2xl font-black text-gray-900 mt-2">
+                  <span>Total</span>
+                  <span>R$ {printQuote.total_value.toFixed(2)}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Notes if any */}
+            {printQuote.notes && (
+              <div className="mb-12 p-6 bg-yellow-50 rounded-sm border border-yellow-100 text-sm text-yellow-800">
+                <p className="font-bold uppercase text-xs mb-1">Observações:</p>
+                {printQuote.notes}
+              </div>
+            )}
+
+            {/* Footer */}
+            <div className="border-t border-gray-200 pt-8 text-center">
+              <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Obrigado pela preferência!</p>
+            </div>
+
           </div>
         </div>
       )}

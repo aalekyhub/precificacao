@@ -118,7 +118,7 @@ function App() {
     return (
         <div className="flex min-h-screen bg-[#F8F9FC]">
             {/* Sidebar Desktop */}
-            <aside className="hidden lg:flex flex-col w-80 bg-white border-r border-gray-100 p-8 fixed h-full z-10">
+            <aside className="hidden lg:flex flex-col w-80 bg-white border-r border-gray-100 p-8 fixed h-full z-10 print:hidden">
                 <div className="flex items-center gap-3 px-4 mb-12">
                     <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-black text-xl">P</div>
                     <span className="text-2xl font-black text-gray-900 tracking-tight">Precificação</span>
@@ -141,7 +141,7 @@ function App() {
             </aside>
 
             {/* Mobile Header */}
-            <div className="lg:hidden fixed top-0 w-full bg-white/80 backdrop-blur-md border-b border-gray-100 z-50 px-6 py-4 flex justify-between items-center">
+            <div className="lg:hidden fixed top-0 w-full bg-white/80 backdrop-blur-md border-b border-gray-100 z-50 px-6 py-4 flex justify-between items-center print:hidden">
                 <span className="text-xl font-black text-gray-900">Precificação</span>
                 <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
                     {isMobileMenuOpen ? <X /> : <Menu />}
@@ -150,7 +150,7 @@ function App() {
 
             {/* Mobile Menu */}
             {isMobileMenuOpen && (
-                <div className="lg:hidden fixed inset-0 z-40 bg-white pt-24 px-6 space-y-4">
+                <div className="lg:hidden fixed inset-0 z-40 bg-white pt-24 px-6 space-y-4 print:hidden">
                     <NavItem page="dashboard" icon={LayoutDashboard} label="Dashboard" />
                     <NavItem page="quotes" icon={FileText} label="Orçamentos" />
                     <NavItem page="products" icon={Box} label="Produtos" />
@@ -164,8 +164,8 @@ function App() {
             )}
 
             {/* Main Content */}
-            <main className="flex-1 lg:ml-80 p-6 lg:p-12 pt-24 lg:pt-12 overflow-x-hidden">
-                <div className="max-w-7xl mx-auto">
+            <main className="flex-1 lg:ml-80 p-6 lg:p-12 pt-24 lg:pt-12 overflow-x-hidden print:p-0 print:m-0">
+                <div className="max-w-7xl mx-auto print:max-w-none print:w-full">
                     {currentPage === 'dashboard' && <Dashboard onNavigate={setCurrentPage} />}
                     {currentPage === 'quotes' && <Quotes />}
                     {currentPage === 'materials' && <Materials />}
