@@ -332,9 +332,23 @@ const Quotes: React.FC = () => {
               </div>
               <div className="text-right">
                 <h3 className="text-xl font-bold text-gray-900">{storeConfig.company_name || 'Seu Ateliê'}</h3>
-                <p className="text-sm text-gray-500 mt-1">{storeConfig.company_email}</p>
-                <p className="text-sm text-gray-500">{storeConfig.company_phone}</p>
-                <p className="text-sm text-gray-500">{new Date(printQuote.date || printQuote.created_at).toLocaleDateString()}</p>
+                {storeConfig.company_cnpj && <p className="text-xs text-gray-500 font-bold mt-1">CNPJ: {storeConfig.company_cnpj}</p>}
+
+                <div className="text-xs text-gray-500 mt-2 space-y-0.5">
+                  {storeConfig.company_email && <p>{storeConfig.company_email}</p>}
+                  {storeConfig.company_phone && <p>{storeConfig.company_phone}</p>}
+                  {storeConfig.company_website && <p>{storeConfig.company_website}</p>}
+                </div>
+
+                {storeConfig.company_address && (
+                  <p className="text-xs text-gray-400 mt-3 max-w-[200px] ml-auto whitespace-pre-line leading-relaxed">
+                    {storeConfig.company_address}
+                  </p>
+                )}
+
+                <p className="text-xs font-bold text-gray-900 mt-4 pt-4 border-t border-gray-100">
+                  Data: {new Date(printQuote.date || printQuote.created_at).toLocaleDateString()}
+                </p>
               </div>
             </div>
 
