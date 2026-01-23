@@ -210,58 +210,98 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, onAdd, onUpdate, onDelete
         </div>
       </div>
 
-      {/* List Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredContacts.map(contact => (
-          <div key={contact.id} className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all group">
-            <div className="flex justify-between items-start mb-6">
-              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${contact.type === 'Cliente' ? 'bg-rose-50 text-rose-500' : 'bg-blue-50 text-blue-500'}`}>
-                <Users className="w-7 h-7" />
-              </div>
-              <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${contact.type === 'Cliente' ? 'bg-rose-500 text-white' : 'bg-blue-500 text-white'}`}>
-                {contact.type}
-              </span>
-            </div>
-
-            <h3 className="text-xl font-bold text-gray-900 mb-2 truncate">{contact.name}</h3>
-            {contact.document && (
-              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">
-                {contact.document_type}: {contact.document}
-              </p>
-            )}
-
-            <div className="space-y-3 mb-8">
-              <div className="flex items-center gap-3 text-sm text-gray-500">
-                <Phone className="w-4 h-4" />
-                {contact.phone || 'Sem telefone'}
-              </div>
-              <div className="flex items-center gap-3 text-sm text-gray-500">
-                <MapPin className="w-4 h-4" />
-                <span className="truncate">{contact.city && contact.state ? `${contact.city}/${contact.state}` : (contact.address || 'Sem endereço')}</span>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between pt-6 border-t border-gray-50">
-              <div className="flex gap-2">
-                <button onClick={() => openModal(contact)} className="p-2.5 bg-gray-50 text-gray-400 hover:text-indigo-600 rounded-xl transition-all">
-                  <Edit3 className="w-5 h-5" />
-                </button>
-                <button onClick={() => onDelete(contact.id)} className="p-2.5 bg-gray-50 text-gray-400 hover:text-rose-600 rounded-xl transition-all">
-                  <Trash2 className="w-5 h-5" />
-                </button>
-              </div>
-              {contact.phone && (
-                <a
-                  href={`https://wa.me/${contact.phone.replace(/\D/g, '')}`}
-                  target="_blank"
-                  className="flex items-center gap-2 text-green-600 font-bold text-xs bg-green-50 px-4 py-2 rounded-xl hover:bg-green-100 transition-all"
-                >
-                  WhatsApp <ExternalLink className="w-3.5 h-3.5" />
-                </a>
+      {/* Table Layout */}
+      <div className="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left">
+            <thead>
+              <tr className="bg-gray-50/50 border-b border-gray-100">
+                <th className="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Contato / Empresa</th>
+                <th className="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Tipo</th>
+                <th className="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">CPF / CNPJ</th>
+                <th className="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Contato</th>
+                <th className="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Localização</th>
+                <th className="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-right">Ações</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-50">
+              {filteredContacts.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="py-24 text-center text-gray-400 font-medium">
+                    Nenhum contato encontrado.
+                  </td>
+                </tr>
+              ) : (
+                filteredContacts.map(contact => (
+                  <tr key={contact.id} className="hover:bg-gray-50/50 transition-colors group">
+                    <td className="px-8 py-5">
+                      <div className="flex items-center gap-4">
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${contact.type === 'Cliente' ? 'bg-rose-50 text-rose-500' : 'bg-blue-50 text-blue-500'}`}>
+                          <User className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <span className="font-bold text-gray-900 block text-sm">{contact.name}</span>
+                          {contact.email && <span className="text-xs text-gray-400 line-clamp-1">{contact.email}</span>}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-8 py-5">
+                      <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${contact.type === 'Cliente' ? 'bg-rose-50 text-rose-500' : 'bg-blue-50 text-blue-500'}`}>
+                        {contact.type}
+                      </span>
+                    </td>
+                    <td className="px-8 py-5">
+                      <span className="text-xs font-bold text-gray-500">{contact.document || '---'}</span>
+                    </td>
+                    <td className="px-8 py-5">
+                      <div className="flex items-center gap-2">
+                        <Phone className="w-3.5 h-3.5 text-gray-400" />
+                        <span className="text-sm font-medium text-gray-600">{contact.phone || 'N/A'}</span>
+                      </div>
+                    </td>
+                    <td className="px-8 py-5">
+                      <div className="flex items-center gap-2">
+                        <MapPin className="w-3.5 h-3.5 text-gray-400" />
+                        <span className="text-sm text-gray-500 truncate max-w-[150px]">
+                          {contact.city && contact.state ? `${contact.city}/${contact.state}` : (contact.address || 'Sem local')}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-8 py-5 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        {contact.phone && (
+                          <a
+                            href={`https://wa.me/${contact.phone.replace(/\D/g, '')}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 text-gray-300 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all"
+                            title="WhatsApp"
+                          >
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
+                        )}
+                        <button
+                          onClick={() => openModal(contact)}
+                          className="p-2 text-gray-300 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+                          title="Editar"
+                        >
+                          <Edit3 className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => onDelete(contact.id)}
+                          className="p-2 text-gray-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
+                          title="Excluir"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
               )}
-            </div>
-          </div>
-        ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {isModalOpen && (

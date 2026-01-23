@@ -131,6 +131,9 @@ export interface FinancialTransaction {
   status: 'paid' | 'pending';
   date: string;
   observations?: string;
+  periodicity?: 'none' | 'monthly' | 'quarterly' | 'semiannual' | 'annual';
+  payment_method?: string;
+  is_recurring?: boolean;
 }
 
 export interface Equipment {
